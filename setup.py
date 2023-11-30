@@ -17,7 +17,7 @@ with open(os.path.join(current_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='renovation',
-    version='0.0.1',
+    version='0.0.2',
     description=description,
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -33,9 +33,10 @@ setup(
     python_requires='>=3.9',
     install_requires=[
         'matplotlib',
+        'numpy',
     ],
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 2 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Multimedia :: Graphics',
         'License :: OSI Approved :: MIT License',
