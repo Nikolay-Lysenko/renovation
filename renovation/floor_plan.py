@@ -10,6 +10,8 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 
+from renovation.elements import Element
+
 
 METERS_PER_INCH = 0.0254
 
@@ -64,17 +66,33 @@ class FloorPlan:
         ax.spines['top'].set_visible(False)
 
         if grid_major_step is not None:
-            major_xticks = np.arange(bottom_left_corner[0], top_right_corner[0], grid_major_step)
-            major_yticks = np.arange(bottom_left_corner[1], top_right_corner[1], grid_major_step)
+            major_xticks = np.arange(
+                bottom_left_corner[0],
+                top_right_corner[0] + 0.5 * grid_major_step,
+                grid_major_step
+            )
+            major_yticks = np.arange(
+                bottom_left_corner[1],
+                top_right_corner[1] + 0.5 * grid_major_step,
+                grid_major_step
+            )
             ax.set_xticks(major_xticks)
             ax.set_yticks(major_yticks)
-            ax.grid(which='major', alpha=0.5)
+            ax.grid(which='major', color='orange', alpha=0.25)
         if grid_minor_step is not None:
-            minor_xticks = np.arange(bottom_left_corner[0], top_right_corner[0], grid_minor_step)
-            minor_yticks = np.arange(bottom_left_corner[1], top_right_corner[1], grid_minor_step)
+            minor_xticks = np.arange(
+                bottom_left_corner[0],
+                top_right_corner[0] + 0.5 * grid_minor_step,
+                grid_minor_step
+            )
+            minor_yticks = np.arange(
+                bottom_left_corner[1],
+                top_right_corner[1] + 0.5 * grid_minor_step,
+                grid_minor_step
+            )
             ax.set_xticks(minor_xticks, minor=True)
             ax.set_yticks(minor_yticks, minor=True)
-            ax.grid(which='minor', alpha=0.2)
+            ax.grid(which='minor', color='orange', alpha=0.1)
 
         self.fig = fig
         self.ax = ax
@@ -84,7 +102,7 @@ class FloorPlan:
             self, text: str, font_size: int, rel_x: float = 0.5, rel_y: float = 0.95, **kwargs
     ) -> None:
         """
-        Add title.
+        Add title to the floor plan.
 
         :param text:
             title text
@@ -106,3 +124,14 @@ class FloorPlan:
             horizontalalignment='center', transform=self.fig.transFigure, size=font_size, **kwargs
         )
         self.title = text
+
+    def add_element(self, element: Element) -> None:
+        """
+        Add element.
+
+        :param element:
+            element to be added
+        :return:
+            None
+        """
+        element.draw(self.ax)
