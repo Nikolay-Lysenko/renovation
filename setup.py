@@ -34,6 +34,7 @@ setup(
     install_requires=[
         'matplotlib',
         'numpy',
+        'PyYAML',
     ],
     classifiers=[
         'Development Status :: 2 - Alpha',

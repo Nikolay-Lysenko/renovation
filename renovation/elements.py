@@ -219,3 +219,18 @@ class Door(Element):
             color=self.color
         )
         ax.add_patch(arc)
+
+
+def create_elements_registry() -> dict[str, type(Element)]:
+    """
+    Create registry of implemented elements.
+
+    :return:
+        mapping from element type to element class
+    """
+    registry = {
+        'door': Door,
+        'wall': Wall,
+        'window': Window,
+    }
+    return registry

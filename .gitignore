@@ -178,3 +178,6 @@ nohup.out
 *.out
 *.pdf
 *.gz
+
+# Project files
+configs/
