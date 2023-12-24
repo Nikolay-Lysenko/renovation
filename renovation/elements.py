@@ -347,7 +347,7 @@ class DimensionArrow(Element):
 
         initial_text_center = [
             self.length / 2,
-            (self.font_size * 0.02 if self.annotate_above else -self.font_size * 0.02)
+            (self.font_size * 0.0125 if self.annotate_above else -self.font_size * 0.0125)
         ]
         text_anchor_point = np.dot(rotation_matrix, np.array([initial_text_center]).T).T
         text_anchor_point += shift_vector
