@@ -38,17 +38,17 @@ def main() -> None:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
     elements_registry = create_elements_registry()
 
-    basic_floor_plan = FloorPlan(**settings['base']['floor_plan'])
-    for element_params in settings['base']['elements']:
-        element_class = elements_registry[element_params.pop('type')]
-        basic_floor_plan.add_element(element_class(**element_params))
-
     floor_plans = []
     for floor_plan_params in settings['floor_plans']:
-        floor_plan = deepcopy(basic_floor_plan)
+        layout_params = floor_plan_params.get('layout') or settings['default_layout']
+        floor_plan = FloorPlan(**layout_params)
         title_params = floor_plan_params.get('title')
         if title_params:
             floor_plan.add_title(**title_params)
+        for set_name in floor_plan_params.get('inherited_elements', []):
+            for element_params in settings['reusable_elements'].get(set_name, []):
+                element_class = elements_registry[element_params.pop('type')]
+                floor_plan.add_element(element_class(**element_params))
         for element_params in floor_plan_params.get('elements', []):
             element_class = elements_registry[element_params.pop('type')]
             floor_plan.add_element(element_class(**element_params))
