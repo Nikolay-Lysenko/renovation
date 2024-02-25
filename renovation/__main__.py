@@ -6,7 +6,6 @@ Author: Nikolay Lysenko
 
 
 import argparse
-from copy import deepcopy
 
 import yaml
 
