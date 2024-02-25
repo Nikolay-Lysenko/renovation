@@ -1,0 +1,353 @@
+project:
+  dpi: 100
+  pdf_file: null
+  png_dir: "docs/images"
+default_layout:
+  bottom_left_corner: [-1, -2]
+  top_right_corner: [7, 7]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: 1
+  grid_minor_step: 0.1
+reusable_elements:
+  walls_windows_doors:
+    # 1. BEDROOM
+    # Leftmost outer wall
+    - type: wall
+      anchor_point: [-0.2, 6]
+      length: 5.58
+      thickness: 0.2
+      orientation_angle: 270
+    # Left part of top outer wall
+    - type: wall
+      anchor_point: [-0.2, 6]
+      length: 0.81
+      thickness: 0.45
+    # Window
+    - type: window
+      anchor_point: [0.61, 6]
+      length: 1.65
+      overall_thickness: 0.45
+      single_line_thickness: 0.05
+    # Right part of top outer wall
+    - type: wall
+      anchor_point: [2.26, 6]
+      length: 1.54
+      thickness: 0.45
+    # Rightmost internal wall
+    - type: wall
+      anchor_point: [3.02, 6]
+      length: 4.1
+      thickness: 0.08
+      orientation_angle: 270
+    # Wall to the right of door
+    - type: wall
+      anchor_point: [2.945, 1.92]
+      length: 0.075
+      thickness: 0.08
+    # Door
+    - type: door
+      anchor_point: [2.045, 1.92]
+      width: 0.9
+      thickness: 0.05
+    # Wall to the left of door
+    - type: wall
+      anchor_point: [1.97, 1.92]
+      length: 0.075
+      thickness: 0.08
+    # Left wall of appendix
+    - type: wall
+      anchor_point: [1.97, 1.92]
+      length: 0.63
+      thickness: 0.08
+      orientation_angle: 90
+    # Bottom wall
+    - type: wall
+      anchor_point: [0, 2.47]
+      length: 1.97
+      thickness: 0.08
+    # 2. BATHROOM
+    # Duct
+    - type: wall
+      anchor_point: [0, 0.64]
+      length: 1.89
+      thickness: 0.08
+      color: gray
+    # Wall above the door
+    - type: wall
+      anchor_point: [1.89, 1.92]
+      length: 0.15
+      thickness: 0.08
+      orientation_angle: 270
+    # Door
+    - type: door
+      anchor_point: [1.89, 0.87]
+      width: 0.9
+      thickness: 0.05
+      orientation_angle: 90
+      to_the_right: true
+    # Wall below the door
+    - type: wall
+      anchor_point: [1.89, 0.87]
+      length: 0.45
+      thickness: 0.08
+      orientation_angle: 270
+    # Bottom external wall
+    - type: wall
+      anchor_point: [-0.2, 0.22]
+      length: 2.09
+      thickness: 0.2
+    # 3. KITCHEN
+    # Door
+    - type: door
+      anchor_point: [3.02, 1.0]
+      width: 0.9
+      thickness: 0.05
+      orientation_angle: 90
+      to_the_right: true
+    # Wall below the door
+    - type: wall
+      anchor_point: [3.02, 1.0]
+      length: 0.07
+      thickness: 0.08
+      orientation_angle: 270
+    # Bottom internal wall
+    - type: wall
+      anchor_point: [3.02, 0.85]
+      length: 1.24
+      thickness: 0.08
+    # Bottom external wall
+    - type: wall
+      anchor_point: [4.26, 0.73]
+      length: 1.89
+      thickness: 0.2
+    # Right wall
+    - type: wall
+      anchor_point: [6.35, 0.73]
+      length: 5.27
+      thickness: 0.2
+      orientation_angle: 90
+    # French balcony: Window
+    - type: window
+      anchor_point: [3.8, 6.19]
+      length: 1.65
+      overall_thickness: 0.1
+      single_line_thickness: 0.02
+    # French balcony: Left door
+    - type: door
+      anchor_point: [3.875, 6.19]
+      width: 0.75
+      thickness: 0.075
+      to_the_right: true
+      color: gray
+    # French balcony: Right door
+    - type: door
+      anchor_point: [5.375, 6.19]
+      width: 0.75
+      thickness: 0.075
+      orientation_angle: 180
+      color: gray
+    # French balcony: Left wall
+    - type: wall
+      anchor_point: [3.56, 6.45]
+      length: 0.505
+      thickness: 0.05
+      orientation_angle: 90
+      color: gray
+    # French balcony: Long wall
+    - type: wall
+      anchor_point: [3.56, 6.905]
+      length: 2.13
+      thickness: 0.05
+      color: gray
+    # French balcony: Right wall
+    - type: wall
+      anchor_point: [5.69, 6.955]
+      length: 0.505
+      thickness: 0.05
+      orientation_angle: 270
+      color: gray
+    # Wall to the right of balcony
+    - type: wall
+      anchor_point: [5.45, 6]
+      length: 0.9
+      thickness: 0.45
+    # 4. HALL
+    # Leftmost external wall
+    - type: wall
+      anchor_point: [1.77, 0.42]
+      length: 0.8
+      thickness: 0.2
+      orientation_angle: 270
+    # Rightmost external wall
+    - type: wall
+      anchor_point: [4.26, 0.73]
+      length: 1.11
+      thickness: 0.2
+      orientation_angle: 270
+    # Wall to the left of entrance door
+    - type: wall
+      anchor_point: [1.77, -0.58]
+      length: 0.8
+      thickness: 0.2
+    # Entrance door
+    - type: door
+      anchor_point: [2.57, -0.58]
+      width: 1.0
+      thickness: 0.1
+      to_the_right: true
+    # Wall to the right of entrance door
+    - type: wall
+      anchor_point: [3.57, -0.58]
+      length: 0.89
+      thickness: 0.2
+floor_plans:
+  - title:
+       text: "Floor plan without dimensions"
+       font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+  - title:
+      text: "Floor plan with dimensions"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    elements:
+      # 1. BEDROOM
+      # Leftmost outer wall
+      - type: dimension_arrow
+        anchor_point: [0.1, 2.55]
+        length: 3.45
+        orientation_angle: 90
+      # Left part of top outer wall
+      - type: dimension_arrow
+        anchor_point: [0, 5.9]
+        length: 0.61
+      # Window
+      - type: dimension_arrow
+        anchor_point: [0.61, 5.9]
+        length: 1.65
+      # Right part of top outer wall
+      - type: dimension_arrow
+        anchor_point: [2.26, 5.9]
+        length: 0.76
+      # Rightmost internal wall
+      - type: dimension_arrow
+        anchor_point: [2.92, 2]
+        length: 4.00
+        orientation_angle: 90
+        annotate_above: true
+      # Appendix width
+      - type: dimension_arrow
+        anchor_point: [1.97, 2.65]
+        length: 1.05
+      # Appendix length
+      - type: dimension_arrow
+        anchor_point: [2.145, 2]
+        length: 0.55
+        orientation_angle: 90
+      # Bottom wall
+      - type: dimension_arrow
+        anchor_point: [0, 2.65]
+        length: 1.97
+        annotate_above: true
+      # 2. BATHROOM
+      # External wall
+      - type: dimension_arrow
+        anchor_point: [0.1, 0.72]
+        length: 1.75
+        orientation_angle: 90
+      # Upper wall
+      - type: dimension_arrow
+        anchor_point: [0, 2.37]
+        length: 1.89
+      # Wall above the door
+      - type: dimension_arrow
+        anchor_point: [1.79, 1.77]
+        length: 0.7
+        orientation_angle: 90
+        annotate_above: true
+      # Door
+      - type: dimension_arrow
+        anchor_point: [1.79, 0.87]
+        length: 0.9
+        orientation_angle: 90
+        annotate_above: true
+      # Wall below the door
+      - type: dimension_arrow
+        anchor_point: [1.79, 0.72]
+        length: 0.15
+        orientation_angle: 90
+        annotate_above: true
+        font_size: 9
+      # 3. KITCHEN
+      # Wall above the door
+      - type: dimension_arrow
+        anchor_point: [3.2, 1.9]
+        length: 4.1
+        orientation_angle: 90
+      # Door
+      - type: dimension_arrow
+        anchor_point: [3.2, 1]
+        length: 0.9
+        orientation_angle: 90
+      # Bottom wall
+      - type: dimension_arrow
+        anchor_point: [3.1, 1.05]
+        length: 3.05
+        annotate_above: true
+      # Right wall
+      - type: dimension_arrow
+        anchor_point: [6.05, 0.93]
+        length: 5.07
+        orientation_angle: 90
+        annotate_above: true
+      # Wall to the left of balcony
+      - type: dimension_arrow
+        anchor_point: [3.1, 5.9]
+        length: 0.7
+      # French balcony
+      - type: dimension_arrow
+        anchor_point: [3.8, 5.4]
+        length: 1.65
+      # Wall to the right of balcony
+      - type: dimension_arrow
+        anchor_point: [5.45, 5.9]
+        length: 0.7
+      # 4. HALL
+      # Wall to the left of entrance door
+      - type: dimension_arrow
+        anchor_point: [1.97, -0.28]
+        length: 0.6
+        annotate_above: true
+      # Entrance door
+      - type: dimension_arrow
+        anchor_point: [2.57, -0.28]
+        length: 1.0
+        annotate_above: true
+      # Wall to the right of entrance door
+      - type: dimension_arrow
+        anchor_point: [3.57, -0.28]
+        length: 0.69
+        annotate_above: true
+      # Rightmost wall
+      - type: dimension_arrow
+        anchor_point: [4.16, -0.38]
+        length: 1.23
+        orientation_angle: 90
+        annotate_above: true
+      # Bottom part of leftmost wall
+      - type: dimension_arrow
+        anchor_point: [2.07, -0.38]
+        length: 1.22
+        orientation_angle: 90
+      # Wall with door to kitchen
+      - type: dimension_arrow
+        anchor_point: [2.95, 0.85]
+        length: 1.07
+        orientation_angle: 90
+        annotate_above: true
+      # Upper wall
+      - type: dimension_arrow
+        anchor_point: [3.02, 0.75]
+        length: 1.24
