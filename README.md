@@ -19,7 +19,7 @@ To generate floor plans, run:
 ```bash
 python -m renovation -c /path/to/config.yml
 ```
-Here, config in YAML is a custom file where properties of each element to be drawn are set. These properties include location, orientation, size, and so on. In contrast to drag-and-drop tools, config-based interface simplifies fine-grained control.
+Here, config in YAML is a custom file where properties of each element to be drawn are set. These properties include location, orientation, size, and so on. Compared with drag-and-drop tools, config-based interface simplifies fine-grained control.
 
 Let us dive into details. Please look at a [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_config.yml) as s reference while reading further explanations.
 
@@ -30,9 +30,9 @@ The section named `project` defines properties of output such as:
 
 In the demo config, only PNG output is requested and the generated images are shown below: 
 
-![floor_plan_with_dimensions](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_with_dimensions.png)
+![floor_plan_with_dimensions.png](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_with_dimensions.png)
 
-![floor_plan_without_dimensions](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_without_dimensions.png)
+![floor_plan_without_dimensions.png](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_without_dimensions.png)
 
 In the section named `default_layout`, below parameters are set for floor plans that do not override them in their `layout` sections:
 * Dimensions of area to be drawn (in real-world meters, i.e., meters prior to scaling)
