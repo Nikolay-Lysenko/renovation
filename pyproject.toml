@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "renovation"
+version = "0.1.0"
+description = "Drawing tool that produces floor plans needed to renovate an apartment"
+readme = "README.md"
+keywords = ["apartments", "drawing", "floor_plan", "floor_plans"]
+urls = {Homepage = "https://github.com/Nikolay-Lysenko/renovation"}
+authors = [{name = "Nikolay Lysenko", email = "nikolay-lysenco@yandex.ru"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Graphics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+requires-python = ">= 3.8"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "PyYAML",
+]
+
+[tool.setuptools]
+packages = ["renovation"]
