@@ -10,7 +10,7 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
-from renovation.elements.element import Element
+from .element import Element
 
 
 STRAIGHT_ANGLE_IN_DEGREES = 90

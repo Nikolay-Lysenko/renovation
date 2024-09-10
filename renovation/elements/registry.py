@@ -5,9 +5,9 @@ Author: Nikolay Lysenko
 """
 
 
-from renovation.elements.basic import Door, Wall, Window
-from renovation.elements.element import Element
-from renovation.elements.info import DimensionArrow
+from .basic import Door, Wall, Window
+from .element import Element
+from .info import DimensionArrow
 
 
 def create_elements_registry() -> dict[str, type(Element)]:

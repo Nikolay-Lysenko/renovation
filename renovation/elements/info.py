@@ -11,7 +11,7 @@ import matplotlib.axes
 import numpy as np
 from matplotlib.patches import Polygon
 
-from renovation.elements.element import Element
+from .element import Element
 
 
 class DimensionArrow(Element):
