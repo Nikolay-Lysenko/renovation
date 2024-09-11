@@ -129,3 +129,37 @@ class PowerOutlet(Element):
                 lw=self.line_width,
                 color=self.color
             )
+
+        if self.high_voltage:
+            left_tip_end = (
+                tip_end[0] - 0.5 * half_length * math.cos(orientation_angle_in_radians),
+                tip_end[1] - 0.5 * half_length * math.sin(orientation_angle_in_radians)
+            )
+            right_tip_end = (
+                tip_end[0] + 0.5 * half_length * math.cos(orientation_angle_in_radians),
+                tip_end[1] + 0.5 * half_length * math.sin(orientation_angle_in_radians)
+            )
+            ax.plot(
+                [arc_middle[0], left_tip_end[0]],
+                [arc_middle[1], left_tip_end[1]],
+                lw=self.line_width,
+                color=self.color
+            )
+            ax.plot(
+                [arc_middle[0], right_tip_end[0]],
+                [arc_middle[1], right_tip_end[1]],
+                lw=self.line_width,
+                color=self.color
+            )
+
+        if self.low_current:
+            circle = Arc(
+                tip_end,
+                0.5 * self.length,
+                0.5 * self.length,
+                theta1=0,
+                theta2=4 * STRAIGHT_ANGLE_IN_DEGREES,
+                lw=self.line_width,
+                color=self.color
+            )
+            ax.add_patch(circle)
