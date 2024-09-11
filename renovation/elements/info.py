@@ -148,3 +148,48 @@ class DimensionArrow(Element):
             verticalalignment='center', horizontalalignment='center',
             rotation=self.orientation_angle, color=self.color, fontsize=self.font_size
         )
+
+
+class TextBox(Element):
+    """Text box."""
+
+    def __init__(
+            self,
+            anchor_point: tuple[float, float],
+            lines: list[str],
+            font_size: int = 10,
+            color: str = 'black',
+            transparency: float = 0.75,
+    ):
+        """
+        Initialize an instance.
+
+        :param anchor_point:
+            coordinates (in meters) of anchor point; the center of a text box is its anchor point
+        :param lines:
+            text lines to be printed
+        :param font_size:
+            font size
+        :param color:
+            color to use for drawing the text and the bounding box
+        :param transparency:
+            transparency of the bounding box
+        """
+        self.anchor_point = anchor_point
+        self.lines = lines
+        self.font_size = font_size
+        self.color = color
+        self.transparency = transparency
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw text box."""
+        ax.text(
+            self.anchor_point[0],
+            self.anchor_point[1],
+            '\n'.join(self.lines),
+            verticalalignment='center',
+            horizontalalignment='center',
+            color = self.color,
+            fontsize = self.font_size,
+            bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': self.transparency}
+        )

@@ -8,7 +8,7 @@ Author: Nikolay Lysenko
 from .basic import Door, Wall, Window
 from .electricity import PowerOutlet
 from .element import Element
-from .info import DimensionArrow
+from .info import DimensionArrow, TextBox
 
 
 def create_elements_registry() -> dict[str, type(Element)]:
@@ -22,6 +22,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'dimension_arrow': DimensionArrow,
         'door': Door,
         'power_outlet': PowerOutlet,
+        'text_box': TextBox,
         'wall': Wall,
         'window': Window,
     }
