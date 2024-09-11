@@ -10,10 +10,8 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 
+from renovation.constants import METERS_PER_INCH
 from renovation.elements import Element
-
-
-METERS_PER_INCH = 0.0254
 
 
 class FloorPlan:

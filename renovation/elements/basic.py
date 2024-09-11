@@ -10,10 +10,8 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
+from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
 from .element import Element
-
-
-STRAIGHT_ANGLE_IN_DEGREES = 90
 
 
 class Wall(Element):
