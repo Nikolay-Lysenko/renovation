@@ -92,6 +92,9 @@ class FloorPlan:
             ax.set_yticks(minor_yticks, minor=True)
             ax.grid(which='minor', color='orange', alpha=0.1)
 
+        ax.set_xlim(bottom_left_corner[0], top_right_corner[0])
+        ax.set_ylim(bottom_left_corner[1], top_right_corner[1])
+
         self.fig = fig
         self.ax = ax
         self.title = None
