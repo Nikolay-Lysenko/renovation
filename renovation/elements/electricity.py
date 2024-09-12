@@ -8,7 +8,7 @@ Author: Nikolay Lysenko
 import math
 
 import matplotlib.axes
-from matplotlib.patches import Arc
+from matplotlib.patches import Arc, Circle
 
 from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
 from .element import Element
@@ -163,3 +163,73 @@ class PowerOutlet(Element):
                 color=self.color
             )
             ax.add_patch(circle)
+
+
+class ElectricalCable(Element):
+    """Electrical cable for direct power supply without any outlets."""
+
+    def __init__(
+            self,
+            anchor_point: tuple[float, float],
+            symbol_length: float,
+            orientation_angle: float = 0,
+            n_arcs: int = 4,
+            line_width: float = 0.5,
+            color: str = 'black'
+    ):
+        """
+        Initialize an instance.
+
+        :param anchor_point:
+            coordinates (in meters) of anchor point;
+            the center of the segment shared with a wall is anchor point
+        :param symbol_length:
+            length of the symbol, not of the real cable
+        :param orientation_angle:
+            angle (in degrees) that specifies orientation of the electrical cable;
+            it is measured between X-axis and the symbol in positive direction (counterclockwise);
+            initial symbol is rotated around anchor point to get the desired orientation
+        :param n_arcs:
+            number of turns representing a curved cable
+        :param line_width:
+            width of lines for `matplotlib`
+        :param color:
+            color to use for drawing the power outlet
+        :return:
+            freshly created instance of `ElectricalCable` class
+        """
+        self.anchor_point = anchor_point
+        self.symbol_length = symbol_length
+        self.orientation_angle = orientation_angle
+        self.n_arcs = n_arcs
+        self.line_width = line_width
+        self.color = color
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw electrical cable."""
+        radius = self.symbol_length / (2 * (self.n_arcs + 1))
+        tip_angle_in_radians = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+        circle_center = (
+            self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
+            self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
+        )
+        circle = Circle(
+            circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color
+        )
+        ax.add_patch(circle)
+
+        for i in range(self.n_arcs):
+            arc_center = (
+                self.anchor_point[0] + (3 + 2 * i) * radius * math.cos(tip_angle_in_radians),
+                self.anchor_point[1] + (3 + 2 * i) * radius * math.sin(tip_angle_in_radians)
+            )
+            arc = Arc(
+                arc_center,
+                2 * radius,
+                2 * radius,
+                theta1=self.orientation_angle + (2 * (i % 2) - 1) * STRAIGHT_ANGLE_IN_DEGREES,
+                theta2=self.orientation_angle + (2 * (i % 2) + 1) * STRAIGHT_ANGLE_IN_DEGREES,
+                lw=self.line_width,
+                color=self.color
+            )
+            ax.add_patch(arc)

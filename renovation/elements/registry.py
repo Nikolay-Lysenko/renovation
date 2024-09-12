@@ -6,7 +6,7 @@ Author: Nikolay Lysenko
 
 
 from .basic import Door, Wall, Window
-from .electricity import PowerOutlet
+from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 
@@ -21,6 +21,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
     registry = {
         'dimension_arrow': DimensionArrow,
         'door': Door,
+        'electrical_cable': ElectricalCable,
         'power_outlet': PowerOutlet,
         'text_box': TextBox,
         'wall': Wall,
