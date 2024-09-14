@@ -214,7 +214,7 @@ class ElectricalCable(Element):
             self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
         )
         circle = Circle(
-            circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color
+            circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color, lw=0.1
         )
         ax.add_patch(circle)
 
