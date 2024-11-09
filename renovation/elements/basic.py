@@ -9,6 +9,7 @@ import math
 
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
+from numpy.ma.core import angle
 
 from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
 from .element import Element
@@ -139,7 +140,8 @@ class Door(Element):
     def __init__(
             self,
             anchor_point: tuple[float, float],
-            width: float,
+            doorway_width: float,
+            door_width: float,
             thickness: float,
             orientation_angle: float = 0,
             to_the_right: bool = False,
@@ -149,9 +151,14 @@ class Door(Element):
         Initialize an instance.
 
         :param anchor_point:
-            coordinates (in meters) of anchor point; here, it is the door hinges point
-        :param width:
-            width of the door and the doorway (in meters)
+            coordinates (in meters) of anchor point; here, it is the door frame corner
+            that is on the same side with hinges and is on the side where the door opens
+            (given `to_the_right` is set to `False`, else it is on the opposite side)
+        :param doorway_width:
+            width of the doorway (in meters), i.e. width of the door itself
+            plus the width of both sides of the door frame
+        :param door_width:
+            width of the door itself (in meters)
         :param thickness:
             thickness of the door (in meters)
         :param orientation_angle:
@@ -167,45 +174,87 @@ class Door(Element):
             freshly created instance of `Door` class
         """
         self.anchor_point = anchor_point
-        self.width = width
+        self.doorway_width = doorway_width
+        self.door_width = door_width
+        self.frame_width = (doorway_width - door_width) / 2
         self.thickness = thickness
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
         self.color = color
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
-        """Draw door and its opening trajectory."""
-        if self.to_the_right:
-            door_orientation_angle = self.orientation_angle - STRAIGHT_ANGLE_IN_DEGREES
-            orientation_angle_in_rad = math.radians(self.orientation_angle)
-            anchor_point = (
-                self.anchor_point[0] - math.cos(orientation_angle_in_rad) * self.thickness,
-                self.anchor_point[1] - math.sin(orientation_angle_in_rad) * self.thickness
-            )
-        else:
-            door_orientation_angle = self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES
-            anchor_point = self.anchor_point
-        door = Rectangle(
-            anchor_point,
-            self.width,
+        """Draw the door, its opening trajectory, and the door frame."""
+        orientation_angle_in_rad = math.radians(self.orientation_angle)
+
+        frame_orientation_angle = self.orientation_angle - STRAIGHT_ANGLE_IN_DEGREES
+        frame_with_hinges = Rectangle(
+            self.anchor_point,
             self.thickness,
-            angle=door_orientation_angle,
+            self.frame_width,
+            angle=frame_orientation_angle,
             facecolor=self.color
         )
+        ax.add_patch(frame_with_hinges)
+
+        shift = self.frame_width + self.door_width
+        frame_without_hinges_anchor_point = (
+            self.anchor_point[0] + math.cos(orientation_angle_in_rad) * shift,
+            self.anchor_point[1] + math.sin(orientation_angle_in_rad) * shift
+        )
+        frame_without_hinges = Rectangle(
+            frame_without_hinges_anchor_point,
+            self.thickness,
+            self.frame_width,
+            angle=frame_orientation_angle,
+            facecolor=self.color
+        )
+        ax.add_patch(frame_without_hinges)
+
+        hinges_point = (
+            self.anchor_point[0] + math.cos(orientation_angle_in_rad) * self.frame_width,
+            self.anchor_point[1] + math.sin(orientation_angle_in_rad) * self.frame_width
+        )
+        if self.to_the_right:
+            hinges_point = (
+                hinges_point[0] + math.sin(orientation_angle_in_rad) * self.thickness,
+                hinges_point[1] - math.cos(orientation_angle_in_rad) * self.thickness
+            )
+            door = Rectangle(
+                hinges_point,
+                self.door_width,
+                self.thickness,
+                angle=self.orientation_angle - STRAIGHT_ANGLE_IN_DEGREES,
+                facecolor=self.color
+            )
+        else:
+            door = Rectangle(
+                hinges_point,
+                self.thickness,
+                self.door_width,
+                angle=self.orientation_angle,
+                facecolor=self.color
+            )
         ax.add_patch(door)
 
+        arc_anchor_point = (
+            hinges_point[0] + math.cos(orientation_angle_in_rad) * self.thickness,
+            hinges_point[1] + math.sin(orientation_angle_in_rad) * self.thickness
+        )
+        extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
-            start_angle = door_orientation_angle - 1  # Smoother connection.
-            end_angle = self.orientation_angle
+            start_angle = -STRAIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+            end_angle = 0
         else:
-            start_angle = self.orientation_angle
-            end_angle = door_orientation_angle + 1  # Smoother connection.
+            start_angle = 0
+            end_angle = STRAIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
         arc = Arc(
-            self.anchor_point,
-            2 * self.width,
-            2 * self.width,
+            arc_anchor_point,
+            2 * (self.door_width - self.thickness),
+            2 * self.door_width,
+            angle=self.orientation_angle,
             theta1=start_angle,
             theta2=end_angle,
-            color=self.color
+            color=self.color,
+            linewidth=1
         )
         ax.add_patch(arc)

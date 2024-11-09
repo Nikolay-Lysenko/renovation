@@ -1,5 +1,5 @@
 project:
-  dpi: 100
+  dpi: 200
   pdf_file: null
   png_dir: "docs/images"
 default_layout:
@@ -47,9 +47,11 @@ reusable_elements:
       thickness: 0.08
     # Door
     - type: door
-      anchor_point: [2.045, 1.92]
-      width: 0.9
+      anchor_point: [2.045, 1.985]
+      doorway_width: 0.9
+      door_width: 0.8
       thickness: 0.05
+      color: gray
     # Wall to the left of door
     - type: wall
       anchor_point: [1.97, 1.92]
@@ -81,11 +83,13 @@ reusable_elements:
       orientation_angle: 270
     # Door
     - type: door
-      anchor_point: [1.89, 0.87]
-      width: 0.9
+      anchor_point: [1.905, 0.87]
+      doorway_width: 0.9
+      door_width: 0.8
       thickness: 0.05
       orientation_angle: 90
       to_the_right: true
+      color: gray
     # Wall below the door
     - type: wall
       anchor_point: [1.89, 0.87]
@@ -100,11 +104,13 @@ reusable_elements:
     # 3. KITCHEN
     # Door
     - type: door
-      anchor_point: [3.02, 1.0]
-      width: 0.9
+      anchor_point: [3.035, 1.0]
+      doorway_width: 0.9
+      door_width: 0.8
       thickness: 0.05
       orientation_angle: 90
       to_the_right: true
+      color: gray
     # Wall below the door
     - type: wall
       anchor_point: [3.02, 1.0]
@@ -131,19 +137,21 @@ reusable_elements:
     - type: window
       anchor_point: [3.8, 6.19]
       length: 1.65
-      overall_thickness: 0.1
+      overall_thickness: 0.075
       single_line_thickness: 0.02
     # French balcony: Left door
     - type: door
-      anchor_point: [3.875, 6.19]
-      width: 0.75
+      anchor_point: [3.8, 6.265]
+      doorway_width: 0.825
+      door_width: 0.75
       thickness: 0.075
       to_the_right: true
       color: gray
     # French balcony: Right door
     - type: door
-      anchor_point: [5.375, 6.19]
-      width: 0.75
+      anchor_point: [5.45, 6.19]
+      doorway_width: 0.825
+      door_width: 0.75
       thickness: 0.075
       orientation_angle: 180
       color: gray
@@ -192,8 +200,9 @@ reusable_elements:
       thickness: 0.2
     # Entrance door
     - type: door
-      anchor_point: [2.57, -0.58]
-      width: 1.0
+      anchor_point: [2.57, -0.48]
+      doorway_width: 1.0
+      door_width: 0.9
       thickness: 0.1
       to_the_right: true
     # Wall to the right of entrance door
@@ -243,7 +252,7 @@ floor_plans:
         length: 1.05
       # Appendix length
       - type: dimension_arrow
-        anchor_point: [2.145, 2]
+        anchor_point: [2.2, 2]
         length: 0.55
         orientation_angle: 90
       # Bottom wall
@@ -280,6 +289,7 @@ floor_plans:
         orientation_angle: 90
         annotate_above: true
         font_size: 9
+        tip_length: 0.075
       # 3. KITCHEN
       # Wall above the door
       - type: dimension_arrow
@@ -293,7 +303,7 @@ floor_plans:
         orientation_angle: 90
       # Bottom wall
       - type: dimension_arrow
-        anchor_point: [3.1, 1.05]
+        anchor_point: [3.1, 1.025]
         length: 3.05
         annotate_above: true
       # Right wall
