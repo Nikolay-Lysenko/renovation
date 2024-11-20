@@ -153,14 +153,12 @@ class PowerOutlet(Element):
             )
 
         if self.low_current:
-            circle = Arc(
+            circle = Circle(
                 tip_end,
-                0.5 * self.length,
-                0.5 * self.length,
-                theta1=0,
-                theta2=4 * STRAIGHT_ANGLE_IN_DEGREES,
+                0.25 * self.length,
+                fill=False,
                 lw=self.line_width,
-                color=self.color
+                edgecolor=self.color
             )
             ax.add_patch(circle)
 
