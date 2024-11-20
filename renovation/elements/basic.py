@@ -9,7 +9,6 @@ import math
 
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
-from numpy.ma.core import angle
 
 from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
 from .element import Element
