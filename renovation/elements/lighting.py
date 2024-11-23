@@ -188,3 +188,79 @@ class WallLamp(Element):
             lw=self.line_width,
             color=self.color
         )
+
+
+class LEDStrip(Element):
+    """LED strip."""
+
+    def __init__(
+            self,
+            anchor_point: tuple[float, float],
+            length: float,
+            width: float,
+            orientation_angle: float = 0.0,
+            line_width: float = 0.5,
+            color: str = 'black'
+    ):
+        """
+        Initialize an instance.
+
+        :param anchor_point:
+            coordinates (in meters) of anchor point; here, it is the bottom left corner
+        :param length:
+            length of the strip (in meters)
+        :param width:
+            width of the strip (in meters)
+        :param orientation_angle:
+            angle (in degrees) that specifies orientation of the strip;
+            it is measured between X-axis and the strip in positive direction (counterclockwise);
+            initial strip is rotated around anchor point to get the desired orientation
+        :param line_width:
+            width of lines for `matplotlib`
+        :param color:
+            color to use for drawing the strip
+        :return:
+            freshly created instance of `LEDStrip` class
+        """
+        self.anchor_point = anchor_point
+        self.length = length
+        self.width = width
+        self.orientation_angle = orientation_angle
+        self.line_width = line_width
+        self.color = color
+        self.circle_diameter_to_width = 0.6
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw LED strip."""
+        rectangle = Rectangle(
+            self.anchor_point,
+            self.length,
+            self.width,
+            angle=self.orientation_angle,
+            fill=False,
+            edgecolor=self.color,
+            lw=self.line_width
+        )
+        ax.add_patch(rectangle)
+
+        orientation_angle_in_radians = math.radians(self.orientation_angle)
+        n_circles = math.floor(self.length / self.width)
+        x_offset = 0.5 * self.length / n_circles
+        y_offset = 0.5 * self.width
+        for i in range(n_circles):
+            circle_center = (
+                self.anchor_point[0]
+                + math.cos(orientation_angle_in_radians) * (2 * i + 1) * x_offset
+                + math.cos(orientation_angle_in_radians + math.pi / 2) * y_offset,
+                self.anchor_point[1]
+                + math.sin(orientation_angle_in_radians) * (2 * i + 1) * x_offset
+                + math.sin(orientation_angle_in_radians + math.pi / 2) * y_offset
+            )
+            circle = Circle(
+                circle_center,
+                0.5 * self.circle_diameter_to_width * self.width,
+                fill=False,
+                lw=self.line_width,
+                edgecolor=self.color
+            )
+            ax.add_patch(circle)
