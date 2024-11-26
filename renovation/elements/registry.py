@@ -9,7 +9,7 @@ from .basic import Door, Wall, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
-from .lighting import CeilingLamp, LEDStrip, WallLamp
+from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
 from .multipurpose import Line
 
 
@@ -28,6 +28,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'led_strip': LEDStrip,
         'line': Line,
         'power_outlet': PowerOutlet,
+        'switch': Switch,
         'text_box': TextBox,
         'wall': Wall,
         'wall_lamp': WallLamp,

@@ -264,3 +264,116 @@ class LEDStrip(Element):
                 edgecolor=self.color
             )
             ax.add_patch(circle)
+
+
+class Switch(Element):
+    """Lighting switch."""
+
+    def __init__(
+            self,
+            anchor_point: tuple[float, float],
+            symbol_length: float,
+            orientation_angle: float = 0,
+            two_key: bool = False,
+            pass_through: bool = False,
+            line_width: float = 0.5,
+            color: str = 'black'
+    ):
+        """
+        Initialize an instance.
+
+        :param anchor_point:
+            coordinates (in meters) of anchor point;
+            the point shared with a wall is the anchor point
+        :param symbol_length:
+            length of the symbol, not of the real switch
+        :param orientation_angle:
+            angle (in degrees) that specifies orientation of the switch;
+            it is measured between X-axis and the symbol in positive direction (counterclockwise);
+            initial symbol is rotated around anchor point to get the desired orientation
+        :param two_key:
+            binary indicator whether the switch has two keys
+        :param pass_through:
+            binary indicator whether there are other switches controlling the same lamp (or lamps)
+        :param line_width:
+            width of lines for `matplotlib`
+        :param color:
+            color to use for drawing the switch
+        :return:
+            freshly created instance of `Switch` class
+        """
+        self.anchor_point  = anchor_point
+        self.symbol_length = symbol_length
+        self.orientation_angle = orientation_angle
+        self.two_key = two_key
+        self.pass_through = pass_through
+        self.line_width = line_width
+        self.color = color
+
+    def __draw_key_symbol__(
+            self,
+            ax: matplotlib.axes.Axes,
+            circle_center: tuple[float, float],
+            radius: float,
+            key_angle_in_degrees: float
+    ) -> None:
+        """Draw key symbol."""
+        key_angle_in_radians = math.radians(key_angle_in_degrees)
+        orthogonal_angle_in_radians = key_angle_in_radians - math.pi / 2
+
+        key_corner = (
+            circle_center[0] + 3 * radius * math.cos(key_angle_in_radians),
+            circle_center[1] + 3 * radius * math.sin(key_angle_in_radians)
+        )
+        ax.plot(
+            [circle_center[0], key_corner[0]],
+            [circle_center[1], key_corner[1]],
+            lw=self.line_width,
+            color=self.color
+        )
+        key_tip = (
+            key_corner[0] + 4 / 3 * radius * math.cos(orthogonal_angle_in_radians),
+            key_corner[1] + 4 / 3 * radius * math.sin(orthogonal_angle_in_radians)
+        )
+        ax.plot(
+            [key_corner[0], key_tip[0]],
+            [key_corner[1], key_tip[1]],
+            lw=self.line_width,
+            color=self.color
+        )
+        if self.pass_through:
+            middle_point = (
+                circle_center[0] + 2 * radius * math.cos(key_angle_in_radians),
+                circle_center[1] + 2 * radius * math.sin(key_angle_in_radians)
+            )
+            second_tip_end = (
+                middle_point[0] + 2 / 3 * radius * math.cos(orthogonal_angle_in_radians),
+                middle_point[1] + 2 / 3 * radius * math.sin(orthogonal_angle_in_radians)
+            )
+            ax.plot(
+                [middle_point[0], second_tip_end[0]],
+                [middle_point[1], second_tip_end[1]],
+                lw=self.line_width,
+                coor=self.color
+            )
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw switch."""
+        radius = self.symbol_length / 4
+        orientation_angle_in_radians = math.radians(self.orientation_angle)
+        tip_angle_in_radians = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+
+        circle_center = (
+            self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
+            self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
+        )
+        circle = Circle(
+            circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color, lw=0.1
+        )
+        ax.add_patch(circle)
+
+        key_angle = self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES
+        self.__draw_key_symbol__(ax, circle_center, radius, key_angle)
+        if self.two_key:
+            key_angle = self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES / 2
+            self.__draw_key_symbol__(ax, circle_center, radius, key_angle)
