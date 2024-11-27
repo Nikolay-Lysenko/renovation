@@ -10,7 +10,7 @@ from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
-from .multipurpose import Line
+from .multipurpose import Line, Polygon
 
 
 def create_elements_registry() -> dict[str, type(Element)]:
@@ -27,6 +27,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'electrical_cable': ElectricalCable,
         'led_strip': LEDStrip,
         'line': Line,
+        'polygon': Polygon,
         'power_outlet': PowerOutlet,
         'switch': Switch,
         'text_box': TextBox,

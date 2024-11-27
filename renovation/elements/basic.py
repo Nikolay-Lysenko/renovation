@@ -15,7 +15,11 @@ from .element import Element
 
 
 class Wall(Element):
-    """Straight wall."""
+    """
+    Straight wall.
+
+    For corners of acute or obtuse angles please consider `renovation.elements.Polygon` class.
+    """
 
     def __init__(
             self,

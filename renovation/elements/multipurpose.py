@@ -6,6 +6,7 @@ Author: Nikolay Lysenko
 
 
 import matplotlib.axes
+from matplotlib import patches
 
 from .element import Element
 
@@ -20,7 +21,7 @@ class Line(Element):
             first_point: tuple[float, float],
             second_point: tuple[float, float],
             width: float = 0.5,
-            style: str = '-',
+            style: str = 'solid',
             color: str = 'black'
     ):
         """
@@ -52,3 +53,31 @@ class Line(Element):
             ls=self.style,
             color=self.color
         )
+
+
+class Polygon(Element):
+    """Polygon. In particular, it can be used for wall corners or acute or obtuse angles."""
+
+    def __init__(self, vertices: list[tuple[float, float]], color: str = 'black'):
+        """
+        Initialize an instance.
+
+        :param vertices:
+            list of vertices coordinates (in meters)
+        :param color:
+            color to use for drawing the line
+        :return:
+            freshly created instance of `Polygon` class
+        """
+        self.vertices = vertices
+        self.color = color
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw polygon"""
+        polygon = patches.Polygon(
+            self.vertices,
+            fill=True,
+            facecolor=self.color,
+            edgecolor=self.color
+        )
+        ax.add_patch(polygon)
