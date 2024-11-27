@@ -354,7 +354,7 @@ class Switch(Element):
                 [middle_point[0], second_tip_end[0]],
                 [middle_point[1], second_tip_end[1]],
                 lw=self.line_width,
-                coor=self.color
+                color=self.color
             )
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:

@@ -26,7 +26,7 @@ class PowerOutlet(Element):
             high_voltage: bool = False,
             low_current: bool = False,
             line_width: float = 0.5,
-            color: str = 'black',
+            color: str = 'black'
     ):
         """
         Initialize an instance.
