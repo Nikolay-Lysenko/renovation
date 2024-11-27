@@ -10,7 +10,7 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Circle, Rectangle
 
-from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
+from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
@@ -151,8 +151,8 @@ class WallLamp(Element):
             arc_center,
             self.symbol_diameter,
             self.symbol_diameter,
-            theta1=self.orientation_angle - 0.5 * STRAIGHT_ANGLE_IN_DEGREES,
-            theta2=self.orientation_angle + 2.5 * STRAIGHT_ANGLE_IN_DEGREES,
+            theta1=self.orientation_angle - 0.5 * RIGHT_ANGLE_IN_DEGREES,
+            theta2=self.orientation_angle + 2.5 * RIGHT_ANGLE_IN_DEGREES,
             lw=self.line_width,
             color=self.color
         )
@@ -361,7 +361,7 @@ class Switch(Element):
         """Draw switch."""
         radius = self.symbol_length / 4
         orientation_angle_in_radians = math.radians(self.orientation_angle)
-        tip_angle_in_radians = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
 
         circle_center = (
             self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
@@ -372,8 +372,8 @@ class Switch(Element):
         )
         ax.add_patch(circle)
 
-        key_angle = self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES
+        key_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
         self.__draw_key_symbol__(ax, circle_center, radius, key_angle)
         if self.two_key:
-            key_angle = self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES / 2
+            key_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES / 2
             self.__draw_key_symbol__(ax, circle_center, radius, key_angle)

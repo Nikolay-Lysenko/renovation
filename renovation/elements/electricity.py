@@ -10,7 +10,7 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Circle
 
-from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
+from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
@@ -70,14 +70,14 @@ class PowerOutlet(Element):
             self.length,
             self.length,
             theta1=self.orientation_angle,
-            theta2=self.orientation_angle + 2 * STRAIGHT_ANGLE_IN_DEGREES,
+            theta2=self.orientation_angle + 2 * RIGHT_ANGLE_IN_DEGREES,
             lw=self.line_width,
             color=self.color
         )
         ax.add_patch(arc)
 
         half_length = 0.5 * self.length
-        tip_angle_in_radians = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
         arc_middle = (
             self.anchor_point[0] + half_length * math.cos(tip_angle_in_radians),
             self.anchor_point[1] + half_length * math.sin(tip_angle_in_radians)
@@ -117,7 +117,7 @@ class PowerOutlet(Element):
         )
 
         if self.waterproof:
-            angle_in_degrees = self.orientation_angle + 1.5 * STRAIGHT_ANGLE_IN_DEGREES
+            angle_in_degrees = self.orientation_angle + 1.5 * RIGHT_ANGLE_IN_DEGREES
             angle_in_radians = math.radians(angle_in_degrees)
             radius_end = (
                 self.anchor_point[0] + half_length * math.cos(angle_in_radians),
@@ -206,7 +206,7 @@ class ElectricalCable(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw electrical cable."""
         radius = self.symbol_length / (2 * (self.n_arcs + 1))
-        tip_angle_in_radians = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
         circle_center = (
             self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
             self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
@@ -225,8 +225,8 @@ class ElectricalCable(Element):
                 arc_center,
                 2 * radius,
                 2 * radius,
-                theta1=self.orientation_angle + (2 * (i % 2) - 1) * STRAIGHT_ANGLE_IN_DEGREES,
-                theta2=self.orientation_angle + (2 * (i % 2) + 1) * STRAIGHT_ANGLE_IN_DEGREES,
+                theta1=self.orientation_angle + (2 * (i % 2) - 1) * RIGHT_ANGLE_IN_DEGREES,
+                theta2=self.orientation_angle + (2 * (i % 2) + 1) * RIGHT_ANGLE_IN_DEGREES,
                 lw=self.line_width,
                 color=self.color
             )

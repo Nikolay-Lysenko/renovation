@@ -10,7 +10,7 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
-from renovation.constants import STRAIGHT_ANGLE_IN_DEGREES
+from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
@@ -121,7 +121,7 @@ class Window(Element):
         )
         ax.add_patch(first_line)
 
-        orthogonal_angle_in_rad = math.radians(self.orientation_angle + STRAIGHT_ANGLE_IN_DEGREES)
+        orthogonal_angle_in_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
         shift = self.overall_thickness - self.single_line_thickness
         second_anchor_point = (
             self.anchor_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
@@ -189,7 +189,7 @@ class Door(Element):
         """Draw the door, its opening trajectory, and the door frame."""
         orientation_angle_in_rad = math.radians(self.orientation_angle)
 
-        frame_orientation_angle = self.orientation_angle - STRAIGHT_ANGLE_IN_DEGREES
+        frame_orientation_angle = self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
         frame_with_hinges = Rectangle(
             self.anchor_point,
             self.thickness,
@@ -226,7 +226,7 @@ class Door(Element):
                 hinges_point,
                 self.door_width,
                 self.thickness,
-                angle=self.orientation_angle - STRAIGHT_ANGLE_IN_DEGREES,
+                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
                 facecolor=self.color
             )
         else:
@@ -245,11 +245,11 @@ class Door(Element):
         )
         extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
-            start_angle = -STRAIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+            start_angle = -RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
             end_angle = 0
         else:
             start_angle = 0
-            end_angle = STRAIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
+            end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
         arc = Arc(
             arc_anchor_point,
             2 * (self.door_width - self.thickness),
