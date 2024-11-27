@@ -360,7 +360,6 @@ class Switch(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw switch."""
         radius = self.symbol_length / 4
-        orientation_angle_in_radians = math.radians(self.orientation_angle)
         tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
 
         circle_center = (
