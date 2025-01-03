@@ -14,7 +14,7 @@ from .element import Element
 class Line(Element):
     """Line (solid, dashed, or dotted)"""
 
-    style_to_matplotlib_code = {'solid': '-', 'dashed': '--', 'dotted': '.', 'dash_dot': '-.'}
+    style_to_matplotlib_code = {'solid': '-', 'dashed': '--', 'dotted': ':', 'dash_dot': '-.'}
 
     def __init__(
             self,
