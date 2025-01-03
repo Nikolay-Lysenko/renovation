@@ -212,8 +212,8 @@ reusable_elements:
       thickness: 0.2
 floor_plans:
   - title:
-       text: "Floor plan without dimensions"
-       font_size: 18
+      text: "Floor plan without dimensions"
+      font_size: 18
     inherited_elements:
       - walls_windows_doors
   - title:

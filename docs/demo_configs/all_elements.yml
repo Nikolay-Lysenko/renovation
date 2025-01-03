@@ -1,0 +1,171 @@
+project:
+  dpi: 200
+  pdf_file: null
+  png_dir: "docs/images"
+default_layout:
+  bottom_left_corner: [0, 0]
+  top_right_corner: [4, 8]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: null
+  grid_minor_step: null
+reusable_elements:
+  walls_windows_doors:
+    # Wall
+    - type: wall
+      anchor_point: [2.2, 7.8]
+      length: 1.6
+      thickness: 0.2
+    - type: text_box
+      anchor_point: [1.0, 7.9]
+      lines:
+        - "Wall:"
+      transparency: 0.0
+    # Window
+    - type: wall
+      anchor_point: [2.2, 7.3]
+      length: 0.3
+      thickness: 0.2
+      color: gray
+    - type: wall
+      anchor_point: [3.5, 7.3]
+      length: 0.3
+      thickness: 0.2
+      color: gray
+    - type: window
+      anchor_point: [2.5, 7.3]
+      length: 1.0
+      overall_thickness: 0.2
+      single_line_thickness: 0.025
+    - type: text_box
+      anchor_point: [1.0, 7.4]
+      lines:
+        - "Window:"
+      transparency: 0.0
+    # Door
+    - type: wall
+      anchor_point: [2.2, 6.0]
+      length: 0.3
+      thickness: 0.2
+      color: gray
+    - type: wall
+      anchor_point: [3.5, 6.0]
+      length: 0.3
+      thickness: 0.2
+      color: gray
+    - type: door
+      anchor_point: [2.5, 6.2]
+      doorway_width: 1.0
+      door_width: 0.9
+      thickness: 0.05
+    - type: text_box
+      anchor_point: [1.0, 6.5]
+      lines:
+        - "Door:"
+      transparency: 0.0
+    # Polygon
+    - type: wall
+      anchor_point: [2.94641, 5.0]
+      length: 0.65339
+      thickness: 0.2
+      color: gray
+    - type: wall
+      anchor_point: [2.94641, 5.2]
+      length: 0.65339
+      thickness: 0.2
+      orientation_angle: 30
+      color: gray
+    - type: polygon
+      vertices:
+        - [2.2, 5.0]
+        - [2.84641, 5.3732051]
+        - [2.94641, 5.2]
+        - [2.94641, 5.0]
+    - type: text_box
+      anchor_point: [1.0, 5.3]
+      lines:
+        - "Polygon:"
+      transparency: 0.0
+    # Dimension arrow
+    - type: dimension_arrow
+      anchor_point: [2.2, 4.55]
+      length: 1.6
+    - type: text_box
+      anchor_point: [1.0, 4.5]
+      lines:
+        - "Dimension arrow:"
+      transparency: 0.0
+    # Lines
+    - type: line
+      first_point: [2.2, 4.05]
+      second_point: [3.8, 4.05]
+      width: 1.0
+    - type: line
+      first_point: [2.2, 3.85]
+      second_point: [3.8, 3.85]
+      width: 1.0
+      style: dashed
+    - type: line
+      first_point: [2.2, 3.65]
+      second_point: [3.8, 3.65]
+      width: 1.0
+      style: dash_dot
+    - type: line
+      first_point: [2.2, 3.45]
+      second_point: [3.8, 3.45]
+      width: 1.0
+      style: dotted
+    - type: text_box
+      anchor_point: [1.0, 3.75]
+      lines:
+        - "Lines:"
+      transparency: 0.0
+    # Text box
+    - type: text_box
+      anchor_point: [3.0, 2.9]
+      lines:
+        - "Text box."
+        - "It can be multiline."
+    - type: text_box
+      anchor_point: [1.0, 2.9]
+      lines:
+        - "Text box:"
+      transparency: 0.0
+    # Power outlets
+    - type: power_outlet
+      anchor_point: [2.5, 2.05]
+      length: 0.2
+    - type: power_outlet
+      anchor_point: [2.9, 2.05]
+      length: 0.2
+      waterproof: true
+    - type: power_outlet
+      anchor_point: [3.3, 2.05]
+      length: 0.2
+      high_voltage: true
+    - type: power_outlet
+      anchor_point: [3.7, 2.05]
+      length: 0.2
+      low_current: true
+    - type: text_box
+      anchor_point: [1.0, 2.1]
+      lines:
+        - "Power outlets"
+        - "(regular, waterproof,"
+        - "high-voltage, low-current):"
+      transparency: 0.0
+    # Electrical cable
+    - type: electrical_cable
+      anchor_point: [3.0, 1.4]
+      symbol_length: 0.2
+    - type: text_box
+      anchor_point: [1.0, 1.5]
+      lines:
+        - "Electrical cable:"
+      transparency: 0.0
+floor_plans:
+  - title:
+      text: "Individual elements"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
