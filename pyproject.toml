@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "renovation"
-version = "0.1.0"
+version = "0.1.1"
 description = "Drawing tool that produces floor plans needed to renovate an apartment"
 readme = "README.md"
 keywords = ["apartments", "drawing", "floor_plan", "floor_plans"]
 urls = {Homepage = "https://github.com/Nikolay-Lysenko/renovation"}
 authors = [{name = "Nikolay Lysenko", email = "nikolay-lysenco@yandex.ru"}]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: End Users/Desktop",
     "Topic :: Multimedia :: Graphics",
     "License :: OSI Approved :: MIT License",
