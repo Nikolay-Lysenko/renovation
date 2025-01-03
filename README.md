@@ -25,7 +25,7 @@ python -m renovation -c /path/to/config.yml
 ```
 Here, config in YAML is a custom file where properties of each element to be drawn are set. These properties include location, orientation, size, and so on. 
 
-Let us dive into details. Please look at a [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_config.yml) as a reference while reading further explanations.
+Let us dive into details. Please look at a [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_configs/simple_floor_plan.yml) as a reference while reading further explanations.
 
 The section named `project` defines properties of output such as:
 * Extension (multi-page PDF document, directory with PNG images, or both)
