@@ -25,4 +25,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["renovation"]
+packages = [
+    "renovation",
+    "renovation.elements"
+]
