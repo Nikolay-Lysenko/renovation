@@ -58,24 +58,33 @@ class Line(Element):
 class Polygon(Element):
     """Polygon. In particular, it can be used for wall corners or acute or obtuse angles."""
 
-    def __init__(self, vertices: list[tuple[float, float]], color: str = 'black'):
+    def __init__(
+            self,
+            vertices: list[tuple[float, float]],
+            line_width: float = 0.1,
+            color: str = 'black'
+    ):
         """
         Initialize an instance.
 
         :param vertices:
             list of vertices coordinates (in meters)
+        :param line_width:
+            width of lines for `matplotlib`
         :param color:
             color to use for drawing the line
         :return:
             freshly created instance of `Polygon` class
         """
         self.vertices = vertices
+        self.line_width = line_width
         self.color = color
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw polygon"""
         polygon = patches.Polygon(
             self.vertices,
+            lw=self.line_width,
             fill=True,
             facecolor=self.color,
             edgecolor=self.color
