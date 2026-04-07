@@ -14,6 +14,99 @@ from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
+def _get_text_alignment(rotation: float) -> tuple[str, str]:
+    """
+    Calculate text alignment based on rotation angle.
+    
+    :param rotation:
+        rotation angle in degrees (0-360)
+    :return:
+        tuple of (horizontal_alignment, vertical_alignment)
+    """
+    textrotation = rotation % 360
+    verticalalignment = 'bottom' if textrotation < 180 else 'top'
+    horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
+    return horizontalalignment, verticalalignment
+
+
+def _render_text(
+        ax: matplotlib.axes.Axes,
+        position: tuple[float, float],
+        text: str,
+        rotation: float,
+        color: str,
+        fontsize: int = 9
+) -> None:
+    """
+    Render text with automatic alignment based on rotation.
+    
+    :param ax:
+        matplotlib axes to draw on
+    :param position:
+        (x, y) position for the text
+    :param text:
+        text to render
+    :param rotation:
+        rotation angle in degrees
+    :param color:
+        text color
+    :param fontsize:
+        font size for the text
+    """
+    horizontalalignment, verticalalignment = _get_text_alignment(rotation)
+    ax.text(
+        position[0],
+        position[1],
+        text,
+        fontsize=fontsize,
+        color=color,
+        rotation=rotation,
+        horizontalalignment=horizontalalignment,
+        verticalalignment=verticalalignment
+    )
+
+
+def _render_label_and_id(
+        ax: matplotlib.axes.Axes,
+        element,
+        element_type: str,
+        position: tuple[float, float],
+        rotation: float,
+        label_prefix: str = "",
+        id_prefix: str = ""
+) -> None:
+    """
+    Render both label and ID for an element if colors are configured.
+    
+    :param ax:
+        matplotlib axes to draw on
+    :param element:
+        element instance with .label and .id attributes
+    :param element_type:
+        type name for color lookup
+    :param position:
+        (x, y) position for the text
+    :param rotation:
+        rotation angle in degrees
+    :param label_prefix:
+        prefix to add before label text
+    :param id_prefix:
+        prefix to add before id text
+    """
+    from renovation.elements.options import get_label_color, get_id_color
+    
+    # Render label if present and color is configured
+    if element.label is not None:
+        label_color = get_label_color(element_type)
+        if label_color is not None:
+            _render_text(ax, position, label_prefix + element.label, rotation, label_color)
+    
+    # Render ID if color is configured
+    id_color = get_id_color(element_type)
+    if id_color is not None:
+        _render_text(ax, position, id_prefix + element.id, rotation, id_color)
+
+
 class WallND(Element):
     """
     Straight wall without dimensions.
@@ -69,27 +162,16 @@ class WallND(Element):
         )
         ax.add_patch(patch)
         
-        if self.label is not None:
-            from renovation.elements.options import get_label_color
-            label_color = get_label_color('Wall')
-            if label_color is not None:
-                label_position = (
-                    self.anchor_point[0],
-                    self.anchor_point[1]
-                )
-                textrotation = self.orientation_angle % 360
-                verticalalignment = 'bottom' if textrotation < 180 else 'top'
-                horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
-                ax.text(
-                    label_position[0],
-                    label_position[1],
-                    "__" + self.label,
-                    fontsize=9,
-                    color=label_color,
-                    rotation=textrotation,
-                    horizontalalignment=horizontalalignment,
-                    verticalalignment=verticalalignment
-                )
+        # Render label and ID
+        _render_label_and_id(
+            ax,
+            self,
+            'Wall',
+            self.anchor_point,
+            self.orientation_angle,
+            label_prefix="__",
+            id_prefix="__"
+        )
 
 
 class Window(Element):
@@ -166,28 +248,18 @@ class Window(Element):
         )
         ax.add_patch(second_line)
         
-        if self.label is not None:
-            from renovation.elements.options import get_label_color
-            label_color = get_label_color('Window')
-            if label_color is not None:
-                # Position label between first and second line
-                label_position = (
-                    self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
-                    self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
-                )
-                textrotation = self.orientation_angle % 360
-                verticalalignment = 'bottom' if textrotation < 180 else 'top'
-                horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
-                ax.text(
-                    label_position[0],
-                    label_position[1],
-                    self.label,
-                    fontsize=9,
-                    color=label_color,
-                    rotation=textrotation,
-                    horizontalalignment=horizontalalignment,
-                    verticalalignment=verticalalignment
-                )
+        # Render label and ID at midpoint between the two lines
+        label_position = (
+            self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
+            self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
+        )
+        _render_label_and_id(
+            ax,
+            self,
+            'Window',
+            label_position,
+            self.orientation_angle
+        )
 
 
 class Door(Element):
@@ -319,28 +391,18 @@ class Door(Element):
         )
         ax.add_patch(arc)
         
-        if self.label is not None:
-            from renovation.elements.options import get_label_color
-            label_color = get_label_color('Door')
-            if label_color is not None:
-                label_position = (
-                    hinges_point[0],
-                    hinges_point[1]
-                )
-                textrotation = -40 if self.to_the_right else +40
-                textrotation = (360+textrotation+self.orientation_angle) % 360
-                verticalalignment = 'bottom' if textrotation < 180 else 'top'
-                horizontalalignment = 'left' if textrotation < 90 or textrotation > 270 else 'right'
-                ax.text(
-                    label_position[0],
-                    label_position[1],
-                    "   ---" + self.label,
-                    fontsize=9,
-                    color=label_color,
-                    rotation=textrotation,
-                    horizontalalignment=horizontalalignment,
-                    verticalalignment=verticalalignment  
-                )
+        # Render label and ID at hinges point with rotation offset
+        textrotation = -40 if self.to_the_right else +40
+        textrotation = (360 + textrotation + self.orientation_angle) % 360
+        _render_label_and_id(
+            ax,
+            self,
+            'Door',
+            hinges_point,
+            textrotation,
+            label_prefix="   ---",
+            id_prefix="   ---"
+        )
 
 
 class Wall(WallND):
