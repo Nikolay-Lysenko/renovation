@@ -27,7 +27,8 @@ class Wall(Element):
             length: float,
             thickness: float,
             orientation_angle: float = 0,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -45,9 +46,12 @@ class Wall(Element):
             initial wall is rotated around anchor point to get the desired orientation
         :param color:
             color to use for drawing the wall
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `Wall` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.length = length
         self.thickness = thickness
@@ -64,6 +68,25 @@ class Wall(Element):
             facecolor=self.color
         )
         ax.add_patch(patch)
+        
+        if self.label is not None:
+            label_position = (
+                self.anchor_point[0] ,
+                self.anchor_point[1] 
+            )
+            textrotation = self.orientation_angle % 360
+            verticalalignment = 'bottom' if textrotation < 180 else 'top'
+            horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
+            ax.text(
+                label_position[0],
+                label_position[1],
+                "__" + self.label,
+                fontsize=9,
+                color='darkorange',
+                rotation=textrotation,
+                horizontalalignment=horizontalalignment,
+                verticalalignment=verticalalignment
+            )
 
 
 class Window(Element):
@@ -77,6 +100,7 @@ class Window(Element):
             single_line_thickness: float,
             orientation_angle: float = 0,
             color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -96,6 +120,8 @@ class Window(Element):
             initial window is rotated around anchor point to get the desired orientation
         :param color:
             color to use for drawing the window
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `Window` class
         """
@@ -103,6 +129,7 @@ class Window(Element):
         if internal_thickness <= 0:
             raise ValueError("Window can not be drawn due to invalid thicknesses.")
 
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.length = length
         self.overall_thickness = overall_thickness
@@ -135,6 +162,26 @@ class Window(Element):
             facecolor=self.color
         )
         ax.add_patch(second_line)
+        
+        if self.label is not None:
+            # Position label between first and second line
+            label_position = (
+                self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
+                self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
+            )
+            textrotation = self.orientation_angle % 360
+            verticalalignment = 'bottom' if textrotation < 180 else 'top'
+            horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
+            ax.text(
+                label_position[0],
+                label_position[1],
+                self.label,
+                fontsize=9,
+                color='green',
+                rotation=textrotation,
+                horizontalalignment=horizontalalignment,
+                verticalalignment=verticalalignment
+            )
 
 
 class Door(Element):
@@ -148,7 +195,8 @@ class Door(Element):
             thickness: float,
             orientation_angle: float = 0,
             to_the_right: bool = False,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -173,9 +221,12 @@ class Door(Element):
             from the hinges point along the doorway
         :param color:
             color to use for drawing the window
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `Door` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.doorway_width = doorway_width
         self.door_width = door_width
@@ -261,3 +312,23 @@ class Door(Element):
             linewidth=1
         )
         ax.add_patch(arc)
+        
+        if self.label is not None:
+            label_position = (
+                hinges_point[0],
+                hinges_point[1]
+            )
+            textrotation = -40 if self.to_the_right else +40
+            textrotation = (360+textrotation+self.orientation_angle) % 360
+            verticalalignment = 'bottom' if textrotation < 180 else 'top'
+            horizontalalignment = 'left' if textrotation < 90 or textrotation > 270 else 'right'
+            ax.text(
+                label_position[0],
+                label_position[1],
+                "   ---" + self.label,
+                fontsize=9,
+                color='darkgreen',
+                rotation=textrotation,
+                horizontalalignment=horizontalalignment,
+                verticalalignment=verticalalignment  
+            )

@@ -26,7 +26,8 @@ class PowerOutlet(Element):
             high_voltage: bool = False,
             low_current: bool = False,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -51,9 +52,12 @@ class PowerOutlet(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the power outlet
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `PowerOutlet` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.length = length
         self.orientation_angle = orientation_angle
@@ -173,7 +177,8 @@ class ElectricalCable(Element):
             orientation_angle: float = 0,
             n_arcs: int = 4,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -193,9 +198,12 @@ class ElectricalCable(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the power outlet
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `ElectricalCable` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.symbol_length = symbol_length
         self.orientation_angle = orientation_angle
