@@ -122,7 +122,8 @@ class WallND(Element):
             thickness: float,
             orientation_angle: float = 0,
             color: str = 'black',
-            label: str | None = None
+            label: str | None = None,
+            room_edge: bool = False
     ):
         """
         Initialize an instance.
@@ -142,6 +143,8 @@ class WallND(Element):
             color to use for drawing the wall
         :param label:
             optional label for the element
+        :param room_edge:
+            if True, this wall forms the boundary of a room (used for room validation and calculations)
         :return:
             freshly created instance of `WallND` class
         """
@@ -151,6 +154,11 @@ class WallND(Element):
         self.thickness = thickness
         self.orientation_angle = orientation_angle
         self.color = color
+        self.room_edge = room_edge
+        
+        # Room properties (set by Room class if this wall is part of a room)
+        self.is_room_wall = False
+        self.room_id = None
 
     def get_corners(self) -> list[tuple[float, float]]:
         """
