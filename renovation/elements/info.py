@@ -27,6 +27,7 @@ class DimensionArrow(Element):
             font_size: int = 10,
             annotate_above: bool = False,
             color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -50,9 +51,12 @@ class DimensionArrow(Element):
             if it is set to `True`, annotation is placed above the arrow (prior to its rotation)
         :param color:
             color to use for drawing the arrow and its annotation
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `DimensionArrow` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.length = length
         self.orientation_angle = orientation_angle
@@ -160,6 +164,7 @@ class TextBox(Element):
             font_size: int = 10,
             color: str = 'black',
             transparency: float = 0.75,
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -174,7 +179,10 @@ class TextBox(Element):
             color to use for drawing the text and the bounding box
         :param transparency:
             transparency of the bounding box
+        :param label:
+            optional label for the element
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.lines = lines
         self.font_size = font_size

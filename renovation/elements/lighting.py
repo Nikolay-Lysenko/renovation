@@ -22,7 +22,8 @@ class CeilingLamp(Element):
             anchor_point: tuple[float, float],
             symbol_diameter: float,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -35,9 +36,12 @@ class CeilingLamp(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the lamp
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `CeilingLamp` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.symbol_diameter = symbol_diameter
         self.line_width = line_width
@@ -91,7 +95,8 @@ class WallLamp(Element):
             orientation_angle: float = 0.0,
             stub_relative_depth: float = 0.3,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -111,9 +116,12 @@ class WallLamp(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the lamp
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `WallLamp` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.symbol_diameter = symbol_diameter
         self.orientation_angle = orientation_angle
@@ -200,7 +208,8 @@ class LEDStrip(Element):
             width: float,
             orientation_angle: float = 0.0,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -219,9 +228,12 @@ class LEDStrip(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the strip
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `LEDStrip` class
         """
+        super().__init__(label=label)
         self.anchor_point = anchor_point
         self.length = length
         self.width = width
@@ -277,7 +289,8 @@ class Switch(Element):
             two_key: bool = False,
             pass_through: bool = False,
             line_width: float = 0.5,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -299,9 +312,12 @@ class Switch(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the switch
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `Switch` class
         """
+        super().__init__(label=label)
         self.anchor_point  = anchor_point
         self.symbol_length = symbol_length
         self.orientation_angle = orientation_angle
