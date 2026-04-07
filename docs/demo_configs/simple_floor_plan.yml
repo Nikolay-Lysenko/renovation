@@ -1,7 +1,7 @@
 project:
   dpi: 200
   pdf_file: null
-  png_dir: "docs/images"
+  png_dir: "../images"
 default_layout:
   bottom_left_corner: [-1, -2]
   top_right_corner: [7, 7]

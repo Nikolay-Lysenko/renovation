@@ -6,6 +6,7 @@ Author: Nikolay Lysenko
 
 
 import argparse
+from pathlib import Path
 
 import yaml
 
@@ -33,6 +34,8 @@ def main() -> None:
     """Parse CLI arguments and run requested tasks."""
     cli_args = parse_cli_args()
     config_path = cli_args.config_path
+    config_dir = Path(config_path).parent
+
     with open(config_path) as config_file:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
     elements_registry = create_elements_registry()
@@ -57,10 +60,12 @@ def main() -> None:
     project = Project(floor_plans, settings['project']['dpi'])
     pdf_path = settings['project'].get('pdf_file')
     if pdf_path is not None:
-        project.render_to_pdf(pdf_path)
+        pdf_path = config_dir / pdf_path
+        project.render_to_pdf(str(pdf_path))
     png_path = settings['project'].get('png_dir')
     if png_path is not None:
-        project.render_to_png(png_path)
+        png_path = config_dir / png_path
+        project.render_to_png(str(png_path))
 
 
 if __name__ == '__main__':
