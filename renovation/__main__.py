@@ -38,6 +38,13 @@ def main() -> None:
 
     with open(config_path) as config_file:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
+    
+    # Set label colors configuration if available
+    from renovation import elements
+    options = settings.get('options', {})
+    label_colors = options.get('label_colors', {})
+    elements.set_label_colors(label_colors)
+    
     elements_registry = create_elements_registry()
 
     floor_plans = []

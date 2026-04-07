@@ -5,6 +5,7 @@ Author: Nikolay Lysenko
 """
 
 
+from .options import set_label_colors, get_label_color
 from .basic import Door, Wall, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import  Element
@@ -29,5 +30,7 @@ ___all__ = [
     'Wall',
     'WallLamp',
     'Window',
-    'create_elements_registry'
+    'create_elements_registry',
+    'set_label_colors',
+    'get_label_color'
 ]

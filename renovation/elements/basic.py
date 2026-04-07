@@ -70,23 +70,26 @@ class Wall(Element):
         ax.add_patch(patch)
         
         if self.label is not None:
-            label_position = (
-                self.anchor_point[0] ,
-                self.anchor_point[1] 
-            )
-            textrotation = self.orientation_angle % 360
-            verticalalignment = 'bottom' if textrotation < 180 else 'top'
-            horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
-            ax.text(
-                label_position[0],
-                label_position[1],
-                "__" + self.label,
-                fontsize=9,
-                color='darkorange',
-                rotation=textrotation,
-                horizontalalignment=horizontalalignment,
-                verticalalignment=verticalalignment
-            )
+            from renovation.elements.options import get_label_color
+            label_color = get_label_color('Wall')
+            if label_color is not None:
+                label_position = (
+                    self.anchor_point[0],
+                    self.anchor_point[1]
+                )
+                textrotation = self.orientation_angle % 360
+                verticalalignment = 'bottom' if textrotation < 180 else 'top'
+                horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
+                ax.text(
+                    label_position[0],
+                    label_position[1],
+                    "__" + self.label,
+                    fontsize=9,
+                    color=label_color,
+                    rotation=textrotation,
+                    horizontalalignment=horizontalalignment,
+                    verticalalignment=verticalalignment
+                )
 
 
 class Window(Element):
@@ -164,24 +167,27 @@ class Window(Element):
         ax.add_patch(second_line)
         
         if self.label is not None:
-            # Position label between first and second line
-            label_position = (
-                self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
-                self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
-            )
-            textrotation = self.orientation_angle % 360
-            verticalalignment = 'bottom' if textrotation < 180 else 'top'
-            horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
-            ax.text(
-                label_position[0],
-                label_position[1],
-                self.label,
-                fontsize=9,
-                color='green',
-                rotation=textrotation,
-                horizontalalignment=horizontalalignment,
-                verticalalignment=verticalalignment
-            )
+            from renovation.elements.options import get_label_color
+            label_color = get_label_color('Window')
+            if label_color is not None:
+                # Position label between first and second line
+                label_position = (
+                    self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
+                    self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
+                )
+                textrotation = self.orientation_angle % 360
+                verticalalignment = 'bottom' if textrotation < 180 else 'top'
+                horizontalalignment = 'left' if textrotation < 90 or textrotation >= 270 else 'right'
+                ax.text(
+                    label_position[0],
+                    label_position[1],
+                    self.label,
+                    fontsize=9,
+                    color=label_color,
+                    rotation=textrotation,
+                    horizontalalignment=horizontalalignment,
+                    verticalalignment=verticalalignment
+                )
 
 
 class Door(Element):
@@ -314,21 +320,24 @@ class Door(Element):
         ax.add_patch(arc)
         
         if self.label is not None:
-            label_position = (
-                hinges_point[0],
-                hinges_point[1]
-            )
-            textrotation = -40 if self.to_the_right else +40
-            textrotation = (360+textrotation+self.orientation_angle) % 360
-            verticalalignment = 'bottom' if textrotation < 180 else 'top'
-            horizontalalignment = 'left' if textrotation < 90 or textrotation > 270 else 'right'
-            ax.text(
-                label_position[0],
-                label_position[1],
-                "   ---" + self.label,
-                fontsize=9,
-                color='darkgreen',
-                rotation=textrotation,
-                horizontalalignment=horizontalalignment,
-                verticalalignment=verticalalignment  
-            )
+            from renovation.elements.options import get_label_color
+            label_color = get_label_color('Door')
+            if label_color is not None:
+                label_position = (
+                    hinges_point[0],
+                    hinges_point[1]
+                )
+                textrotation = -40 if self.to_the_right else +40
+                textrotation = (360+textrotation+self.orientation_angle) % 360
+                verticalalignment = 'bottom' if textrotation < 180 else 'top'
+                horizontalalignment = 'left' if textrotation < 90 or textrotation > 270 else 'right'
+                ax.text(
+                    label_position[0],
+                    label_position[1],
+                    "   ---" + self.label,
+                    fontsize=9,
+                    color=label_color,
+                    rotation=textrotation,
+                    horizontalalignment=horizontalalignment,
+                    verticalalignment=verticalalignment  
+                )
