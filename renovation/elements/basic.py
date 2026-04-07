@@ -12,12 +12,13 @@ from matplotlib.patches import Arc, Rectangle
 
 from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
+from renovation.utils import rotate_point
 
 
 def _get_text_alignment(rotation: float) -> tuple[str, str]:
     """
     Calculate text alignment based on rotation angle.
-    
+
     :param rotation:
         rotation angle in degrees (0-360)
     :return:
@@ -39,7 +40,7 @@ def _render_text(
 ) -> None:
     """
     Render text with automatic alignment based on rotation.
-    
+
     :param ax:
         matplotlib axes to draw on
     :param position:
@@ -77,7 +78,7 @@ def _render_label_and_id(
 ) -> None:
     """
     Render both label and ID for an element if colors are configured.
-    
+
     :param ax:
         matplotlib axes to draw on
     :param element:
@@ -94,13 +95,13 @@ def _render_label_and_id(
         prefix to add before id text
     """
     from renovation.elements.options import get_label_color, get_id_color
-    
+
     # Render label if present and color is configured
     if element.label is not None:
         label_color = get_label_color(element_type)
         if label_color is not None:
             _render_text(ax, position, label_prefix + element.label, rotation, label_color)
-    
+
     # Render ID if color is configured
     id_color = get_id_color(element_type)
     if id_color is not None:
@@ -151,6 +152,35 @@ class WallND(Element):
         self.orientation_angle = orientation_angle
         self.color = color
 
+    def get_corners(self) -> list[tuple[float, float]]:
+        """
+        Calculate the 4 corners of the wall considering rotation.
+
+        :return:
+            list of 4 (x, y) tuples representing corners in order:
+            bottom-left, bottom-right, top-right, top-left (before rotation)
+        """
+        angle_rad = math.radians(self.orientation_angle)
+        cos_a = math.cos(angle_rad)
+        sin_a = math.sin(angle_rad)
+
+        # Define corners relative to anchor point (anchor is bottom-left)
+        corners_relative = [
+            (0, 0),  # bottom-left (anchor)
+            (self.length, 0),  # bottom-right
+            (self.length, self.thickness),  # top-right
+            (0, self.thickness)  # top-left
+        ]
+
+        # Rotate and translate each corner
+        corners = []
+        for x, y in corners_relative:
+            rotated_x = x * cos_a - y * sin_a + self.anchor_point[0]
+            rotated_y = x * sin_a + y * cos_a + self.anchor_point[1]
+            corners.append((rotated_x, rotated_y))
+
+        return corners
+
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw straight wall."""
         patch = Rectangle(
@@ -161,7 +191,7 @@ class WallND(Element):
             facecolor=self.color
         )
         ax.add_patch(patch)
-        
+
         # Render label and ID
         _render_label_and_id(
             ax,
@@ -222,6 +252,35 @@ class Window(Element):
         self.orientation_angle = orientation_angle
         self.color = color
 
+    def get_corners(self) -> list[tuple[float, float]]:
+        """
+        Calculate the 4 corners of the window considering rotation.
+
+        :return:
+            list of 4 (x, y) tuples representing corners in order:
+            bottom-left, bottom-right, top-right, top-left (before rotation)
+        """
+        angle_rad = math.radians(self.orientation_angle)
+        cos_a = math.cos(angle_rad)
+        sin_a = math.sin(angle_rad)
+
+        # Define corners relative to anchor point (anchor is bottom-left)
+        corners_relative = [
+            (0, 0),  # bottom-left (anchor)
+            (self.length, 0),  # bottom-right
+            (self.length, self.overall_thickness),  # top-right
+            (0, self.overall_thickness)  # top-left
+        ]
+
+        # Rotate and translate each corner
+        corners = []
+        for x, y in corners_relative:
+            rotated_x = x * cos_a - y * sin_a + self.anchor_point[0]
+            rotated_y = x * sin_a + y * cos_a + self.anchor_point[1]
+            corners.append((rotated_x, rotated_y))
+
+        return corners
+
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw window."""
         first_line = Rectangle(
@@ -247,7 +306,7 @@ class Window(Element):
             facecolor=self.color
         )
         ax.add_patch(second_line)
-        
+
         # Render label and ID at midpoint between the two lines
         label_position = (
             self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
@@ -314,15 +373,47 @@ class Door(Element):
         self.to_the_right = to_the_right
         self.color = color
 
+    def get_corners(self) -> list[tuple[float, float]]:
+        """
+        Calculate the 4 corners of the doorway considering rotation.
+
+        :return:
+            list of 4 (x, y) tuples representing corners in order:
+            corners of the full doorway bounding box
+        """
+        angle_rad = math.radians(self.orientation_angle)
+        cos_a = math.cos(angle_rad)
+        sin_a = math.sin(angle_rad)
+
+        # Define corners relative to anchor point
+        # The doorway spans doorway_width along orientation_angle direction
+        # and thickness perpendicular to it (inward/negative perpendicular)
+        corners_relative = [
+            (0, 0),  # anchor
+            (self.doorway_width * cos_a, self.doorway_width * sin_a),  # along orientation
+            (self.doorway_width * cos_a - self.thickness * sin_a,
+             self.doorway_width * sin_a + self.thickness * cos_a),  # opposite corner
+            (-self.thickness * sin_a, self.thickness * cos_a)  # perpendicular from anchor
+        ]
+
+        # Translate each corner by anchor point
+        corners = [
+            (x + self.anchor_point[0], y + self.anchor_point[1])
+            for x, y in corners_relative
+        ]
+
+        return corners
+
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw the door, its opening trajectory, and the door frame."""
         orientation_angle_in_rad = math.radians(self.orientation_angle)
 
-        frame_orientation_angle = self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
+        frame_orientation_angle = self.orientation_angle
+
         frame_with_hinges = Rectangle(
             self.anchor_point,
-            self.thickness,
             self.frame_width,
+            self.thickness,
             angle=frame_orientation_angle,
             facecolor=self.color
         )
@@ -335,17 +426,18 @@ class Door(Element):
         )
         frame_without_hinges = Rectangle(
             frame_without_hinges_anchor_point,
-            self.thickness,
             self.frame_width,
+            self.thickness,
             angle=frame_orientation_angle,
             facecolor=self.color
         )
         ax.add_patch(frame_without_hinges)
 
-        hinges_point = (
-            self.anchor_point[0] + math.cos(orientation_angle_in_rad) * self.frame_width,
-            self.anchor_point[1] + math.sin(orientation_angle_in_rad) * self.frame_width
-        )
+        hinges_point = rotate_point(anchor_point=self.anchor_point,
+                                     offset_x=self.frame_width,
+                                     offset_y=self.thickness,
+                                     angle_rad=orientation_angle_in_rad)
+
         if self.to_the_right:
             hinges_point = (
                 hinges_point[0] + math.sin(orientation_angle_in_rad) * self.thickness,
@@ -390,7 +482,7 @@ class Door(Element):
             linewidth=1
         )
         ax.add_patch(arc)
-        
+
         # Render label and ID at hinges point with rotation offset
         textrotation = -40 if self.to_the_right else +40
         textrotation = (360 + textrotation + self.orientation_angle) % 360
