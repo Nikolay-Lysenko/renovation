@@ -39,29 +39,38 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
         all_walls = grouped.get('Wall', []) + grouped.get('WallND', [])
         if all_walls:
             f.write("## Walls\n\n")
-            f.write("| ID | Length (m) | Thickness (m) |\n")
-            f.write("|---|---|---|\n")
+            f.write("| ID | Length (m) | Thickness (m) | Corner 1 (x,y) | Corner 2 (x,y) | Corner 3 (x,y) | Corner 4 (x,y) |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
             for element in all_walls:
-                f.write(f"| {element.id} | {element.length} | {element.thickness} |\n")
+                corners = element.get_corners()
+                corner_strs = [f"({c[0]:.3f}, {c[1]:.3f})" for c in corners]
+                f.write(f"| {element.id} | {element.length} | {element.thickness} | "
+                       f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
         
         # Report Windows
         if 'Window' in grouped:
             f.write("## Windows\n\n")
-            f.write("| ID | Length (m) | Overall Thickness (m) |\n")
-            f.write("|---|---|---|\n")
+            f.write("| ID | Length (m) | Overall Thickness (m) | Corner 1 (x,y) | Corner 2 (x,y) | Corner 3 (x,y) | Corner 4 (x,y) |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
             for element in grouped['Window']:
-                f.write(f"| {element.id} | {element.length} | {element.overall_thickness} |\n")
+                corners = element.get_corners()
+                corner_strs = [f"({c[0]:.3f}, {c[1]:.3f})" for c in corners]
+                f.write(f"| {element.id} | {element.length} | {element.overall_thickness} | "
+                       f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
         
         # Report Doors
         if 'Door' in grouped:
             f.write("## Doors\n\n")
-            f.write("| ID | Doorway Width (m) | Door Width (m) | Opens to Right |\n")
-            f.write("|---|---|---|---|\n")
+            f.write("| ID | Doorway Width (m) | Door Width (m) | Opens to Right | Corner 1 (x,y) | Corner 2 (x,y) | Corner 3 (x,y) | Corner 4 (x,y) |\n")
+            f.write("|---|---|---|---|---|---|---|---|\n")
             for element in grouped['Door']:
                 to_right = "Yes" if element.to_the_right else "No"
-                f.write(f"| {element.id} | {element.doorway_width} | {element.door_width} | {to_right} |\n")
+                corners = element.get_corners()
+                corner_strs = [f"({c[0]:.3f}, {c[1]:.3f})" for c in corners]
+                f.write(f"| {element.id} | {element.doorway_width} | {element.door_width} | {to_right} | "
+                       f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
         
         # Report other element types
