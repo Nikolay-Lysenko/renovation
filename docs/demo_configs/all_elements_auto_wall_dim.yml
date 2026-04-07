@@ -7,7 +7,7 @@ options:
     Door: green
     Window: green
     Wall: lightblue
-  dimensions: false
+  dimensions: true
 default_layout:
   bottom_left_corner: [0, 0.4]
   top_right_corner: [4, 10]
@@ -239,7 +239,7 @@ reusable_elements:
       transparency: 0.0
 floor_plans:
   - title:
-      text: "Individual elements"
-      font_size: 18
+      text: "Individual elements - automatic wall dimensions"
+      font_size: 11
     inherited_elements:
       - walls_windows_doors

@@ -5,8 +5,8 @@ Author: Nikolay Lysenko
 """
 
 
-from .options import set_label_colors, get_label_color
-from .basic import Door, Wall, Window
+from .options import set_label_colors, get_label_color, set_dimensions, get_dimensions
+from .basic import Door, Wall, WallND, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import  Element
 from .info import DimensionArrow, TextBox
@@ -28,9 +28,12 @@ ___all__ = [
     'Switch',
     'TextBox',
     'Wall',
+    'WallND',
     'WallLamp',
     'Window',
     'create_elements_registry',
     'set_label_colors',
-    'get_label_color'
+    'get_label_color',
+    'set_dimensions',
+    'get_dimensions'
 ]
