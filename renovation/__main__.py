@@ -89,8 +89,72 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
         
+        # Report Rooms
+        if 'Room' in grouped:
+            f.write("## Rooms\n\n")
+            for room in grouped['Room']:
+                f.write(f"### {room.id}\n\n")
+                if room.label:
+                    f.write(f"**Label:** {room.label}\n\n")
+                
+                # Room properties
+                f.write(f"**Anchor Point:** ({room.anchor_point[0]:.3f}, {room.anchor_point[1]:.3f})\n\n")
+                f.write(f"**Color:** {room.color}\n\n")
+                
+                # Room dimensions and areas
+                f.write("**Dimensions:**\n\n")
+                f.write(f"- Inner horizontal length: {room.inner_horizontal_length:.3f} m\n")
+                f.write(f"- Inner vertical length: {room.inner_vertical_length:.3f} m\n")
+                f.write(f"- Outer horizontal length: {room.outer_horizontal_length:.3f} m\n")
+                f.write(f"- Outer vertical length: {room.outer_vertical_length:.3f} m\n")
+                f.write(f"- Inner area: {room.inner_area:.3f} m²\n")
+                f.write(f"- Outer area: {room.outer_area:.3f} m²\n\n")
+                
+                # Corner coordinates
+                f.write("**External Corners:**\n\n")
+                for i, corner in enumerate(room.external_corners, 1):
+                    f.write(f"- Corner {i}: ({corner[0]:.3f}, {corner[1]:.3f})\n")
+                f.write("\n")
+                
+                f.write("**Internal Corners:**\n\n")
+                for i, corner in enumerate(room.internal_corners, 1):
+                    f.write(f"- Corner {i}: ({corner[0]:.3f}, {corner[1]:.3f})\n")
+                f.write("\n")
+                
+                # List room edge walls (walls with room_edge=True)
+                edge_walls = [w for w in room.walls if w.room_edge]
+                f.write("**Room Edge Walls:**\n\n")
+                f.write("| Wall ID | Orientation | Length (m) | Thickness (m) |\n")
+                f.write("|---|---|---|---|\n")
+                for wall in edge_walls:
+                    # Determine orientation from angle: 0/180 = Horizontal, 90/270 = Vertical
+                    orientation = "Horizontal" if wall.orientation_angle % 180 == 0 else "Vertical"
+                    f.write(f"| {wall.id} | {orientation} | {wall.length:.3f} | {wall.thickness:.3f} |\n")
+                f.write("\n")
+                
+                # List internal walls (walls with room_edge=False)
+                internal_walls = [w for w in room.walls if not w.room_edge]
+                if internal_walls:
+                    f.write("**Internal Walls:**\n\n")
+                    f.write("| Wall ID | Orientation | Length (m) | Thickness (m) |\n")
+                    f.write("|---|---|---|---|\n")
+                    for wall in internal_walls:
+                        orientation = "Horizontal" if wall.orientation_angle % 180 == 0 else "Vertical"
+                        f.write(f"| {wall.id} | {orientation} | {wall.length:.3f} | {wall.thickness:.3f} |\n")
+                    f.write("\n")
+                
+                # List other elements in room (windows, doors, etc.)
+                if room.other_elements:
+                    f.write("**Other Elements in Room:**\n\n")
+                    f.write("| Element ID | Type |\n")
+                    f.write("|---|---|\n")
+                    for element in room.other_elements:
+                        element_type = element.__class__.__name__
+                        f.write(f"| {element.id} | {element_type} |\n")
+                    f.write("\n")
+        
         # Report other element types
-        other_types = [t for t in grouped.keys() if t not in ['Wall', 'WallND', 'Window', 'Door']]
+        other_types = [t for t in grouped.keys() if t not in ['Wall', 'WallND', 'Window', 'Door', 'Room']]
         if other_types:
             f.write("## Other Elements\n\n")
             for element_type in sorted(other_types):
@@ -118,10 +182,97 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
         if invisible_wall_count > 0:
             f.write(f"| Invisible Wall | {invisible_wall_count} |\n")
         
+        # Report Rooms
+        room_count = len(grouped.get('Room', []))
+        if room_count > 0:
+            f.write(f"| Room | {room_count} |\n")
+        
         # Report other types
         for element_type in sorted(grouped.keys()):
-            if element_type not in ['Wall', 'WallND']:
+            if element_type not in ['Wall', 'WallND', 'Room']:
                 f.write(f"| {element_type} | {len(grouped[element_type])} |\n")
+
+
+def create_room_from_params(params: dict, elements_registry: dict, floor_plan, all_elements: list, elements_by_id: dict):
+    """
+    Create a Room from YAML parameters with nested elements.
+    
+    :param params:
+        dictionary with 'elements' list containing wall/window/door definitions,
+        optional 'anchor_point', 'color', and 'label'
+    :param elements_registry:
+        registry mapping element type names to classes
+    :param floor_plan:
+        floor plan to add child elements to
+    :param all_elements:
+        list to track all created elements
+    :param elements_by_id:
+        dictionary to track elements by ID
+    :return:
+        Room instance
+    """
+    from renovation.elements import Room
+    
+    label = params.get('label')
+    room_anchor_point = params.get('anchor_point', (0, 0))
+    room_color = params.get('color', 'black')
+    element_defs = params.get('elements', [])
+    
+    if not element_defs:
+        raise ValueError("Room must have 'elements' list containing wall and other element definitions")
+    
+    # Create all child elements
+    room_walls = []
+    room_other_elements = []
+    
+    for element_def in element_defs:
+        element_type = element_def.pop('type')
+        element_class = elements_registry.get(element_type)
+        
+        if not element_class:
+            raise ValueError(f"Unknown element type: {element_type}")
+        
+        # Adjust anchor_point to be relative to room's anchor_point
+        if 'anchor_point' in element_def:
+            rel_x, rel_y = element_def['anchor_point']
+            element_def['anchor_point'] = (
+                rel_x + room_anchor_point[0],
+                rel_y + room_anchor_point[1]
+            )
+        
+        # For walls without explicit color, use room's color
+        is_wall = element_type in ['wall', 'wallnd']
+        if is_wall and 'color' not in element_def:
+            element_def['color'] = room_color
+        
+        # Create the element
+        element = element_class(**element_def)
+        
+        # Add to floor plan for rendering
+        floor_plan.add_element(element)
+        
+        # Track in global lists
+        all_elements.append(element)
+        elements_by_id[element.id] = element
+        
+        # Organize by type
+        if element.__class__.__name__ in ['Wall', 'WallND']:
+            room_walls.append(element)
+        else:
+            room_other_elements.append(element)
+    
+    # Validate we have at least some walls
+    # The Room class will validate that exactly 4 have room_edge=True
+    if len(room_walls) == 0:
+        raise ValueError("Room must contain at least one wall")
+    
+    return Room(
+        walls=room_walls, 
+        other_elements=room_other_elements, 
+        anchor_point=room_anchor_point,
+        color=room_color,
+        label=label
+    )
 
 
 def parse_cli_args() -> argparse.Namespace:
@@ -174,6 +325,8 @@ def main() -> None:
 
     # Track all elements for report
     all_elements = []
+    # Track elements by ID for room creation
+    elements_by_id = {}
 
     floor_plans = []
     for floor_plan_params in settings['floor_plans']:
@@ -184,16 +337,39 @@ def main() -> None:
             floor_plan.add_title(**title_params)
         for set_name in floor_plan_params.get('inherited_elements', []):
             for element_params in settings['reusable_elements'].get(set_name, []):
-                element_class = elements_registry[element_params['type']]
-                element_params = {k: v for k, v in element_params.items() if k != 'type'}
-                element = element_class(**element_params)
+                element_type = element_params.get('type')
+                if element_type == 'room':
+                    # Create room with nested elements
+                    import copy
+                    room_params = copy.deepcopy(element_params)
+                    room = create_room_from_params(room_params, elements_registry, floor_plan, all_elements, elements_by_id)
+                    all_elements.append(room)
+                    elements_by_id[room.id] = room
+                else:
+                    # Create regular element
+                    element_class = elements_registry[element_type]
+                    element_params_clean = {k: v for k, v in element_params.items() if k != 'type'}
+                    element = element_class(**element_params_clean)
+                    floor_plan.add_element(element)
+                    all_elements.append(element)
+                    elements_by_id[element.id] = element
+        for element_params in floor_plan_params.get('elements', []):
+            import copy
+            element_params_copy = copy.deepcopy(element_params)
+            element_type = element_params_copy.get('type')
+            if element_type == 'room':
+                # Create room with nested elements
+                room = create_room_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id)
+                all_elements.append(room)
+                elements_by_id[room.id] = room
+            else:
+                # Create regular element
+                element_params_copy.pop('type')
+                element_class = elements_registry[element_type]
+                element = element_class(**element_params_copy)
                 floor_plan.add_element(element)
                 all_elements.append(element)
-        for element_params in floor_plan_params.get('elements', []):
-            element_class = elements_registry[element_params.pop('type')]
-            element = element_class(**element_params)
-            floor_plan.add_element(element)
-            all_elements.append(element)
+                elements_by_id[element.id] = element
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])

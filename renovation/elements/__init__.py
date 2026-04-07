@@ -12,6 +12,7 @@ from .element import  Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, WallLamp, Switch
 from .multipurpose import Line, Polygon
+from .room import Room
 from .registry import create_elements_registry
 
 
@@ -25,6 +26,7 @@ ___all__ = [
     'Line',
     'Polygon',
     'PowerOutlet',
+    'Room',
     'Switch',
     'TextBox',
     'Wall',
