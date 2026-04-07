@@ -35,8 +35,10 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
     with open(output_path, 'w') as f:
         f.write("# Floor Plan Elements Report\n\n")
         
-        # Combine Wall and WallND into single section
+        # Combine Wall and WallND into single section, excluding invisible walls
         all_walls = grouped.get('Wall', []) + grouped.get('WallND', [])
+        # Filter out walls with color='invisible'
+        all_walls = [w for w in all_walls if w.color != 'invisible']
         if all_walls:
             f.write("## Walls\n\n")
             f.write("| ID | Length (m) | Thickness (m) | Corner 1 (x,y) | Corner 2 (x,y) | Corner 3 (x,y) | Corner 4 (x,y) |\n")
@@ -73,6 +75,20 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
         
+        # Report invisible walls in separate section
+        all_walls_combined = grouped.get('Wall', []) + grouped.get('WallND', [])
+        invisible_walls = [w for w in all_walls_combined if w.color == 'invisible']
+        if invisible_walls:
+            f.write("## Invisible Walls\n\n")
+            f.write("| ID | Length (m) | Thickness (m) | Corner 1 (x,y) | Corner 2 (x,y) | Corner 3 (x,y) | Corner 4 (x,y) |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
+            for element in invisible_walls:
+                corners = element.get_corners()
+                corner_strs = [f"({c[0]:.3f}, {c[1]:.3f})" for c in corners]
+                f.write(f"| {element.id} | {element.length} | {element.thickness} | "
+                       f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
+            f.write("\n")
+        
         # Report other element types
         other_types = [t for t in grouped.keys() if t not in ['Wall', 'WallND', 'Window', 'Door']]
         if other_types:
@@ -91,10 +107,16 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
         f.write("| Element Type | Count |\n")
         f.write("|---|---|\n")
         
-        # Combine Wall and WallND in summary
-        wall_count = len(grouped.get('Wall', [])) + len(grouped.get('WallND', []))
+        # Combine Wall and WallND in summary, excluding invisible walls
+        all_walls_for_count = grouped.get('Wall', []) + grouped.get('WallND', [])
+        wall_count = len([w for w in all_walls_for_count if w.color != 'invisible'])
+        invisible_wall_count = len([w for w in all_walls_for_count if w.color == 'invisible'])
+        
         if wall_count > 0:
             f.write(f"| Wall | {wall_count} |\n")
+        
+        if invisible_wall_count > 0:
+            f.write(f"| Invisible Wall | {invisible_wall_count} |\n")
         
         # Report other types
         for element_type in sorted(grouped.keys()):
@@ -143,6 +165,10 @@ def main() -> None:
     # Set dimensions configuration if available
     dimensions = options.get('dimensions', False)
     elements.set_dimensions(dimensions)
+
+    # Set show_invisible configuration if available
+    show_invisible = options.get('show_invisible', False)
+    elements.set_show_invisible(show_invisible)
 
     elements_registry = create_elements_registry()
 
