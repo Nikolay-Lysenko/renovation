@@ -42,6 +42,8 @@ In the section named `default_layout`, below parameters are set for floor plans 
 * Scale
 * Grid settings
 
+The section named `options` allows to modify global options. Currently only color of labels is supported. 
+
 The section named `reusable_elements` is designed to store arbitrary collections of elements that can be used by individual floor plans. Demo example uses it to define walls, windows, and doors.
 
 Finally, settings of individual floor plans are listed. These settings might include:
