@@ -14,6 +14,9 @@ _id_colors = {}
 # Global configuration for dimensions
 _dimensions_enabled = False
 
+# Global configuration for show_invisible
+_show_invisible = False
+
 # Global counter for element IDs
 _id_counters = {}
 
@@ -49,6 +52,17 @@ def set_dimensions(enabled: bool) -> None:
 def get_dimensions() -> bool:
     """Get dimensions configuration."""
     return _dimensions_enabled
+
+
+def set_show_invisible(enabled: bool) -> None:
+    """Set show_invisible configuration."""
+    global _show_invisible
+    _show_invisible = enabled
+
+
+def get_show_invisible() -> bool:
+    """Get show_invisible configuration."""
+    return _show_invisible
 
 
 def generate_element_id(element_type: str, label: str | None = None) -> str:

@@ -183,12 +183,23 @@ class WallND(Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw straight wall."""
+        # Check if wall is invisible
+        if self.color == 'invisible':
+            from renovation.elements.options import get_show_invisible
+            # Skip drawing if show_invisible is not enabled
+            if not get_show_invisible():
+                return
+            # Draw in red if show_invisible is enabled
+            draw_color = 'red'
+        else:
+            draw_color = self.color
+        
         patch = Rectangle(
             self.anchor_point,
             self.length,
             self.thickness,
             angle=self.orientation_angle,
-            facecolor=self.color
+            facecolor=draw_color
         )
         ax.add_patch(patch)
 
@@ -509,6 +520,12 @@ class Wall(WallND):
         """Draw straight wall with optional dimension."""
         # Draw the wall using parent class
         super().draw(ax)
+
+        # Skip dimension drawing if wall is invisible and show_invisible is not enabled
+        if self.color == 'invisible':
+            from renovation.elements.options import get_show_invisible
+            if not get_show_invisible():
+                return
 
         # Check if dimensions should be drawn
         from renovation.elements.options import get_dimensions
