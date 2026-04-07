@@ -14,9 +14,9 @@ from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
-class Wall(Element):
+class WallND(Element):
     """
-    Straight wall.
+    Straight wall without dimensions.
 
     For corners of acute or obtuse angles please consider `renovation.elements.Polygon` class.
     """
@@ -49,7 +49,7 @@ class Wall(Element):
         :param label:
             optional label for the element
         :return:
-            freshly created instance of `Wall` class
+            freshly created instance of `WallND` class
         """
         super().__init__(label=label)
         self.anchor_point = anchor_point
@@ -341,3 +341,40 @@ class Door(Element):
                     horizontalalignment=horizontalalignment,
                     verticalalignment=verticalalignment  
                 )
+
+
+class Wall(WallND):
+    """
+    Wall with dimensions.
+
+    Same as WallND, but includes a dimension arrow from the anchor point to the end of the wall
+    when dimensions option is enabled.
+    """
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw straight wall with optional dimension."""
+        # Draw the wall using parent class
+        super().draw(ax)
+
+        # Check if dimensions should be drawn
+        from renovation.elements.options import get_dimensions
+        if get_dimensions():
+            from renovation.elements.info import DimensionArrow
+
+            # Calculate offset perpendicular to the wall
+            perpendicular_angle_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
+            offset_distance = self.thickness + 0.2
+            dimension_anchor = (
+                self.anchor_point[0] + offset_distance * math.cos(perpendicular_angle_rad),
+                self.anchor_point[1] + offset_distance * math.sin(perpendicular_angle_rad)
+            )
+
+            # Create dimension arrow from offset anchor point along the wall length
+            # offset perpendicular to the wall
+            dimension = DimensionArrow(
+                anchor_point=dimension_anchor,
+                length=self.length,
+                orientation_angle=self.orientation_angle,
+                color='black'
+            )
+            dimension.draw(ax)

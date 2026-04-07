@@ -45,6 +45,10 @@ def main() -> None:
     label_colors = options.get('label_colors', {})
     elements.set_label_colors(label_colors)
     
+    # Set dimensions configuration if available
+    dimensions = options.get('dimensions', False)
+    elements.set_dimensions(dimensions)
+
     elements_registry = create_elements_registry()
 
     floor_plans = []
