@@ -7,12 +7,90 @@ Author: Nikolay Lysenko
 
 import argparse
 from pathlib import Path
+from collections import defaultdict
 
 import yaml
 
 from renovation.elements import create_elements_registry
 from renovation.floor_plan import FloorPlan
 from renovation.project import Project
+
+
+def generate_elements_report(all_elements: list, output_path: str) -> None:
+    """
+    Generate markdown report with all elements grouped by type.
+    
+    :param all_elements:
+        list of all element instances
+    :param output_path:
+        path to output markdown file
+    """
+    # Group elements by type
+    grouped = defaultdict(list)
+    for element in all_elements:
+        element_type = element.__class__.__name__
+        grouped[element_type].append(element)
+    
+    # Generate report
+    with open(output_path, 'w') as f:
+        f.write("# Floor Plan Elements Report\n\n")
+        
+        # Combine Wall and WallND into single section
+        all_walls = grouped.get('Wall', []) + grouped.get('WallND', [])
+        if all_walls:
+            f.write("## Walls\n\n")
+            f.write("| ID | Length (m) | Thickness (m) |\n")
+            f.write("|---|---|---|\n")
+            for element in all_walls:
+                f.write(f"| {element.id} | {element.length} | {element.thickness} |\n")
+            f.write("\n")
+        
+        # Report Windows
+        if 'Window' in grouped:
+            f.write("## Windows\n\n")
+            f.write("| ID | Length (m) | Overall Thickness (m) |\n")
+            f.write("|---|---|---|\n")
+            for element in grouped['Window']:
+                f.write(f"| {element.id} | {element.length} | {element.overall_thickness} |\n")
+            f.write("\n")
+        
+        # Report Doors
+        if 'Door' in grouped:
+            f.write("## Doors\n\n")
+            f.write("| ID | Doorway Width (m) | Door Width (m) | Opens to Right |\n")
+            f.write("|---|---|---|---|\n")
+            for element in grouped['Door']:
+                to_right = "Yes" if element.to_the_right else "No"
+                f.write(f"| {element.id} | {element.doorway_width} | {element.door_width} | {to_right} |\n")
+            f.write("\n")
+        
+        # Report other element types
+        other_types = [t for t in grouped.keys() if t not in ['Wall', 'WallND', 'Window', 'Door']]
+        if other_types:
+            f.write("## Other Elements\n\n")
+            for element_type in sorted(other_types):
+                f.write(f"### {element_type}\n\n")
+                f.write(f"Total count: {len(grouped[element_type])}\n\n")
+                f.write("| ID |\n")
+                f.write("|---|\n")
+                for element in grouped[element_type]:
+                    f.write(f"| {element.id} |\n")
+                f.write("\n")
+        
+        # Summary
+        f.write("## Summary\n\n")
+        f.write("| Element Type | Count |\n")
+        f.write("|---|---|\n")
+        
+        # Combine Wall and WallND in summary
+        wall_count = len(grouped.get('Wall', [])) + len(grouped.get('WallND', []))
+        if wall_count > 0:
+            f.write(f"| Wall | {wall_count} |\n")
+        
+        # Report other types
+        for element_type in sorted(grouped.keys()):
+            if element_type not in ['Wall', 'WallND']:
+                f.write(f"| {element_type} | {len(grouped[element_type])} |\n")
 
 
 def parse_cli_args() -> argparse.Namespace:
@@ -59,6 +137,9 @@ def main() -> None:
 
     elements_registry = create_elements_registry()
 
+    # Track all elements for report
+    all_elements = []
+
     floor_plans = []
     for floor_plan_params in settings['floor_plans']:
         layout_params = floor_plan_params.get('layout') or settings['default_layout']
@@ -70,10 +151,14 @@ def main() -> None:
             for element_params in settings['reusable_elements'].get(set_name, []):
                 element_class = elements_registry[element_params['type']]
                 element_params = {k: v for k, v in element_params.items() if k != 'type'}
-                floor_plan.add_element(element_class(**element_params))
+                element = element_class(**element_params)
+                floor_plan.add_element(element)
+                all_elements.append(element)
         for element_params in floor_plan_params.get('elements', []):
             element_class = elements_registry[element_params.pop('type')]
-            floor_plan.add_element(element_class(**element_params))
+            element = element_class(**element_params)
+            floor_plan.add_element(element)
+            all_elements.append(element)
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])
@@ -85,6 +170,11 @@ def main() -> None:
     if png_path is not None:
         png_path = config_dir / png_path
         project.render_to_png(str(png_path))
+    
+    # Generate elements report
+    report_path = config_dir / 'elements_report.md'
+    generate_elements_report(all_elements, str(report_path))
+    print(f"Elements report generated: {report_path}")
 
 
 if __name__ == '__main__':
