@@ -46,6 +46,7 @@ The section named `options` allows to modify global options.
 In this section it is possible to configure:
 * Color of labels. Labels are not printed if color is not specified.
 * Adding automatic dimensions to walls.
+* Color of element's identifiers. Identifiers are not printed if their color is not specified.
 
 The section named `reusable_elements` is designed to store arbitrary collections of elements that can be used by individual floor plans. Demo example uses it to define walls, windows, and doors.
 

@@ -41,9 +41,17 @@ def main() -> None:
     
     # Set label colors configuration if available
     from renovation import elements
+    
+    # Reset ID counters for consistent IDs
+    elements.reset_id_counters()
+    
     options = settings.get('options', {})
     label_colors = options.get('label_colors', {})
     elements.set_label_colors(label_colors)
+    
+    # Set id colors configuration if available
+    id_colors = options.get('id_colors', {})
+    elements.set_id_colors(id_colors)
     
     # Set dimensions configuration if available
     dimensions = options.get('dimensions', False)
