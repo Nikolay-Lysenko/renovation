@@ -5,64 +5,65 @@ Author: Krzysztof Bartczak
 """
 
 
-# Global configuration for label colors
-_label_colors = {}
-
-# Global configuration for id colors
-_id_colors = {}
-
-# Global configuration for dimensions
-_dimensions_enabled = False
-
-# Global configuration for show_invisible
-_show_invisible = False
+# Global configuration for element-specific options
+# Structure: {element_type: {option_name: value}}
+_element_options = {}
 
 # Global counter for element IDs
 _id_counters = {}
 
 
-def set_label_colors(label_colors: dict) -> None:
-    """Set label colors configuration."""
-    global _label_colors
-    _label_colors = label_colors or {}
+def set_element_options(options: dict) -> None:
+    """
+    Set options for element types.
+    
+    :param options:
+        dictionary with element type as key and option dict as value
+        Example: {'Wall': {'label_color': 'blue', 'dimensions': True}, 'Door': {'id_color': 'red'}}
+    """
+    global _element_options
+    _element_options = options or {}
+
+
+def get_element_option(element_type: str, option_name: str, default=None):
+    """
+    Get specific option value for an element type.
+    
+    :param element_type:
+        type of the element (e.g., 'Wall', 'Door')
+    :param option_name:
+        name of the option (e.g., 'label_color', 'dimensions')
+    :param default:
+        default value if option not found
+    :return:
+        option value or default
+    """
+    type_options = _element_options.get(element_type)
+    if type_options is None or not isinstance(type_options, dict):
+        return default
+    return type_options.get(option_name, default)
 
 
 def get_label_color(element_type: str) -> str | None:
     """Get label color for element type, or None if not configured."""
-    return _label_colors.get(element_type)
-
-
-def set_id_colors(id_colors: dict) -> None:
-    """Set id colors configuration."""
-    global _id_colors
-    _id_colors = id_colors or {}
+    return get_element_option(element_type, 'label_color')
 
 
 def get_id_color(element_type: str) -> str | None:
     """Get id color for element type, or None if not configured."""
-    return _id_colors.get(element_type)
-
-
-def set_dimensions(enabled: bool) -> None:
-    """Set dimensions configuration."""
-    global _dimensions_enabled
-    _dimensions_enabled = enabled
+    color = get_element_option(element_type, 'id_color')
+    # Handle None value explicitly set in YAML
+    return None if color == 'None' else color
 
 
 def get_dimensions() -> bool:
-    """Get dimensions configuration."""
-    return _dimensions_enabled
-
-
-def set_show_invisible(enabled: bool) -> None:
-    """Set show_invisible configuration."""
-    global _show_invisible
-    _show_invisible = enabled
+    """Get dimensions configuration for Wall elements."""
+    return get_element_option('Wall', 'dimensions', False)
 
 
 def get_show_invisible() -> bool:
-    """Get show_invisible configuration."""
-    return _show_invisible
+    """Get show_invisible configuration for Wall elements."""
+    return get_element_option('Wall', 'show_invisible', False)
 
 
 def generate_element_id(element_type: str, label: str | None = None) -> str:

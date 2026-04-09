@@ -5,7 +5,14 @@ Author: Nikolay Lysenko
 """
 
 
-from .options import set_label_colors, get_label_color, set_dimensions, get_dimensions, generate_element_id, reset_id_counters, set_id_colors, get_id_color, set_show_invisible, get_show_invisible
+from .options import (
+    get_label_color, 
+    get_dimensions, 
+    generate_element_id, reset_id_counters, 
+    get_id_color, 
+    get_show_invisible,
+    set_element_options, get_element_option
+)
 from .basic import Door, Wall, WallND, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import  Element
@@ -34,14 +41,12 @@ ___all__ = [
     'WallLamp',
     'Window',
     'create_elements_registry',
-    'set_label_colors',
     'get_label_color',
-    'set_dimensions',
     'get_dimensions',
     'generate_element_id',
     'reset_id_counters',
-    'set_id_colors',
     'get_id_color',
-    'set_show_invisible',
-    'get_show_invisible'
+    'get_show_invisible',
+    'set_element_options',
+    'get_element_option'
 ]

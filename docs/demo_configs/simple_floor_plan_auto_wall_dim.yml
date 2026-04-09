@@ -2,6 +2,10 @@ project:
   dpi: 200
   pdf_file: null
   png_dir: "../images"
+default_options:
+  Wall:  # Options for both Wall and WallND
+    dimensions: true
+    show_invisible: false
 default_layout:
   bottom_left_corner: [-1, -2]
   top_right_corner: [7, 7]
@@ -9,8 +13,6 @@ default_layout:
   scale_denominator: 40
   grid_major_step: 1
   grid_minor_step: 0.1
-options:
-  dimensions: true
 reusable_elements:
   walls_windows_doors:
     # 1. BEDROOM

@@ -2,12 +2,15 @@ project:
   dpi: 200
   pdf_file: null
   png_dir: "../images"
-options:
-  label_colors:
-    Door: green
-    Window: green
-    Wall: lightblue
-  dimensions: false
+default_options:
+  Door:
+    label_color: green
+  Window:
+    label_color: green
+  Wall:  # Options for both Wall and WallND
+    label_color: lightblue
+    dimensions: false
+    show_invisible: false
 default_layout:
   bottom_left_corner: [0, 0.4]
   top_right_corner: [4, 10]

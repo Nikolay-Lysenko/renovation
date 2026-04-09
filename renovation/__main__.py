@@ -299,27 +299,23 @@ def main() -> None:
     with open(config_path) as config_file:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
     
-    # Set label colors configuration if available
     from renovation import elements
     
     # Reset ID counters for consistent IDs
     elements.reset_id_counters()
     
-    options = settings.get('options', {})
-    label_colors = options.get('label_colors', {})
-    elements.set_label_colors(label_colors)
+    # Load default options (hierarchical structure)
+    default_options = settings.get('default_options', {})
     
-    # Set id colors configuration if available
-    id_colors = options.get('id_colors', {})
-    elements.set_id_colors(id_colors)
+    # Remove element types with None values (from commented-out YAML properties)
+    cleaned_options = {}
+    for element_type, options in default_options.items():
+        if options is not None and isinstance(options, dict):
+            cleaned_options[element_type] = options
+    default_options = cleaned_options
     
-    # Set dimensions configuration if available
-    dimensions = options.get('dimensions', False)
-    elements.set_dimensions(dimensions)
-
-    # Set show_invisible configuration if available
-    show_invisible = options.get('show_invisible', False)
-    elements.set_show_invisible(show_invisible)
+    # Set default options globally
+    elements.set_element_options(default_options)
 
     elements_registry = create_elements_registry()
 
@@ -330,6 +326,26 @@ def main() -> None:
 
     floor_plans = []
     for floor_plan_params in settings['floor_plans']:
+        # Merge floor plan options with defaults (floor plan options override defaults)
+        floor_plan_options = floor_plan_params.get('options', {})
+        if floor_plan_options:
+            # Create a merged options dict
+            import copy
+            merged_options = copy.deepcopy(default_options)
+            for element_type, type_options in floor_plan_options.items():
+                # Skip if type_options is None (all properties commented out in YAML)
+                if type_options is None or not isinstance(type_options, dict):
+                    continue
+                # Ensure element_type exists in merged_options as a dict
+                if element_type not in merged_options or not isinstance(merged_options.get(element_type), dict):
+                    merged_options[element_type] = {}
+                merged_options[element_type].update(type_options)
+            # Apply merged options for this floor plan
+            elements.set_element_options(merged_options)
+        else:
+            # Use default options
+            elements.set_element_options(default_options)
+        
         layout_params = floor_plan_params.get('layout') or settings['default_layout']
         floor_plan = FloorPlan(**layout_params)
         title_params = floor_plan_params.get('title')

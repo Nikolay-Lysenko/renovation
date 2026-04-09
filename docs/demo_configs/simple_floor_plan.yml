@@ -2,19 +2,20 @@ project:
   dpi: 200
   pdf_file: null
   png_dir: "../images"
-options:
-  label_colors:
-    # Elements can be labeled. It will show up on drawing when its color is specified
-    # Only Door, Window and Wall are supported now.
-    #Door: green
-    #Window: green
-    #Wall: lightblue
-  id_colors:
-    # Each element is automatically assigned a unique ID. It will show up on drawing when its color is specified
-    # Only Door, Window and Wall are supported now.
-    Door: red
-    # Window: red
-    # Wall: red
+default_options:
+  # Elements can be labeled. It will show up on drawing when its color is specified
+  # Only Door, Window and Wall are supported now.
+  Door:
+    # label_color: green
+    id_color: red
+  Window:
+    # label_color: green
+    # id_color: red
+  Wall:  # Options for both Wall and WallND
+    # label_color: lightblue
+    # id_color: red
+    dimensions: false
+    show_invisible: false
 default_layout:
   bottom_left_corner: [-1, -2]
   top_right_corner: [7, 7]
