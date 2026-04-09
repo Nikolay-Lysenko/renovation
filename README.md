@@ -42,7 +42,7 @@ In the section named `default_layout`, below parameters are set for floor plans 
 * Scale
 * Grid settings
 
-The section named `options` allows to modify global options.
+The sections named `default_options` and  `options` allows to modify options for floor plans
 In this section it is possible to configure:
 * Color of labels. Labels are not printed if color is not specified.
 * Adding automatic dimensions to walls.
