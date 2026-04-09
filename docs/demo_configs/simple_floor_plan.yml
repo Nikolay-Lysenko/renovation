@@ -4,18 +4,27 @@ project:
   png_dir: "../images"
 default_options:
   # Elements can be labeled. It will show up on drawing when its color is specified
-  # Only Door, Window and Wall are supported now.
+  # Each element can have a label, drawing of labels is supported for
+  # Door, Window, Wall and WallND now.
+  #
+  # Each element is automatically assigned an Id.
+  # Id can be drawn on the plan (with id_color) and can be used for referencing elements
+  # in report.
+  #
+  # `default_options` specify default values for all elements of a given type. 
+  # They can be overridden in options in floor_plan.
   Door:
     # label_color: green
-    id_color: red
+    # id_color: red
   Window:
     # label_color: green
     # id_color: red
-  Wall:  # Options for both Wall and WallND
+  Wall:                         # Options are common for Wall and WallND
     # label_color: lightblue
     # id_color: red
-    dimensions: false
-    show_invisible: false
+    # dimensions: false         # Wall can be automatically dimensioned with dimension arrows.
+    # show_invisible: false     # By default, invisible walls (e.g. edge walls creating a room)
+                                # are not shown on the plan.
 default_layout:
   bottom_left_corner: [-1, -2]
   top_right_corner: [7, 7]
@@ -226,12 +235,32 @@ reusable_elements:
       thickness: 0.2
 floor_plans:
   - title:
-      text: "Floor plan without dimensions"
+      text: "Plain floor plan"
       font_size: 18
     inherited_elements:
       - walls_windows_doors
   - title:
-      text: "Floor plan with manual dimensions"
+      text: "Floor plan with Id"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    options:
+      Door:
+        id_color: red
+      Wall:  
+        id_color: lightblue
+      Window: 
+        id_color: green
+  - title:
+      text: "Floor plan with auto dimensions"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    options:
+      Wall:  
+        dimensions: true
+  - title:
+      text: "Plain floor plan with manual dimensions"
       font_size: 18
     inherited_elements:
       - walls_windows_doors

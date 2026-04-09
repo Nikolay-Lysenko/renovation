@@ -1,0 +1,368 @@
+project:
+  dpi: 200
+  pdf_file: null
+  png_dir: "../images"
+DISABLED_default_options: # Simply not define default options. 
+  Door:
+    label_color: red
+    id_color: red
+  Wall:  # Options for both Wall and WallND
+    label_color: red
+    id_color: red
+    dimensions: true  # not applicable for WallND
+    show_invisible: true
+  Window: 
+    label_color: red
+    id_color: red
+default_layout:
+  bottom_left_corner: [-1, -2]
+  top_right_corner: [15, 12]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: 1
+  grid_minor_step: 0.1
+reusable_elements:
+  just_walls:
+   - type: wall
+     anchor_point: [0, 0]
+     length: 3
+     thickness: 0.15
+     orientation_angle: 0
+   - type: wall
+     anchor_point: [3, 0]
+     length: 3
+     thickness: 0.15
+     orientation_angle: 90
+   - type: wall
+     anchor_point: [3, 3]
+     length: 3
+     thickness: 0.15
+     orientation_angle: 180
+     label: "R1_top"
+     room_edge: true
+   - type: wall
+     anchor_point: [0, 3]
+     length: 3
+     thickness: 0.15
+     orientation_angle: 270
+     label: "R1_left"
+     room_edge: true
+         
+  room_tests:
+    # Room 1: Square room with 4 walls of same length and thickness
+    - type: room
+      label: "Room 1: Square"
+      anchor_point: [1, 1]
+      color: blue
+      elements:
+        - type: wall
+          anchor_point: [0, 0]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 0
+          label: "R1_bottom"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 0]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 90
+          label: "R1_right"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 3]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 180
+          label: "R1_top"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 3]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 270
+          label: "R1_left"
+          room_edge: true
+
+    # Room 2: Rectangle with 2 pairs of different wall dimensions
+    - type: room
+      label: "Room 2: Rectangle"
+      anchor_point: [5, 1]
+      color: green
+      elements:
+        - type: wall
+          anchor_point: [0, 0]
+          length: 3
+          thickness: 0.5
+          orientation_angle: 0
+          label: "R2_bottom"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 0]
+          length: 4
+          thickness: 0.5
+          orientation_angle: 90
+          label: "R2_right"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 4]
+          length: 3
+          thickness: 1.5
+          orientation_angle: 180
+          label: "R2_top"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 4]
+          length: 4
+          thickness: 1
+          orientation_angle: 270
+          label: "R2_left"
+          room_edge: true
+
+    # Room 3: Like Room 2 but with one invisible wall
+    - type: room
+      label: "Room 3: With Invisible Wall"
+      anchor_point: [9, 0.5]
+      color: black
+      elements:
+        - type: wall
+          anchor_point: [0, 0]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 0
+          label: "R3_bottom_invisible"
+          color: invisible
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 0]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 90
+          label: "R3_right"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 4]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 180
+          label: "R3_top"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 4]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 270
+          label: "R3_left"
+          room_edge: true
+
+    # Room 4: Like Room 2 with 3 internal walls (2 horizontal, 1 vertical)
+    - type: room
+      label: "Room 4: With Internal Walls"
+      anchor_point: [1, 5]
+      color: orange
+      elements:
+        # Edge walls
+        - type: wall
+          anchor_point: [0, 0]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 0
+          label: "R4_bottom"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 0]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 90
+          label: "R4_right"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 4]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 180
+          label: "R4_top"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 4]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 270
+          label: "R4_left"
+          room_edge: true
+        # Internal walls
+        - type: wallnd
+          anchor_point: [0.15, 1.5]
+          length: 2.7
+          thickness: 0.08
+          orientation_angle: 0
+          color: gray
+          label: "R4_internal_h1"
+          room_edge: false
+        - type: wallnd
+          anchor_point: [0.15, 2.8]
+          length: 2.7
+          thickness: 0.08
+          orientation_angle: 0
+          color: gray
+          label: "R4_internal_h2"
+          room_edge: false
+        - type: wallnd
+          anchor_point: [1.5, 0.15]
+          length: 3.7
+          thickness: 0.08
+          orientation_angle: 90
+          color: gray
+          label: "R4_internal_v1"
+          room_edge: false
+
+    # Room 5: Like Room 4 with 2 windows and 2 doors in edge walls
+    - type: room
+      label: "Room 5: Complete Room"
+      anchor_point: [8, 5]
+      color: purple
+      elements:
+        # Edge walls
+        - type: wall
+          anchor_point: [0, 4]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 270
+          label: "R5_left"
+          room_edge: true
+        - type: wall
+          anchor_point: [3, 0]
+          length: 4
+          thickness: 0.15
+          orientation_angle: 90
+          label: "R5_right"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 3.85]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 0
+          label: "R5_top"
+          room_edge: true
+        - type: wall
+          anchor_point: [0, 0]
+          length: 3
+          thickness: 0.15
+          orientation_angle: 0
+          label: "R5_bottom"
+          room_edge: true
+        # Internal walls
+        - type: wallnd
+          anchor_point: [0.15, 1.5]
+          length: 2.7
+          thickness: 0.08
+          orientation_angle: 0
+          color: gray
+          label: "R4_internal_h1"
+          room_edge: false
+        - type: wallnd
+          anchor_point: [0.15, 2.8]
+          length: 2.7
+          thickness: 0.08
+          orientation_angle: 0
+          color: gray
+          label: "R4_internal_h2"
+          room_edge: false
+        - type: wallnd
+          anchor_point: [1.5, 0.15]
+          length: 3.7
+          thickness: 0.08
+          orientation_angle: 90
+          color: gray
+          label: "R4_internal_v1"
+          room_edge: false
+        # Windows in edge walls
+        - type: window
+          anchor_point: [0.8, 3.85]
+          length: 1.0
+          overall_thickness: 0.15
+          single_line_thickness: 0.02
+          orientation_angle: 0
+          label: "R5_window_top"
+        - type: window
+          anchor_point: [3, 1.5]
+          length: 1.0
+          overall_thickness: 0.15
+          single_line_thickness: 0.02
+          orientation_angle: 90
+          label: "R5_window_right"
+        # Doors in edge walls
+        - type: door
+          anchor_point: [0, 2.2]
+          doorway_width: 1.2
+          door_width: 0.8
+          thickness: 0.15
+          orientation_angle: 270
+          to_the_right: true
+          color: red
+          label: "R5_door_left"
+        - type: door
+          anchor_point: [1.4, 0]
+          doorway_width: 1.1
+          door_width: 0.8
+          thickness: 0.15
+          orientation_angle: 0
+          to_the_right: false
+          label: "R5_door_bottom"
+
+floor_plans:
+  - title:
+      text: "Room Tests L0"
+      font_size: 18
+    inherited_elements:
+      - room_tests
+      - just_walls  
+  - title:
+      text: "Room Tests L1"
+      font_size: 18
+    options:
+      Door:
+        #label_color: green
+        #id_color: None
+      Wall:  # Options for both Wall and WallND
+        #label_color: lightblue
+        #id_color: None
+        dimensions: true  # not applicable for WallND
+        show_invisible: true
+      Window: 
+        #label_color: green
+        #id_color: yellow
+    inherited_elements:
+      - room_tests
+      - just_walls
+  - title:
+      text: "Room Tests L2"
+      font_size: 18
+    options:
+      Door:
+        label_color: green
+        #id_color: None
+      Wall:
+        label_color: lightblue
+        id_color: None
+        #dimensions: true  
+        #show_invisible: false
+      Window: 
+        label_color: green 
+        #id_color: yellow
+    inherited_elements:
+      - room_tests
+      - just_walls
+  - title:
+      text: "Room Tests L3"
+      font_size: 18
+    options:
+      Door:
+        id_color: red
+      Wall:  # Options for both Wall and WallND
+        id_color: blue
+      Window: 
+        id_color: yellow
+    inherited_elements:
+      - room_tests
+      - just_walls

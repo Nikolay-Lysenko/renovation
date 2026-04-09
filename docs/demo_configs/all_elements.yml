@@ -3,6 +3,7 @@ project:
   pdf_file: null
   png_dir: "../images"
 default_options:
+  # See 'simple_floor_plan.yml' for examples of how to set these options.
   Door:
     label_color: green
   Window:
@@ -10,7 +11,7 @@ default_options:
   Wall:  # Options for both Wall and WallND
     label_color: lightblue
     dimensions: false
-    show_invisible: false
+    show_invisible: false # Not used here. See 'room_tests.yml' for example.
 default_layout:
   bottom_left_corner: [0, 0.4]
   top_right_corner: [4, 10]
@@ -246,3 +247,11 @@ floor_plans:
       font_size: 18
     inherited_elements:
       - walls_windows_doors
+  - title:
+      text: "Individual elements with auto wall dimensions"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    options:
+      Wall:
+        dimensions: true
