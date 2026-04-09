@@ -383,7 +383,7 @@ def main() -> None:
         project.render_to_png(str(png_path))
     
     # Generate elements report
-    report_path = config_dir / 'elements_report.md'
+    report_path = Path(config_path).with_suffix(".md")
     generate_elements_report(all_elements, str(report_path))
     print(f"Elements report generated: {report_path}")
 
