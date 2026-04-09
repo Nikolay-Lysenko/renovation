@@ -22,7 +22,8 @@ class Line(Element):
             second_point: tuple[float, float],
             width: float = 0.5,
             style: str = 'solid',
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -37,7 +38,10 @@ class Line(Element):
             type of line ('solid', 'dashed', 'dotted', or 'dash_dot')
         :param color:
             color to use for drawing the line
+        :param label:
+            optional label for the element
         """
+        super().__init__(label=label)
         self.first_point = first_point
         self.second_point = second_point
         self.width = width
@@ -62,7 +66,8 @@ class Polygon(Element):
             self,
             vertices: list[tuple[float, float]],
             line_width: float = 0.1,
-            color: str = 'black'
+            color: str = 'black',
+            label: str | None = None
     ):
         """
         Initialize an instance.
@@ -73,9 +78,12 @@ class Polygon(Element):
             width of lines for `matplotlib`
         :param color:
             color to use for drawing the line
+        :param label:
+            optional label for the element
         :return:
             freshly created instance of `Polygon` class
         """
+        super().__init__(label=label)
         self.vertices = vertices
         self.line_width = line_width
         self.color = color

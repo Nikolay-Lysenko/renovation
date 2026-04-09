@@ -1,7 +1,30 @@
 project:
   dpi: 200
   pdf_file: null
-  png_dir: "docs/images"
+  png_dir: "../images"
+default_options:
+  # Elements can be labeled. It will show up on drawing when its color is specified
+  # Each element can have a label, drawing of labels is supported for
+  # Door, Window, Wall and WallND now.
+  #
+  # Each element is automatically assigned an Id.
+  # Id can be drawn on the plan (with id_color) and can be used for referencing elements
+  # in report.
+  #
+  # `default_options` specify default values for all elements of a given type. 
+  # They can be overridden in options in floor_plan.
+  Door:
+    # label_color: green
+    # id_color: red
+  Window:
+    # label_color: green
+    # id_color: red
+  Wall:                         # Options are common for Wall and WallND
+    # label_color: lightblue
+    # id_color: red
+    # dimensions: false         # Wall can be automatically dimensioned with dimension arrows.
+    # show_invisible: false     # By default, invisible walls (e.g. edge walls creating a room)
+                                # are not shown on the plan.
 default_layout:
   bottom_left_corner: [-1, -2]
   top_right_corner: [7, 7]
@@ -47,7 +70,7 @@ reusable_elements:
       thickness: 0.08
     # Door
     - type: door
-      anchor_point: [2.045, 1.985]
+      anchor_point: [2.045, 1.92]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
@@ -83,11 +106,11 @@ reusable_elements:
       orientation_angle: 270
     # Door
     - type: door
-      anchor_point: [1.905, 0.87]
+      anchor_point: [1.89, 1.77]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
-      orientation_angle: 90
+      orientation_angle: 270
       to_the_right: true
       color: gray
     # Wall below the door
@@ -104,11 +127,11 @@ reusable_elements:
     # 3. KITCHEN
     # Door
     - type: door
-      anchor_point: [3.035, 1.0]
+      anchor_point: [3.02, 1.9]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
-      orientation_angle: 90
+      orientation_angle: 270
       to_the_right: true
       color: gray
     # Wall below the door
@@ -141,7 +164,7 @@ reusable_elements:
       single_line_thickness: 0.02
     # French balcony: Left door
     - type: door
-      anchor_point: [3.8, 6.265]
+      anchor_point: [3.8, 6.19]
       doorway_width: 0.825
       door_width: 0.75
       thickness: 0.075
@@ -149,7 +172,7 @@ reusable_elements:
       color: gray
     # French balcony: Right door
     - type: door
-      anchor_point: [5.45, 6.19]
+      anchor_point: [5.45, 6.265]
       doorway_width: 0.825
       door_width: 0.75
       thickness: 0.075
@@ -200,7 +223,7 @@ reusable_elements:
       thickness: 0.2
     # Entrance door
     - type: door
-      anchor_point: [2.57, -0.48]
+      anchor_point: [2.57, -0.58]
       doorway_width: 1.0
       door_width: 0.9
       thickness: 0.1
@@ -212,12 +235,32 @@ reusable_elements:
       thickness: 0.2
 floor_plans:
   - title:
-      text: "Floor plan without dimensions"
+      text: "Plain floor plan"
       font_size: 18
     inherited_elements:
       - walls_windows_doors
   - title:
-      text: "Floor plan with dimensions"
+      text: "Floor plan with Id"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    options:
+      Door:
+        id_color: red
+      Wall:  
+        id_color: lightblue
+      Window: 
+        id_color: green
+  - title:
+      text: "Floor plan with auto dimensions"
+      font_size: 18
+    inherited_elements:
+      - walls_windows_doors
+    options:
+      Wall:  
+        dimensions: true
+  - title:
+      text: "Plain floor plan with manual dimensions"
       font_size: 18
     inherited_elements:
       - walls_windows_doors

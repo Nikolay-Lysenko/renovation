@@ -5,12 +5,13 @@ Author: Nikolay Lysenko
 """
 
 
-from .basic import Door, Wall, Window
+from .basic import Door, Wall, WallND, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
 from .multipurpose import Line, Polygon
+from .room import Room
 
 
 def create_elements_registry() -> dict[str, type(Element)]:
@@ -29,9 +30,11 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'line': Line,
         'polygon': Polygon,
         'power_outlet': PowerOutlet,
+        'room': Room,
         'switch': Switch,
         'text_box': TextBox,
         'wall': Wall,
+        'wallnd': WallND,
         'wall_lamp': WallLamp,
         'window': Window,
     }

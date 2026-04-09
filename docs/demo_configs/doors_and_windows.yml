@@ -1,0 +1,168 @@
+project:
+  dpi: 200
+  pdf_file: null
+  png_dir: "../images"
+default_options:
+  Door:
+    label_color: green
+    # id_color: red
+  Window:
+    label_color: green
+    # id_color: green
+  Wall:  # Options for both Wall and WallND
+    label_color: lightblue
+    # id_color: red
+    dimensions: false
+    show_invisible: false
+default_layout:
+  bottom_left_corner: [-1, -1]
+  top_right_corner: [8, 8]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: 1
+  grid_minor_step: 0.1
+reusable_elements:
+  right_doors_tk2:
+    - type: wall
+      anchor_point: [-0.5, 0]
+      length: 0.5
+      thickness: 0.1
+      color: black
+      orientation_angle: 0
+    - type: door
+      anchor_point: [0, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.1
+      to_the_right: true
+      orientation_angle: 0
+      color: gray
+      label: "right_0"
+    - type: wall
+      anchor_point: [0, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [0, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 90
+      color: gray
+      label: "right_90"
+    - type: door
+      anchor_point: [0, 4]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 180
+      color: gray
+      label: "right_180"
+    - type: door
+      anchor_point: [0, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 270
+      color: gray
+      label: "right_270"
+  left_doors_tk2:
+    - type: wall
+      anchor_point: [1.5, 0]
+      length: 0.5
+      thickness: 0.2
+      color: green
+      orientation_angle: 0
+    - type: door
+      anchor_point: [2, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 0
+      color: gray
+      label: "left_0"
+    - type: wall
+      anchor_point: [2, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [2, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 90
+      color: gray
+      label: "left_90"
+    - type: door
+      anchor_point: [2, 4.5]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 180
+      color: gray
+      label: "left_180"
+    - type: door
+      anchor_point: [2, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 270
+      color: gray
+      label: "left_270"
+
+  windows:
+    # Window
+    - type: window
+      anchor_point: [4, 0]
+      length: 0.8
+      overall_thickness: 0.4
+      single_line_thickness: 0.05
+      label: "win_0"
+    - type: window
+      anchor_point: [4, 2]
+      length: 0.8
+      overall_thickness: 0.4
+      single_line_thickness: 0.05
+      orientation_angle: 180
+      label: "win_180"
+    - type: window
+      anchor_point: [4, 4]
+      length: 0.8
+      overall_thickness: 0.4
+      single_line_thickness: 0.05
+      orientation_angle: 90
+      label: "win_90"
+    - type: window
+      anchor_point: [4, 6]
+      length: 0.8
+      overall_thickness: 0.4
+      single_line_thickness: 0.05
+      orientation_angle: 270
+      label: "win_270"
+
+floor_plans:
+  - title:
+      text: "Doors and windows"
+      font_size: 18
+    #layout:
+    #  bottom_left_corner: [0,0]
+    #  top_right_corner: [12, 12]
+    #  scale_numerator: 1
+    #  scale_denominator: 40
+    #  grid_major_step: 1
+    #  grid_minor_step: 0.1
+    inherited_elements:
+      - right_doors_tk2
+      - left_doors_tk2
+      - windows

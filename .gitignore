@@ -181,3 +181,13 @@ nohup.out
 
 # Project files
 configs/
+
+# Generated images
+*.png
+
+# Generated md files
+docs/demo_configs/*.md
+
+# VS code files
+.vscode/
+*.code-workspace
