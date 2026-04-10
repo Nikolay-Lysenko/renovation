@@ -11,6 +11,9 @@ import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
 from renovation.constants import RIGHT_ANGLE_IN_DEGREES
+from renovation.elements.options import get_dimensions, get_element_option
+from renovation.elements.info import DimensionArrow
+
 from .element import Element
 from renovation.utils import rotate_point
 
@@ -472,6 +475,16 @@ class Door(Element):
             facecolor='white'
         )
         ax.add_patch(whole_in_a_wall)
+        if get_element_option("Door","dimensions"):
+            # Draw dimension arrow for the doorway width
+            dimension = DimensionArrow(
+                anchor_point=whole_in_the_wall_anchor,
+                length=self.door_width,
+                orientation_angle=frame_orientation_angle,
+                annotate_above=True,
+                color=get_element_option("Door","label_color", "black")
+            )
+            dimension.draw(ax)
         # Draw a part of frame opposite to the hinges.
         shift = self.frame_width + self.door_width
         frame_without_hinges_anchor_point = (
@@ -571,9 +584,7 @@ class Wall(WallND):
                 return
 
         # Check if dimensions should be drawn
-        from renovation.elements.options import get_dimensions
         if get_dimensions():
-            from renovation.elements.info import DimensionArrow
 
             # Calculate offset perpendicular to the wall
             perpendicular_angle_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
