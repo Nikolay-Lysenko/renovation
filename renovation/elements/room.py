@@ -221,12 +221,12 @@ class Room(Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """
-        Draw room label if id_color option is configured.
+        Draw room label and dimensions if options are configured.
         Room walls are drawn separately.
         """
-        # Check if id_color option is configured for Room
-        from renovation.elements.options import get_id_color
+        from renovation.elements.options import get_id_color, get_element_option
         
+        # Draw room label if id_color option is configured
         id_color = get_id_color('Room')
         if id_color is not None and self.label is not None:
             # Calculate position: bottom-left inner corner + offset (0.3, 0.3)
@@ -243,3 +243,36 @@ class Room(Element):
                 horizontalalignment='left',
                 verticalalignment='bottom'
             )
+        
+        # Draw dimensions if dimensions option is configured
+        dimensions_enabled = get_element_option('Room', 'dimensions', False)
+        if dimensions_enabled:
+            from renovation.elements.info import DimensionArrow
+            
+            # Horizontal dimension: offset from inner bottom edge by 1/5th of inner height
+            horizontal_offset = self.inner_vertical_length / 5
+            horizontal_anchor = (
+                self.internal_corners[0][0],  # bottom-left inner corner x
+                self.internal_corners[0][1] + horizontal_offset  # offset up by 1/5th height
+            )
+            horizontal_dimension = DimensionArrow(
+                anchor_point=horizontal_anchor,
+                length=self.inner_horizontal_length,
+                orientation_angle=0,
+                color='black'
+            )
+            horizontal_dimension.draw(ax)
+            
+            # Vertical dimension: offset from inner left edge by 1/5th of inner width  
+            vertical_offset = self.inner_horizontal_length / 5
+            vertical_anchor = (
+                self.internal_corners[0][0] + vertical_offset,  # offset right by 1/5th width
+                self.internal_corners[0][1]  # bottom-left inner corner y
+            )
+            vertical_dimension = DimensionArrow(
+                anchor_point=vertical_anchor,
+                length=self.inner_vertical_length,
+                orientation_angle=90,
+                color='black'
+            )
+            vertical_dimension.draw(ax)

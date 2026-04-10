@@ -146,7 +146,7 @@ class DimensionArrow(Element):
         text_anchor_point += shift_vector
         text_anchor_x = text_anchor_point[0][0].item()
         text_anchor_y = text_anchor_point[0][1].item()
-        text = str(self.length)
+        text = str(round(self.length,3))
         ax.text(
             text_anchor_x, text_anchor_y, text,
             verticalalignment='center', horizontalalignment='center',
