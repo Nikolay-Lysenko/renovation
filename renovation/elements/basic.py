@@ -231,7 +231,7 @@ class Window(Element):
             anchor_point: tuple[float, float],
             length: float,
             overall_thickness: float,
-            single_line_thickness: float,
+            single_line_thickness: float = -1,
             orientation_angle: float = 0,
             color: str = 'black',
             label: str | None = None
@@ -259,9 +259,14 @@ class Window(Element):
         :return:
             freshly created instance of `Window` class
         """
+
+        if single_line_thickness <= 0:
+            single_line_thickness = overall_thickness / 10
+
         internal_thickness = overall_thickness - 2 * single_line_thickness
         if internal_thickness <= 0:
             raise ValueError("Window can not be drawn due to invalid thicknesses.")
+
 
         super().__init__(label=label)
         self.anchor_point = anchor_point
