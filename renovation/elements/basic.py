@@ -155,7 +155,7 @@ class WallND(Element):
         self.orientation_angle = orientation_angle
         self.color = color
         self.room_edge = room_edge
-        
+
         # Room properties (set by Room class if this wall is part of a room)
         self.is_room_wall = False
         self.room_id = None
@@ -201,7 +201,7 @@ class WallND(Element):
             draw_color = 'red'
         else:
             draw_color = self.color
-        
+
         patch = Rectangle(
             self.anchor_point,
             self.length,
@@ -360,6 +360,7 @@ class Window(Element):
 
 
 class Door(Element):
+    door_schematic_line_thickness = 0.04
     """Single door."""
 
     def __init__(
@@ -499,14 +500,14 @@ class Door(Element):
             door = Rectangle(
                 hinges_point,
                 self.door_width,
-                self.thickness,
+                self.door_schematic_line_thickness,
                 angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
                 facecolor=self.color
             )
         else:
             door = Rectangle(
                 hinges_point,
-                self.thickness,
+                self.door_schematic_line_thickness,
                 self.door_width,
                 angle=self.orientation_angle,
                 facecolor=self.color
@@ -514,8 +515,8 @@ class Door(Element):
         ax.add_patch(door)
 
         arc_anchor_point = (
-            hinges_point[0] + math.cos(orientation_angle_in_rad) * self.thickness,
-            hinges_point[1] + math.sin(orientation_angle_in_rad) * self.thickness
+            hinges_point[0] + math.cos(orientation_angle_in_rad) * self.door_schematic_line_thickness,
+            hinges_point[1] + math.sin(orientation_angle_in_rad) * self.door_schematic_line_thickness
         )
         extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
@@ -526,7 +527,7 @@ class Door(Element):
             end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
         arc = Arc(
             arc_anchor_point,
-            2 * (self.door_width - self.thickness),
+            2 * (self.door_width - self.door_schematic_line_thickness),
             2 * self.door_width,
             angle=self.orientation_angle,
             theta1=start_angle,
