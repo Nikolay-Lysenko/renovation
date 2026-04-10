@@ -221,7 +221,25 @@ class Room(Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """
-        Room itself is not drawn as it consists of walls that are drawn separately.
+        Draw room label if id_color option is configured.
+        Room walls are drawn separately.
         """
-        # Room doesn't draw anything - walls are drawn independently
-        pass
+        # Check if id_color option is configured for Room
+        from renovation.elements.options import get_id_color
+        
+        id_color = get_id_color('Room')
+        if id_color is not None and self.label is not None:
+            # Calculate position: bottom-left inner corner + offset (0.3, 0.3)
+            label_x = self.internal_corners[0][0] + 0.3
+            label_y = self.internal_corners[0][1] + 0.3
+            
+            # Render the room label
+            ax.text(
+                label_x,
+                label_y,
+                self.label,
+                fontsize=9,
+                color=id_color,
+                horizontalalignment='left',
+                verticalalignment='bottom'
+            )

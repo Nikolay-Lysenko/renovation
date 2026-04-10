@@ -359,6 +359,7 @@ def main() -> None:
                     import copy
                     room_params = copy.deepcopy(element_params)
                     room = create_room_from_params(room_params, elements_registry, floor_plan, all_elements, elements_by_id)
+                    floor_plan.add_element(room)
                     all_elements.append(room)
                     elements_by_id[room.id] = room
                 else:
@@ -376,6 +377,7 @@ def main() -> None:
             if element_type == 'room':
                 # Create room with nested elements
                 room = create_room_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id)
+                floor_plan.add_element(room)
                 all_elements.append(room)
                 elements_by_id[room.id] = room
             else:
