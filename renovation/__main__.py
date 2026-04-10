@@ -16,6 +16,116 @@ from renovation.floor_plan import FloorPlan
 from renovation.project import Project
 
 
+def validate_constants(constants_dict: dict, scope_name: str = "global") -> None:
+    """
+    Validate that all constants are floating point numbers.
+    
+    :param constants_dict:
+        dictionary of constant name -> value mappings
+    :param scope_name:
+        name of the scope (for error messages)
+    :raises ValueError:
+        if any constant is not a float
+    """
+    if not constants_dict:
+        return
+    
+    for name, value in constants_dict.items():
+        if not isinstance(value, (int, float)):
+            raise ValueError(
+                f"Constant '{name}' in {scope_name} scope must be a number, "
+                f"got {type(value).__name__}: {value}"
+            )
+
+
+def resolve_constants(value, constants_dict: dict):
+    """
+    Resolve a constant reference or arithmetic expression to its actual value.
+    
+    Supports:
+    - Direct constant references: "wall_thickness"
+    - Arithmetic expressions: "wall_length + 0.5"
+    - Expressions with multiple constants: "room1_x + wall_thickness * 2"
+    
+    :param value:
+        the value to resolve (can be a string reference, number, list, or dict)
+    :param constants_dict:
+        dictionary of available constants
+    :return:
+        resolved value
+    """
+    if isinstance(value, str):
+        # Check if it's a direct constant reference (no operators)
+        if value in constants_dict:
+            return float(constants_dict[value])
+        
+        # Otherwise, treat as arithmetic expression
+        # Replace constant names with their values
+        import re
+        expression = value
+        
+        # Sort constants by length (descending) to avoid partial replacements
+        # e.g., replace 'wall_thickness' before 'wall' to avoid issues
+        sorted_constants = sorted(constants_dict.keys(), key=len, reverse=True)
+        
+        for const_name in sorted_constants:
+            # Use word boundaries to match whole constant names
+            pattern = r'\b' + re.escape(const_name) + r'\b'
+            expression = re.sub(pattern, str(constants_dict[const_name]), expression)
+        
+        # Safely evaluate the expression
+        try:
+            # Use eval with restricted namespace for safety
+            # Only allow basic math operations
+            result = eval(expression, {"__builtins__": {}}, {})
+            return float(result)
+        except (SyntaxError, NameError, TypeError) as e:
+            raise ValueError(
+                f"Invalid expression: '{value}'. "
+                f"After constant substitution: '{expression}'. Error: {e}"
+            )
+    elif isinstance(value, list):
+        # Recursively resolve list elements
+        return [resolve_constants(item, constants_dict) for item in value]
+    elif isinstance(value, dict):
+        # Recursively resolve dictionary values
+        return {k: resolve_constants(v, constants_dict) for k, v in value.items()}
+    elif isinstance(value, (int, float)):
+        # Already a number, return as float
+        return float(value)
+    else:
+        # For other types, return as-is
+        return value
+
+
+def resolve_element_params(params: dict, global_constants: dict, room_constants: dict = None) -> dict:
+    """
+    Resolve constant references in element parameters.
+    
+    :param params:
+        element parameters dictionary
+    :param global_constants:
+        global constants dictionary
+    :param room_constants:
+        room-scoped constants dictionary (optional)
+    :return:
+        params with constants resolved
+    """
+    # Merge constants: room-scoped override global
+    merged_constants = {**global_constants}
+    if room_constants:
+        merged_constants.update(room_constants)
+    
+    # Resolve specific fields that can use constants
+    fields_to_resolve = ['anchor_point', 'thickness', 'length', 'doorway_width', 'door_width', 'overall_thickness']
+    
+    for field in fields_to_resolve:
+        if field in params:
+            params[field] = resolve_constants(params[field], merged_constants)
+    
+    return params
+
+
 def generate_elements_report(all_elements: list, output_path: str) -> None:
     """
     Generate markdown report with all elements grouped by type.
@@ -193,13 +303,13 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"| {element_type} | {len(grouped[element_type])} |\n")
 
 
-def create_room_from_params(params: dict, elements_registry: dict, floor_plan, all_elements: list, elements_by_id: dict):
+def create_room_from_params(params: dict, elements_registry: dict, floor_plan, all_elements: list, elements_by_id: dict, global_constants: dict = None):
     """
     Create a Room from YAML parameters with nested elements.
     
     :param params:
         dictionary with 'elements' list containing wall/window/door definitions,
-        optional 'anchor_point', 'color', and 'label'
+        optional 'anchor_point', 'color', 'label', and 'constants'
     :param elements_registry:
         registry mapping element type names to classes
     :param floor_plan:
@@ -208,15 +318,29 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
         list to track all created elements
     :param elements_by_id:
         dictionary to track elements by ID
+    :param global_constants:
+        global constants dictionary (optional)
     :return:
         Room instance
     """
     from renovation.elements import Room
     
+    if global_constants is None:
+        global_constants = {}
+    
+    # Extract room-scoped constants
+    room_constants = params.get('constants', {})
+    validate_constants(room_constants, f"room '{params.get('label', 'unnamed')}'")
+    
     label = params.get('label')
     room_anchor_point = params.get('anchor_point', (0, 0))
     room_color = params.get('color', 'black')
     element_defs = params.get('elements', [])
+    
+    # Resolve constants in room's own parameters
+    if 'anchor_point' in params:
+        merged_constants = {**global_constants, **room_constants}
+        room_anchor_point = resolve_constants(params['anchor_point'], merged_constants)
     
     if not element_defs:
         raise ValueError("Room must have 'elements' list containing wall and other element definitions")
@@ -231,6 +355,9 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
         
         if not element_class:
             raise ValueError(f"Unknown element type: {element_type}")
+        
+        # Resolve constants in element parameters (room constants override global)
+        element_def = resolve_element_params(element_def, global_constants, room_constants)
         
         # Adjust anchor_point to be relative to room's anchor_point
         if 'anchor_point' in element_def:
@@ -304,6 +431,10 @@ def main() -> None:
     # Reset ID counters for consistent IDs
     elements.reset_id_counters()
     
+    # Load and validate global constants
+    global_constants = settings.get('constants', {})
+    validate_constants(global_constants, "global")
+    
     # Load default options (hierarchical structure)
     default_options = settings.get('default_options', {})
     
@@ -358,7 +489,7 @@ def main() -> None:
                     # Create room with nested elements
                     import copy
                     room_params = copy.deepcopy(element_params)
-                    room = create_room_from_params(room_params, elements_registry, floor_plan, all_elements, elements_by_id)
+                    room = create_room_from_params(room_params, elements_registry, floor_plan, all_elements, elements_by_id, global_constants)
                     floor_plan.add_element(room)
                     all_elements.append(room)
                     elements_by_id[room.id] = room
@@ -366,6 +497,8 @@ def main() -> None:
                     # Create regular element
                     element_class = elements_registry[element_type]
                     element_params_clean = {k: v for k, v in element_params.items() if k != 'type'}
+                    # Resolve constants in element parameters
+                    element_params_clean = resolve_element_params(element_params_clean, global_constants)
                     element = element_class(**element_params_clean)
                     floor_plan.add_element(element)
                     all_elements.append(element)
@@ -376,7 +509,7 @@ def main() -> None:
             element_type = element_params_copy.get('type')
             if element_type == 'room':
                 # Create room with nested elements
-                room = create_room_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id)
+                room = create_room_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id, global_constants)
                 floor_plan.add_element(room)
                 all_elements.append(room)
                 elements_by_id[room.id] = room
@@ -384,6 +517,8 @@ def main() -> None:
                 # Create regular element
                 element_params_copy.pop('type')
                 element_class = elements_registry[element_type]
+                # Resolve constants in element parameters
+                element_params_copy = resolve_element_params(element_params_copy, global_constants)
                 element = element_class(**element_params_copy)
                 floor_plan.add_element(element)
                 all_elements.append(element)
