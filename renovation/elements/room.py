@@ -259,21 +259,24 @@ class Room(Element):
                 anchor_point=horizontal_anchor,
                 length=self.inner_horizontal_length,
                 orientation_angle=0,
-                color='black'
+                color='black',
+                annotate_above=True
             )
             horizontal_dimension.draw(ax)
             
-            # Vertical dimension: offset from inner left edge by 1/5th of inner width  
-            vertical_offset = self.inner_horizontal_length / 5
+            # Vertical dimension: offset from inner left edge by 4/5th of inner width  
+            vertical_offset = self.inner_horizontal_length * 4 / 5
             vertical_anchor = (
-                self.internal_corners[0][0] + vertical_offset,  # offset right by 1/5th width
+                self.internal_corners[0][0] + vertical_offset,  # offset right by 4/5th width
                 self.internal_corners[0][1]  # bottom-left inner corner y
             )
             vertical_dimension = DimensionArrow(
                 anchor_point=vertical_anchor,
                 length=self.inner_vertical_length,
                 orientation_angle=90,
-                color='black'
+                color='black',
+                annotate_above=True
+
             )
             vertical_dimension.draw(ax)
         
@@ -287,7 +290,7 @@ class Room(Element):
             center_x = (self.internal_corners[0][0] + self.internal_corners[2][0]) / 2
             center_y = (self.internal_corners[0][1] + self.internal_corners[2][1]) / 2
             
-            area_text = f"{round(self.inner_area,1):.1f} m²"
+            area_text = f"{round(self.inner_area,1):.1f}m²"
             
             area_textbox = TextBox(
                 anchor_point=(center_x, center_y),
