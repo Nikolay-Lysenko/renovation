@@ -300,3 +300,39 @@ class Room(Element):
                 edgecolor='none'
             )
             area_textbox.draw(ax)
+
+        # Draw inner corner labels if inner_corner_label_color option is configured
+        inner_corner_color = get_element_option('Room', 'inner_corner_label_color')
+        if inner_corner_color is not None:
+            corner_parameters = [ (45, 'left', 'bottom'), (135, 'right', 'bottom'), (225, 'right', 'top'), (315, 'left', 'top') ]
+
+            for i, corner in enumerate(self.internal_corners):
+                label_text = f" ({round(corner[0],2)}, {round(corner[1],2)})"
+                ax.text(
+                    corner[0],
+                    corner[1],
+                    label_text,
+                    fontsize=6,
+                    color=inner_corner_color,
+                    rotation=corner_parameters[i][0],
+                    horizontalalignment=corner_parameters[i][1],
+                    verticalalignment=corner_parameters[i][2]
+                 )
+
+        # Draw outer corner labels if outer_corner_label_color option is configured
+        outer_corner_color = get_element_option('Room', 'outer_corner_label_color')
+        if outer_corner_color is not None:
+            corner_parameters = [ (225, 'right', 'top'), (315, 'left', 'top'), (45, 'left', 'bottom'), (135, 'right', 'bottom') ]
+
+            for i, corner in enumerate(self.external_corners):
+                label_text = f" ({round(corner[0],2)}, {round(corner[1],2)})"
+                ax.text(
+                    corner[0],
+                    corner[1],
+                    label_text,
+                    fontsize=6,
+                    color=outer_corner_color,
+                    rotation=corner_parameters[i][0],
+                    horizontalalignment=corner_parameters[i][1],
+                    verticalalignment=corner_parameters[i][2]
+                )
