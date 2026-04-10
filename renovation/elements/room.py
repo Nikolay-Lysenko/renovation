@@ -276,3 +276,24 @@ class Room(Element):
                 color='black'
             )
             vertical_dimension.draw(ax)
+        
+        # Draw inner area if inner_area option is configured
+        inner_area_enabled = get_element_option('Room', 'inner_area', False)
+        if inner_area_enabled:
+            from renovation.elements.info import TextBox
+            
+            # Calculate center of the room from internal corners
+            # internal_corners[0] = bottom-left, internal_corners[2] = top-right
+            center_x = (self.internal_corners[0][0] + self.internal_corners[2][0]) / 2
+            center_y = (self.internal_corners[0][1] + self.internal_corners[2][1]) / 2
+            
+            area_text = f"{round(self.inner_area,1):.1f} m²"
+            
+            area_textbox = TextBox(
+                anchor_point=(center_x, center_y),
+                lines=[area_text],
+                font_size=14,
+                color='gray',
+                edgecolor='none'
+            )
+            area_textbox.draw(ax)

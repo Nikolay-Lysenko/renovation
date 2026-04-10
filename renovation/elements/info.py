@@ -164,6 +164,7 @@ class TextBox(Element):
             font_size: int = 10,
             color: str = 'black',
             transparency: float = 0.75,
+            edgecolor: str = 'black',
             label: str | None = None
     ):
         """
@@ -188,7 +189,7 @@ class TextBox(Element):
         self.font_size = font_size
         self.color = color
         self.transparency = transparency
-
+        self.edgecolor = edgecolor
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw text box."""
         ax.text(
@@ -199,5 +200,5 @@ class TextBox(Element):
             horizontalalignment='center',
             color = self.color,
             fontsize = self.font_size,
-            bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': self.transparency}
+            bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': self.transparency, 'edgecolor': self.edgecolor}
         )
