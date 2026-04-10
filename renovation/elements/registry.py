@@ -39,3 +39,21 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'window': Window,
     }
     return registry
+
+def element_sorter_by_type(element: Element) -> int:
+    """
+    Provide a sorting key for elements based on their type.
+    :param element:
+        element to be sorted
+    :return:
+        sorting key (lower values are sorted first)
+    """
+
+    if isinstance(element, (Wall, WallND)):
+        return 0  # Walls first
+    elif isinstance(element, Door):
+        return 1  # Doors second
+    elif isinstance(element, Window):
+        return 2  # Windows third
+    else:
+        return 3  # Other elements last

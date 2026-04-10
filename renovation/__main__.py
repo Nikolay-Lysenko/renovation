@@ -388,6 +388,7 @@ def main() -> None:
                 floor_plan.add_element(element)
                 all_elements.append(element)
                 elements_by_id[element.id] = element
+        floor_plan.draw_elements()
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])

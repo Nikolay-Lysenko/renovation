@@ -310,8 +310,22 @@ class Window(Element):
             facecolor=self.color
         )
         ax.add_patch(first_line)
-
         orthogonal_angle_in_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
+
+        shift = self.single_line_thickness
+        window_emptyness_anchor_point= (
+            self.anchor_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
+            self.anchor_point[1] + math.sin(orthogonal_angle_in_rad) * shift
+        )
+        window_emptyness = Rectangle(
+            window_emptyness_anchor_point,
+            self.length,
+            self.overall_thickness - 2*self.single_line_thickness,
+            angle=self.orientation_angle,
+            facecolor='white'
+        )
+        ax.add_patch(window_emptyness)
+
         shift = self.overall_thickness - self.single_line_thickness
         second_anchor_point = (
             self.anchor_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
@@ -429,6 +443,7 @@ class Door(Element):
 
         frame_orientation_angle = self.orientation_angle
 
+        # Draw a part of frame up to the hinges
         frame_with_hinges = Rectangle(
             self.anchor_point,
             self.frame_width,
@@ -437,7 +452,21 @@ class Door(Element):
             facecolor=self.color
         )
         ax.add_patch(frame_with_hinges)
-
+        # Draw a whole in the wall
+        shift = self.frame_width
+        whole_in_the_wall_anchor = (
+            self.anchor_point[0] + math.cos(orientation_angle_in_rad) * shift,
+            self.anchor_point[1] + math.sin(orientation_angle_in_rad) * shift
+        )
+        whole_in_a_wall = Rectangle(
+            whole_in_the_wall_anchor,
+            self.door_width,
+            self.thickness,
+            angle=frame_orientation_angle,
+            facecolor='white'
+        )
+        ax.add_patch(whole_in_a_wall)
+        # Draw a part of frame opposite to the hinges.
         shift = self.frame_width + self.door_width
         frame_without_hinges_anchor_point = (
             self.anchor_point[0] + math.cos(orientation_angle_in_rad) * shift,

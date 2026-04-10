@@ -12,6 +12,8 @@ import numpy as np
 
 from renovation.constants import METERS_PER_INCH
 from renovation.elements import Element
+from renovation.elements.registry import element_sorter_by_type
+
 
 
 class FloorPlan:
@@ -98,6 +100,7 @@ class FloorPlan:
         self.fig = fig
         self.ax = ax
         self.title = None
+        self.elements: list[Element] = []
 
     def add_title(
             self, text: str, font_size: int, rel_x: float = 0.5, rel_y: float = 0.95, **kwargs
@@ -135,4 +138,19 @@ class FloorPlan:
         :return:
             None
         """
-        element.draw(self.ax)
+        self.elements.append(element)
+
+    def draw_elements(self) -> None:
+        """
+        Draw elements added by add_element method.
+
+        :param elements:
+            None
+        :return:
+            None
+        """
+        print (f"Drawing floor plan {self.title} elements...")
+
+        for element in sorted(self.elements, key=element_sorter_by_type):
+            #print(f"  Drawing element: {element.__class__.__name__} with id {element.id}")
+            element.draw(self.ax)   
