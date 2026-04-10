@@ -238,7 +238,7 @@ class Room(Element):
                 label_x,
                 label_y,
                 self.label,
-                fontsize=9,
+                fontsize=12,
                 color=label_color,
                 horizontalalignment='left',
                 verticalalignment='bottom'
