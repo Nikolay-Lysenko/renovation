@@ -540,6 +540,23 @@ def main() -> None:
                 all_elements.append(element)
                 elements_by_id[element.id] = element
         floor_plan.draw_elements()
+        
+        # Draw report if specified
+        report_params = floor_plan_params.get('report')
+        if report_params:
+            # Resolve anchor_point with constants if needed
+            anchor_point = report_params.get('anchor_point', [0, 0])
+            if isinstance(anchor_point, list):
+                # Resolve constants in anchor_point
+                anchor_point = resolve_constants(anchor_point, global_constants)
+            
+            floor_plan.draw_report(
+                anchor_point=anchor_point,
+                areas=report_params.get('areas', False),
+                total_area=report_params.get('total_area', False),
+                notes=report_params.get('notes', None)
+            )
+        
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])

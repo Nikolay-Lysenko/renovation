@@ -153,4 +153,92 @@ class FloorPlan:
 
         for element in sorted(self.elements, key=element_sorter_by_type):
             #print(f"  Drawing element: {element.__class__.__name__} with id {element.id}")
-            element.draw(self.ax)   
+            element.draw(self.ax)
+
+    def draw_report(
+            self, 
+            anchor_point: tuple[float, float],
+            areas: bool = False,
+            total_area: bool = False,
+            notes: list[str] = None
+    ) -> None:
+        """
+        Draw a report at the specified location on the floor plan.
+        
+        :param anchor_point:
+            (x, y) coordinates where report should be drawn
+        :param areas:
+            if True, list all rooms with their areas
+        :param total_area:
+            if True, display sum of all room areas
+        :param notes:
+            optional list of note strings to display at the top of report
+        :return:
+            None
+        """
+        from renovation.elements import Room
+        
+        x, y = anchor_point
+        line_height = 0.35  # Spacing between lines
+        current_y = y
+        font_size = 11
+        
+        # Draw notes first
+        if notes:
+            for note in notes:
+                self.ax.text(
+                    x, current_y, note,
+                    fontsize=font_size,
+                    verticalalignment='top',
+                    horizontalalignment='left',
+                    style='italic'
+                )
+                current_y -= line_height
+            
+            # Add extra spacing after notes
+            current_y -= line_height * 0.5
+        
+        # Get all Room elements
+        rooms = [elem for elem in self.elements if isinstance(elem, Room)]
+        
+        # Filter rooms that have labels
+        labeled_rooms = [room for room in rooms if room.label]
+        
+        # Draw room areas
+        if areas and labeled_rooms:
+            # Header
+            self.ax.text(
+                x, current_y, "Room Areas:",
+                fontsize=font_size + 1,
+                verticalalignment='top',
+                horizontalalignment='left',
+                weight='bold'
+            )
+            current_y -= line_height
+            
+            # List each room
+            for room in labeled_rooms:
+                area_text = f"  • {room.label}: {room.inner_area:.2f} m²"
+                self.ax.text(
+                    x, current_y, area_text,
+                    fontsize=font_size,
+                    verticalalignment='top',
+                    horizontalalignment='left'
+                )
+                current_y -= line_height
+            
+            # Add spacing before total
+            current_y -= line_height * 0.3
+        
+        # Draw total area
+        if total_area and labeled_rooms:
+            total = sum(room.inner_area for room in labeled_rooms)
+            total_text = f"Total Area: {total:.2f} m²"
+            self.ax.text(
+                x, current_y, total_text,
+                fontsize=font_size + 1,
+                verticalalignment='top',
+                horizontalalignment='left',
+                weight='bold'
+            )
+   
