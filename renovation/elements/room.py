@@ -230,15 +230,15 @@ class Room(Element):
         label_color = get_label_color('Room')
         if label_color is not None and self.label is not None:
             # Calculate position: bottom-left inner corner + offset (0.3, 0.3)
-            label_x = self.internal_corners[0][0] + 0.3
-            label_y = self.internal_corners[0][1] + 0.3
+            label_x = self.internal_corners[0][0] + 0.2
+            label_y = self.internal_corners[0][1] + 0.2
 
             # Render the room label
             ax.text(
                 label_x,
                 label_y,
                 self.label,
-                fontsize=12,
+                fontsize=14,
                 color=label_color,
                 horizontalalignment='left',
                 verticalalignment='bottom'
