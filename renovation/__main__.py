@@ -98,9 +98,9 @@ def resolve_constants(value, constants_dict: dict):
         return value
 
 
-def resolve_element_params(params: dict, global_constants: dict, room_constants: dict = None) -> dict:
+def resolve_element_params(params: dict, global_constants: dict, room_constants: dict = None, room_vars: dict = None) -> dict:
     """
-    Resolve constant references in element parameters.
+    Resolve constant and variable references in element parameters.
     
     :param params:
         element parameters dictionary
@@ -108,20 +108,24 @@ def resolve_element_params(params: dict, global_constants: dict, room_constants:
         global constants dictionary
     :param room_constants:
         room-scoped constants dictionary (optional)
+    :param room_vars:
+        room-scoped variables dictionary (optional)
     :return:
-        params with constants resolved
+        params with constants and vars resolved
     """
-    # Merge constants: room-scoped override global
-    merged_constants = {**global_constants}
+    # Merge constants and vars: room-scoped override global
+    merged_values = {**global_constants}
     if room_constants:
-        merged_constants.update(room_constants)
+        merged_values.update(room_constants)
+    if room_vars:
+        merged_values.update(room_vars)
     
-    # Resolve specific fields that can use constants
+    # Resolve specific fields that can use constants/vars
     fields_to_resolve = ['anchor_point', 'thickness', 'length', 'doorway_width', 'door_width', 'overall_thickness']
     
     for field in fields_to_resolve:
         if field in params:
-            params[field] = resolve_constants(params[field], merged_constants)
+            params[field] = resolve_constants(params[field], merged_values)
     
     return params
 
@@ -309,7 +313,7 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
     
     :param params:
         dictionary with 'elements' list containing wall/window/door definitions,
-        optional 'anchor_point', 'color', 'label', and 'constants'
+        optional 'anchor_point', 'color', 'label', 'constants', and 'vars'
     :param elements_registry:
         registry mapping element type names to classes
     :param floor_plan:
@@ -332,15 +336,27 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
     room_constants = params.get('constants', {})
     validate_constants(room_constants, f"room '{params.get('label', 'unnamed')}'")
     
+    # Extract and resolve room-scoped vars
+    # Vars are like constants but can be expressions themselves
+    room_vars_definitions = params.get('vars', {})
+    room_vars = {}
+    
+    # Resolve each var expression using constants and previously resolved vars
+    merged_constants = {**global_constants, **room_constants}
+    for var_name, var_expression in room_vars_definitions.items():
+        # Each var can reference constants and previously defined vars
+        available_values = {**merged_constants, **room_vars}
+        room_vars[var_name] = resolve_constants(var_expression, available_values)
+    
     label = params.get('label')
     room_anchor_point = params.get('anchor_point', (0, 0))
     room_color = params.get('color', 'black')
     element_defs = params.get('elements', [])
     
-    # Resolve constants in room's own parameters
+    # Resolve constants/vars in room's own parameters
     if 'anchor_point' in params:
-        merged_constants = {**global_constants, **room_constants}
-        room_anchor_point = resolve_constants(params['anchor_point'], merged_constants)
+        available_values = {**merged_constants, **room_vars}
+        room_anchor_point = resolve_constants(params['anchor_point'], available_values)
     
     if not element_defs:
         raise ValueError("Room must have 'elements' list containing wall and other element definitions")
@@ -356,8 +372,8 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
         if not element_class:
             raise ValueError(f"Unknown element type: {element_type}")
         
-        # Resolve constants in element parameters (room constants override global)
-        element_def = resolve_element_params(element_def, global_constants, room_constants)
+        # Resolve constants/vars in element parameters (room constants/vars override global)
+        element_def = resolve_element_params(element_def, global_constants, room_constants, room_vars)
         
         # Adjust anchor_point to be relative to room's anchor_point
         if 'anchor_point' in element_def:
