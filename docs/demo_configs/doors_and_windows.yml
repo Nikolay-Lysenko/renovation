@@ -14,9 +14,16 @@ default_options:
     # id_color: red
     dimensions: false
     show_invisible: false
+constants:
+  anchor_window_x: 11
+  anchor_door_hinge_0_x: 4
+  anchor_rdoor_hinge_0_x: 6
+  anchor_door_hinge_1_x: 8
+  anchor_rdoor_hinge_1_x: 10
+
 default_layout:
   bottom_left_corner: [-1, -1]
-  top_right_corner: [8, 8]
+  top_right_corner: [12, 8]
   scale_numerator: 1
   scale_denominator: 40
   grid_major_step: 1
@@ -121,30 +128,251 @@ reusable_elements:
       color: gray
       label: "left_270"
 
+  left_doors_hinge0:
+    - type: wall
+      anchor_point: [anchor_door_hinge_0_x, 0]
+      length: 0.5
+      thickness: 0.2
+      color: green
+      orientation_angle: 0
+    - type: door
+      anchor_point: [anchor_door_hinge_0_x, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 0
+      color: blue
+      label: "left_0_hinge0"
+      hinges_point: 0
+    - type: wall
+      anchor_point: [anchor_door_hinge_0_x, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [anchor_door_hinge_0_x, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 90
+      color: blue
+      label: "left_90_hinge0"
+      hinges_point: 0
+
+    - type: door
+      anchor_point: [anchor_door_hinge_0_x, 4.5]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 180
+      color: blue
+      label: "left_180_hinge0"
+      hinges_point: 0
+    - type: door
+      anchor_point: [anchor_door_hinge_0_x, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 270
+      color: blue
+      label: "left_270_hinge0"
+      hinges_point: 0
+
+  left_doors_hinge1:
+    - type: wall
+      anchor_point: [anchor_door_hinge_1_x, 0]
+      length: 0.5
+      thickness: 0.2
+      color: green
+      orientation_angle: 0
+    - type: door
+      anchor_point: [anchor_door_hinge_1_x, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 0
+      color: blue
+      label: "left_0_hinge1"
+      hinges_point: 1
+    - type: wall
+      anchor_point: [anchor_door_hinge_1_x, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [anchor_door_hinge_1_x, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 90
+      color: blue
+      label: "left_90_hinge1"
+      hinges_point: 1
+
+    - type: door
+      anchor_point: [anchor_door_hinge_1_x, 4.5]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 180
+      color: blue
+      label: "left_180_hinge1"
+      hinges_point: 1
+    - type: door
+      anchor_point: [anchor_door_hinge_1_x, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: false
+      orientation_angle: 270
+      color: blue
+      label: "left_270_hinge1"
+      hinges_point: 1
+
+  r_doors_hinge0:
+    - type: wall
+      anchor_point: [anchor_rdoor_hinge_0_x, 0]
+      length: 0.5
+      thickness: 0.2
+      color: green
+      orientation_angle: 0
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_0_x, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 0
+      color: red
+      label: "right_0_hinge0"
+      hinges_point: 0
+    - type: wall
+      anchor_point: [anchor_rdoor_hinge_0_x, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_0_x, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 90
+      color: red
+      label: "right_90_hinge0"
+      hinges_point: 0
+
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_0_x, 4.5]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 180
+      color: red
+      label: "right_180_hinge0"
+      hinges_point: 0
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_0_x, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 270
+      color: red
+      label: "right_270_hinge0"
+      hinges_point: 0
+
+  r_doors_hinge1:
+    - type: wall
+      anchor_point: [anchor_rdoor_hinge_1_x, 0]
+      length: 0.5
+      thickness: 0.2
+      color: green
+      orientation_angle: 0
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_1_x, 0]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 0
+      color: red
+      label: "right_0_hinge1"
+      hinges_point: 1
+    - type: wall
+      anchor_point: [anchor_rdoor_hinge_1_x, 1.5]
+      length: 0.5
+      thickness: 0.2
+      color: black
+      orientation_angle: 90
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_1_x, 2]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 90
+      color: red
+      label: "right_90_hinge1"
+      hinges_point: 1
+
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_1_x, 4.5]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 180
+      color: red
+      label: "right_180_hinge1"
+      hinges_point: 1
+    - type: door
+      anchor_point: [anchor_rdoor_hinge_1_x, 6]
+      doorway_width: 1
+      door_width: 0.8
+      thickness: 0.2
+      to_the_right: true
+      orientation_angle: 270
+      color: red
+      label: "right_270_hinge1"
+      hinges_point: 1
+
+
   windows:
     # Window
     - type: window
-      anchor_point: [4, 0]
+      anchor_point: [anchor_window_x, 0]
       length: 0.8
       overall_thickness: 0.4
       single_line_thickness: 0.05
       label: "win_0"
     - type: window
-      anchor_point: [4, 2]
+      anchor_point: [anchor_window_x, 2]
       length: 0.8
       overall_thickness: 0.4
       single_line_thickness: 0.05
       orientation_angle: 180
       label: "win_180"
     - type: window
-      anchor_point: [4, 4]
+      anchor_point: [anchor_window_x, 4]
       length: 0.8
       overall_thickness: 0.4
       single_line_thickness: 0.05
       orientation_angle: 90
       label: "win_90"
     - type: window
-      anchor_point: [4, 6]
+      anchor_point: [anchor_window_x, 6]
       length: 0.8
       overall_thickness: 0.4
       single_line_thickness: 0.05
@@ -165,4 +393,8 @@ floor_plans:
     inherited_elements:
       - right_doors_tk2
       - left_doors_tk2
+      - left_doors_hinge0
+      - left_doors_hinge1
+      - r_doors_hinge0
+      - r_doors_hinge1
       - windows

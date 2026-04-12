@@ -375,6 +375,7 @@ class Door(Element):
             orientation_angle: float = 0,
             to_the_right: bool = False,
             color: str = 'black',
+            hinges_point: float = 0.5,
             label: str | None = None
     ):
         """
@@ -400,6 +401,8 @@ class Door(Element):
             from the hinges point along the doorway
         :param color:
             color to use for drawing the window
+        :param hinges_point:
+            relative position of the hinges along the doorway (0.0 = start, 1.0 = end, 0.5 = middle)
         :param label:
             optional label for the element
         :return:
@@ -413,6 +416,7 @@ class Door(Element):
         self.thickness = thickness
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
+        self.hinges_point = hinges_point
         self.color = color
 
     def get_corners(self) -> list[tuple[float, float]]:
@@ -475,16 +479,6 @@ class Door(Element):
             facecolor='white'
         )
         ax.add_patch(whole_in_a_wall)
-        if get_element_option("Door","dimensions"):
-            # Draw dimension arrow for the doorway width
-            dimension = DimensionArrow(
-                anchor_point=whole_in_the_wall_anchor,
-                length=self.door_width,
-                orientation_angle=frame_orientation_angle,
-                annotate_above=True,
-                color=get_element_option("Door","label_color", "black")
-            )
-            dimension.draw(ax)
         # Draw a part of frame opposite to the hinges.
         shift = self.frame_width + self.door_width
         frame_without_hinges_anchor_point = (
@@ -499,29 +493,38 @@ class Door(Element):
             facecolor=self.color
         )
         ax.add_patch(frame_without_hinges)
+        # Draw dimension arrow for the doorway width if specified in options
+        if get_element_option("Door","dimensions"):
+            dims_point = rotate_point(anchor_point=self.anchor_point,
+                                    offset_x=self.frame_width,
+                                    offset_y=self.thickness * (0.8 if self.to_the_right else 0.2),
+                                    angle_rad=orientation_angle_in_rad)
+            dimension = DimensionArrow(
+                anchor_point=dims_point,
+                length=self.door_width,
+                orientation_angle=frame_orientation_angle,
+                annotate_above=True,
+                color=get_element_option("Door","label_color", "black")
+            )
+            dimension.draw(ax)
 
         hinges_point = rotate_point(anchor_point=self.anchor_point,
                                      offset_x=self.frame_width,
-                                     offset_y=self.thickness,
+                                     offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
 
+
         if self.to_the_right:
-            hinges_point = (
-                hinges_point[0] + math.sin(orientation_angle_in_rad) * self.thickness,
-                hinges_point[1] - math.cos(orientation_angle_in_rad) * self.thickness
-            )
             door = Rectangle(
                 hinges_point,
-                self.door_width,
-                self.door_schematic_line_thickness,
+                self.door_width, self.door_schematic_line_thickness,
                 angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
                 facecolor=self.color
             )
         else:
             door = Rectangle(
                 hinges_point,
-                self.door_schematic_line_thickness,
-                self.door_width,
+                self.door_schematic_line_thickness, self.door_width,
                 angle=self.orientation_angle,
                 facecolor=self.color
             )
