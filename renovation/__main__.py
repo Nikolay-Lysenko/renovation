@@ -19,7 +19,7 @@ from renovation.project import Project
 def validate_constants(constants_dict: dict, scope_name: str = "global") -> None:
     """
     Validate that all constants are floating point numbers.
-    
+
     :param constants_dict:
         dictionary of constant name -> value mappings
     :param scope_name:
@@ -29,7 +29,7 @@ def validate_constants(constants_dict: dict, scope_name: str = "global") -> None
     """
     if not constants_dict:
         return
-    
+
     for name, value in constants_dict.items():
         if not isinstance(value, (int, float)):
             raise ValueError(
@@ -41,12 +41,12 @@ def validate_constants(constants_dict: dict, scope_name: str = "global") -> None
 def resolve_constants(value, constants_dict: dict):
     """
     Resolve a constant reference or arithmetic expression to its actual value.
-    
+
     Supports:
     - Direct constant references: "wall_thickness"
     - Arithmetic expressions: "wall_length + 0.5"
     - Expressions with multiple constants: "room1_x + wall_thickness * 2"
-    
+
     :param value:
         the value to resolve (can be a string reference, number, list, or dict)
     :param constants_dict:
@@ -58,21 +58,21 @@ def resolve_constants(value, constants_dict: dict):
         # Check if it's a direct constant reference (no operators)
         if value in constants_dict:
             return float(constants_dict[value])
-        
+
         # Otherwise, treat as arithmetic expression
         # Replace constant names with their values
         import re
         expression = value
-        
+
         # Sort constants by length (descending) to avoid partial replacements
         # e.g., replace 'wall_thickness' before 'wall' to avoid issues
         sorted_constants = sorted(constants_dict.keys(), key=len, reverse=True)
-        
+
         for const_name in sorted_constants:
             # Use word boundaries to match whole constant names
             pattern = r'\b' + re.escape(const_name) + r'\b'
             expression = re.sub(pattern, str(constants_dict[const_name]), expression)
-        
+
         # Safely evaluate the expression
         try:
             # Use eval with restricted namespace for safety
@@ -101,7 +101,7 @@ def resolve_constants(value, constants_dict: dict):
 def resolve_element_params(params: dict, global_constants: dict, room_constants: dict = None, room_vars: dict = None) -> dict:
     """
     Resolve constant and variable references in element parameters.
-    
+
     :param params:
         element parameters dictionary
     :param global_constants:
@@ -119,21 +119,21 @@ def resolve_element_params(params: dict, global_constants: dict, room_constants:
         merged_values.update(room_constants)
     if room_vars:
         merged_values.update(room_vars)
-    
+
     # Resolve specific fields that can use constants/vars
     fields_to_resolve = ['anchor_point', 'thickness', 'length', 'doorway_width', 'door_width', 'overall_thickness']
-    
+
     for field in fields_to_resolve:
         if field in params:
             params[field] = resolve_constants(params[field], merged_values)
-    
+
     return params
 
 
 def generate_elements_report(all_elements: list, output_path: str) -> None:
     """
     Generate markdown report with all elements grouped by type.
-    
+
     :param all_elements:
         list of all element instances
     :param output_path:
@@ -144,11 +144,11 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
     for element in all_elements:
         element_type = element.__class__.__name__
         grouped[element_type].append(element)
-    
+
     # Generate report
     with open(output_path, 'w') as f:
         f.write("# Floor Plan Elements Report\n\n")
-        
+
         # Combine Wall and WallND into single section, excluding invisible walls
         all_walls = grouped.get('Wall', []) + grouped.get('WallND', [])
         # Filter out walls with color='invisible'
@@ -163,7 +163,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"| {element.id} | {element.length} | {element.thickness} | "
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
-        
+
         # Report Windows
         if 'Window' in grouped:
             f.write("## Windows\n\n")
@@ -175,7 +175,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"| {element.id} | {element.length} | {element.overall_thickness} | "
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
-        
+
         # Report Doors
         if 'Door' in grouped:
             f.write("## Doors\n\n")
@@ -188,7 +188,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"| {element.id} | {element.doorway_width} | {element.door_width} | {to_right} | "
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
-        
+
         # Report invisible walls in separate section
         all_walls_combined = grouped.get('Wall', []) + grouped.get('WallND', [])
         invisible_walls = [w for w in all_walls_combined if w.color == 'invisible']
@@ -202,7 +202,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"| {element.id} | {element.length} | {element.thickness} | "
                        f"{corner_strs[0]} | {corner_strs[1]} | {corner_strs[2]} | {corner_strs[3]} |\n")
             f.write("\n")
-        
+
         # Report Rooms
         if 'Room' in grouped:
             f.write("## Rooms\n\n")
@@ -210,11 +210,11 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"### {room.id}\n\n")
                 if room.label:
                     f.write(f"**Label:** {room.label}\n\n")
-                
+
                 # Room properties
                 f.write(f"**Anchor Point:** ({room.anchor_point[0]:.3f}, {room.anchor_point[1]:.3f})\n\n")
                 f.write(f"**Color:** {room.color}\n\n")
-                
+
                 # Room dimensions and areas
                 f.write("**Dimensions:**\n\n")
                 f.write(f"- Inner horizontal length: {room.inner_horizontal_length:.3f} m\n")
@@ -223,18 +223,18 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 f.write(f"- Outer vertical length: {room.outer_vertical_length:.3f} m\n")
                 f.write(f"- Inner area: {room.inner_area:.3f} m²\n")
                 f.write(f"- Outer area: {room.outer_area:.3f} m²\n\n")
-                
+
                 # Corner coordinates
                 f.write("**External Corners:**\n\n")
                 for i, corner in enumerate(room.external_corners, 1):
                     f.write(f"- Corner {i}: ({corner[0]:.3f}, {corner[1]:.3f})\n")
                 f.write("\n")
-                
+
                 f.write("**Internal Corners:**\n\n")
                 for i, corner in enumerate(room.internal_corners, 1):
                     f.write(f"- Corner {i}: ({corner[0]:.3f}, {corner[1]:.3f})\n")
                 f.write("\n")
-                
+
                 # List room edge walls (walls with room_edge=True)
                 edge_walls = [w for w in room.walls if w.room_edge]
                 f.write("**Room Edge Walls:**\n\n")
@@ -245,7 +245,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                     orientation = "Horizontal" if wall.orientation_angle % 180 == 0 else "Vertical"
                     f.write(f"| {wall.id} | {orientation} | {wall.length:.3f} | {wall.thickness:.3f} |\n")
                 f.write("\n")
-                
+
                 # List internal walls (walls with room_edge=False)
                 internal_walls = [w for w in room.walls if not w.room_edge]
                 if internal_walls:
@@ -256,7 +256,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                         orientation = "Horizontal" if wall.orientation_angle % 180 == 0 else "Vertical"
                         f.write(f"| {wall.id} | {orientation} | {wall.length:.3f} | {wall.thickness:.3f} |\n")
                     f.write("\n")
-                
+
                 # List other elements in room (windows, doors, etc.)
                 if room.other_elements:
                     f.write("**Other Elements in Room:**\n\n")
@@ -266,7 +266,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                         element_type = element.__class__.__name__
                         f.write(f"| {element.id} | {element_type} |\n")
                     f.write("\n")
-        
+
         # Report other element types
         other_types = [t for t in grouped.keys() if t not in ['Wall', 'WallND', 'Window', 'Door', 'Room']]
         if other_types:
@@ -279,28 +279,28 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
                 for element in grouped[element_type]:
                     f.write(f"| {element.id} |\n")
                 f.write("\n")
-        
+
         # Summary
         f.write("## Summary\n\n")
         f.write("| Element Type | Count |\n")
         f.write("|---|---|\n")
-        
+
         # Combine Wall and WallND in summary, excluding invisible walls
         all_walls_for_count = grouped.get('Wall', []) + grouped.get('WallND', [])
         wall_count = len([w for w in all_walls_for_count if w.color != 'invisible'])
         invisible_wall_count = len([w for w in all_walls_for_count if w.color == 'invisible'])
-        
+
         if wall_count > 0:
             f.write(f"| Wall | {wall_count} |\n")
-        
+
         if invisible_wall_count > 0:
             f.write(f"| Invisible Wall | {invisible_wall_count} |\n")
-        
+
         # Report Rooms
         room_count = len(grouped.get('Room', []))
         if room_count > 0:
             f.write(f"| Room | {room_count} |\n")
-        
+
         # Report other types
         for element_type in sorted(grouped.keys()):
             if element_type not in ['Wall', 'WallND', 'Room']:
@@ -310,7 +310,7 @@ def generate_elements_report(all_elements: list, output_path: str) -> None:
 def create_room_from_params(params: dict, elements_registry: dict, floor_plan, all_elements: list, elements_by_id: dict, global_constants: dict = None):
     """
     Create a Room from YAML parameters with nested elements.
-    
+
     :param params:
         dictionary with 'elements' list containing wall/window/door definitions,
         optional 'anchor_point', 'color', 'label', 'constants', and 'vars'
@@ -328,53 +328,53 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
         Room instance
     """
     from renovation.elements import Room
-    
+
     if global_constants is None:
         global_constants = {}
-    
+
     # Extract room-scoped constants
     room_constants = params.get('constants', {})
     validate_constants(room_constants, f"room '{params.get('label', 'unnamed')}'")
-    
+
     # Extract and resolve room-scoped vars
     # Vars are like constants but can be expressions themselves
     room_vars_definitions = params.get('vars', {})
     room_vars = {}
-    
+
     # Resolve each var expression using constants and previously resolved vars
     merged_constants = {**global_constants, **room_constants}
     for var_name, var_expression in room_vars_definitions.items():
         # Each var can reference constants and previously defined vars
         available_values = {**merged_constants, **room_vars}
         room_vars[var_name] = resolve_constants(var_expression, available_values)
-    
+
     label = params.get('label')
     room_anchor_point = params.get('anchor_point', (0, 0))
     room_color = params.get('color', 'black')
     element_defs = params.get('elements', [])
-    
+
     # Resolve constants/vars in room's own parameters
     if 'anchor_point' in params:
         available_values = {**merged_constants, **room_vars}
         room_anchor_point = resolve_constants(params['anchor_point'], available_values)
-    
+
     if not element_defs:
         raise ValueError("Room must have 'elements' list containing wall and other element definitions")
-    
+
     # Create all child elements
     room_walls = []
     room_other_elements = []
-    
+
     for element_def in element_defs:
         element_type = element_def.pop('type')
         element_class = elements_registry.get(element_type)
-        
+
         if not element_class:
             raise ValueError(f"Unknown element type: {element_type}")
-        
+
         # Resolve constants/vars in element parameters (room constants/vars override global)
         element_def = resolve_element_params(element_def, global_constants, room_constants, room_vars)
-        
+
         # Adjust anchor_point to be relative to room's anchor_point
         if 'anchor_point' in element_def:
             rel_x, rel_y = element_def['anchor_point']
@@ -382,40 +382,90 @@ def create_room_from_params(params: dict, elements_registry: dict, floor_plan, a
                 rel_x + room_anchor_point[0],
                 rel_y + room_anchor_point[1]
             )
-        
+
         # For walls without explicit color, use room's color
         is_wall = element_type in ['wall', 'wallnd']
         if is_wall and 'color' not in element_def:
             element_def['color'] = room_color
-        
+
         # Create the element
         element = element_class(**element_def)
-        
+
         # Add to floor plan for rendering
         floor_plan.add_element(element)
-        
+
         # Track in global lists
         all_elements.append(element)
         elements_by_id[element.id] = element
-        
+
         # Organize by type
         if element.__class__.__name__ in ['Wall', 'WallND']:
             room_walls.append(element)
         else:
             room_other_elements.append(element)
-    
+
     # Validate we have at least some walls
     # The Room class will validate that exactly 4 have room_edge=True
     if len(room_walls) == 0:
         raise ValueError("Room must contain at least one wall")
-    
+
     return Room(
-        walls=room_walls, 
-        other_elements=room_other_elements, 
+        walls=room_walls,
+        other_elements=room_other_elements,
         anchor_point=room_anchor_point,
         color=room_color,
         label=label
     )
+
+
+def load_reusable_elements(reusable_elements_config: dict, config_dir: Path) -> dict:
+    """
+    Load reusable elements from configuration, including external files.
+
+    :param reusable_elements_config:
+        reusable_elements section from main config, can contain inline definitions
+        or file references (string values pointing to external YAML files)
+    :param config_dir:
+        directory containing the main config file (for resolving relative paths)
+    :return:
+        dictionary of reusable element sets with all external files loaded
+    """
+    if not reusable_elements_config:
+        return {}
+
+    loaded_elements = {}
+
+    for set_name, content in reusable_elements_config.items():
+        if isinstance(content, str):
+            # It's a file reference - load the external file
+            file_path = config_dir / content
+
+            if not file_path.exists():
+                raise FileNotFoundError(f"Reusable elements file not found: {file_path}")
+
+            print(f"Loading reusable elements '{set_name}' from {content}")
+
+            with open(file_path) as ext_file:
+                external_content = yaml.load(ext_file, Loader=yaml.FullLoader)
+
+            # The external file should contain a list of element definitions
+            if not isinstance(external_content, list):
+                raise ValueError(
+                    f"External reusable elements file '{content}' must contain a list of elements, "
+                    f"got {type(external_content).__name__}"
+                )
+
+            loaded_elements[set_name] = external_content
+        elif isinstance(content, list):
+            # It's an inline definition - use as-is
+            loaded_elements[set_name] = content
+        else:
+            raise ValueError(
+                f"Reusable element set '{set_name}' must be either a list of elements "
+                f"or a string (file path), got {type(content).__name__}"
+            )
+
+    return loaded_elements
 
 
 def parse_cli_args() -> argparse.Namespace:
@@ -441,30 +491,36 @@ def main() -> None:
 
     with open(config_path) as config_file:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
-    
+
     from renovation import elements
-    
+
     # Reset ID counters for consistent IDs
     elements.reset_id_counters()
-    
+
     # Load and validate global constants
     global_constants = settings.get('constants', {})
     validate_constants(global_constants, "global")
-    
+
     # Load default options (hierarchical structure)
     default_options = settings.get('default_options', {})
-    
+
     # Remove element types with None values (from commented-out YAML properties)
     cleaned_options = {}
     for element_type, options in default_options.items():
         if options is not None and isinstance(options, dict):
             cleaned_options[element_type] = options
     default_options = cleaned_options
-    
+
     # Set default options globally
     elements.set_element_options(default_options)
 
     elements_registry = create_elements_registry()
+
+    # Load reusable elements (including external files)
+    reusable_elements = load_reusable_elements(
+        settings.get('reusable_elements', {}),
+        config_dir
+    )
 
     # Track all elements for report
     all_elements = []
@@ -492,14 +548,14 @@ def main() -> None:
         else:
             # Use default options
             elements.set_element_options(default_options)
-        
+
         layout_params = floor_plan_params.get('layout') or settings['default_layout']
         floor_plan = FloorPlan(**layout_params)
         title_params = floor_plan_params.get('title')
         if title_params:
             floor_plan.add_title(**title_params)
         for set_name in floor_plan_params.get('inherited_elements', []):
-            for element_params in settings['reusable_elements'].get(set_name, []):
+            for element_params in reusable_elements.get(set_name, []):
                 element_type = element_params.get('type')
                 if element_type == 'room':
                     # Create room with nested elements
@@ -540,7 +596,7 @@ def main() -> None:
                 all_elements.append(element)
                 elements_by_id[element.id] = element
         floor_plan.draw_elements()
-        
+
         # Draw report if specified
         report_params = floor_plan_params.get('report')
         if report_params:
@@ -549,14 +605,14 @@ def main() -> None:
             if isinstance(anchor_point, list):
                 # Resolve constants in anchor_point
                 anchor_point = resolve_constants(anchor_point, global_constants)
-            
+
             floor_plan.draw_report(
                 anchor_point=anchor_point,
                 areas=report_params.get('areas', False),
                 total_area=report_params.get('total_area', False),
                 notes=report_params.get('notes', None)
             )
-        
+
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])
@@ -568,7 +624,7 @@ def main() -> None:
     if png_path is not None:
         png_path = config_dir / png_path
         project.render_to_png(str(png_path))
-    
+
     # Generate elements report
     report_path = Path(config_path).with_suffix(".md")
     generate_elements_report(all_elements, str(report_path))
