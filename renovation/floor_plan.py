@@ -54,6 +54,8 @@ class FloorPlan:
 
         fig = plt.figure(figsize=(fig_width, fig_height))
         ax = fig.add_subplot(111)
+        # Adjust margins (values are fractions of figure width/height, 0-1)
+        fig.subplots_adjust(left=0.025, right=0.975, bottom=0.025, top=0.975)
         ax.set_aspect('equal')
         ax.tick_params(
             which='both',

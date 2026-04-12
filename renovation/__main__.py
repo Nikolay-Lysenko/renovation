@@ -553,7 +553,7 @@ def main() -> None:
         floor_plan = FloorPlan(**layout_params)
         title_params = floor_plan_params.get('title')
         if title_params:
-            floor_plan.add_title(**title_params)
+            floor_plan.add_title(rel_y=0.95, **title_params)
         for set_name in floor_plan_params.get('inherited_elements', []):
             for element_params in reusable_elements.get(set_name, []):
                 element_type = element_params.get('type')
