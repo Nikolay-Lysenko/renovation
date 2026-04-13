@@ -6,6 +6,7 @@ default_options:
   Door:
     label_color: green
     # id_color: red
+    dimensions: true  # Draw door dimensions
   Window:
     label_color: green
     # id_color: green

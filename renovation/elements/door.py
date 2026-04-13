@@ -153,7 +153,7 @@ class Door(Element):
         if get_element_option("Door","dimensions"):
             dims_point = rotate_point(anchor_point=self.anchor_point,
                                     offset_x=self.frame_width,
-                                    offset_y=self.thickness * (0.8 if self.to_the_right else 0.2),
+                                    offset_y=self.thickness * 0.2,
                                     angle_rad=orientation_angle_in_rad)
             dimension = DimensionArrow(
                 anchor_point=dims_point,
@@ -165,10 +165,14 @@ class Door(Element):
             dimension.draw(ax)
 
         if self.to_the_right:
-            hinges_anchor_point = ( self.anchor_point[0] +1 ,
+            hinges_anchor_point = ( self.anchor_point[0] ,
                                     self.anchor_point[1] )
             hinges_point = rotate_point(anchor_point=hinges_anchor_point,
-                                     offset_x=self.frame_width,
+                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
+                                     offset_y=self.thickness * self.hinges_point,
+                                     angle_rad=orientation_angle_in_rad)
+            arc_anchor_point = rotate_point(anchor_point=hinges_anchor_point,
+                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
         else:
@@ -176,32 +180,23 @@ class Door(Element):
                                      offset_x=self.frame_width,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
+            arc_anchor_point = rotate_point(anchor_point=self.anchor_point,
+                                     offset_x=self.frame_width + self.door_schematic_line_thickness,
+                                     offset_y=self.thickness * self.hinges_point,
+                                     angle_rad=orientation_angle_in_rad)
 
-
-        if self.to_the_right:
-            door = Rectangle(
-                hinges_point,
-                self.door_width, self.door_schematic_line_thickness,
-                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
-                facecolor=self.color
-            )
-        else:
-            door = Rectangle(
-                hinges_point,
-                self.door_schematic_line_thickness, self.door_width,
-                angle=self.orientation_angle,
-                facecolor=self.color
+        door = Rectangle(
+                        hinges_point,
+                        self.door_schematic_line_thickness, self.door_width,
+                        angle=self.orientation_angle,
+                        facecolor=self.color
             )
         ax.add_patch(door)
 
-        arc_anchor_point = (
-            hinges_point[0] + math.cos(orientation_angle_in_rad) * self.door_schematic_line_thickness,
-            hinges_point[1] + math.sin(orientation_angle_in_rad) * self.door_schematic_line_thickness
-        )
         extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
-            start_angle = -RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
-            end_angle = 0
+            start_angle = RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+            end_angle = RIGHT_ANGLE_IN_DEGREES + RIGHT_ANGLE_IN_DEGREES
         else:
             start_angle = 0
             end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
@@ -218,7 +213,7 @@ class Door(Element):
         ax.add_patch(arc)
 
         # Render label and ID at hinges point with rotation offset
-        textrotation = -40 if self.to_the_right else +40
+        textrotation = 40 + ( RIGHT_ANGLE_IN_DEGREES if self.to_the_right else 0 )
         textrotation = (360 + textrotation + self.orientation_angle) % 360
         _render_label_and_id(
             ax,
