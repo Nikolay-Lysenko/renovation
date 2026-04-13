@@ -5,7 +5,8 @@ Author: Nikolay Lysenko
 """
 
 
-from .basic import Door, Wall, WallND, Window
+from .basic import Wall, WallND, Window
+from .door import Door
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
