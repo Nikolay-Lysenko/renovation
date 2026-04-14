@@ -9,6 +9,8 @@ import math
 import matplotlib.axes
 
 from .element import Element
+from renovation.variables import validate_constants, resolve_constants, resolve_element_params
+
 
 
 class Room(Element):
@@ -60,6 +62,118 @@ class Room(Element):
 
         # Calculate room properties
         self._calculate_properties()
+
+
+    @classmethod
+    def create_from_params(cls, params: dict, elements_registry: dict, floor_plan, all_elements: list, elements_by_id: dict, global_constants: dict = None):
+        """
+        Create a Room from YAML parameters with nested elements.
+
+        :param params:
+            dictionary with 'elements' list containing wall/window/door definitions,
+            optional 'anchor_point', 'color', 'label', 'constants', and 'vars'
+        :param elements_registry:
+            registry mapping element type names to classes
+        :param floor_plan:
+            floor plan to add child elements to
+        :param all_elements:
+            list to track all created elements
+        :param elements_by_id:
+            dictionary to track elements by ID
+        :param global_constants:
+            global constants dictionary (optional)
+        :return:
+            Room instance
+        """
+        if global_constants is None:
+            global_constants = {}
+
+        # Extract room-scoped constants
+        room_constants = params.get('constants', {})
+        validate_constants(room_constants, f"room '{params.get('label', 'unnamed')}'")
+
+        # Extract and resolve room-scoped vars
+        # Vars are like constants but can be expressions themselves
+        room_vars_definitions = params.get('vars', {})
+        room_vars = {}
+
+        # Resolve each var expression using constants and previously resolved vars
+        merged_constants = {**global_constants, **room_constants}
+        for var_name, var_expression in room_vars_definitions.items():
+            # Each var can reference constants and previously defined vars
+            available_values = {**merged_constants, **room_vars}
+            room_vars[var_name] = resolve_constants(var_expression, available_values)
+
+        label = params.get('label')
+        room_anchor_point = params.get('anchor_point', (0, 0))
+        room_color = params.get('color', 'black')
+        element_defs = params.get('elements', [])
+
+        # Resolve constants/vars in room's own parameters
+        if 'anchor_point' in params:
+            available_values = {**merged_constants, **room_vars}
+            room_anchor_point = resolve_constants(params['anchor_point'], available_values)
+
+        if not element_defs:
+            raise ValueError("Room must have 'elements' list containing wall and other element definitions")
+
+        # Create all child elements
+        room_walls = []
+        room_other_elements = []
+
+        for element_def in element_defs:
+            element_type = element_def.pop('type')
+            element_class = elements_registry.get(element_type)
+
+            if not element_class:
+                raise ValueError(f"Unknown element type: {element_type}")
+
+            # Resolve constants/vars in element parameters (room constants/vars override global)
+            element_def = resolve_element_params(element_def, global_constants, room_constants, room_vars)
+
+            # Adjust anchor_point to be relative to room's anchor_point
+            if 'anchor_point' in element_def:
+                rel_x, rel_y = element_def['anchor_point']
+                element_def['anchor_point'] = (
+                    rel_x + room_anchor_point[0],
+                    rel_y + room_anchor_point[1]
+                )
+
+            # For walls without explicit color, use room's color
+            is_wall = element_type in ['wall', 'wallnd']
+            if is_wall and 'color' not in element_def:
+                element_def['color'] = room_color
+
+            # Create the element
+            element = element_class(**element_def)
+
+            # Add to floor plan for rendering
+            floor_plan.add_element(element)
+
+            # Track in global lists
+            all_elements.append(element)
+            elements_by_id[element.id] = element
+
+            # Organize by type
+            if element.__class__.__name__ in ['Wall', 'WallND']:
+                room_walls.append(element)
+            else:
+                room_other_elements.append(element)
+
+        # Validate we have at least some walls
+        # The Room class will validate that exactly 4 have room_edge=True
+        if len(room_walls) == 0:
+            raise ValueError("Room must contain at least one wall")
+
+        return cls(
+            walls=room_walls,
+            other_elements=room_other_elements,
+            anchor_point=room_anchor_point,
+            color=room_color,
+            label=label
+        )
+
+
 
     def _validate_and_organize_walls(self):
         """Validate walls form a rectangle and organize them."""
