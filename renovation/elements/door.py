@@ -165,13 +165,11 @@ class Door(Element):
             dimension.draw(ax)
 
         if self.to_the_right:
-            hinges_anchor_point = ( self.anchor_point[0] ,
-                                    self.anchor_point[1] )
-            hinges_point = rotate_point(anchor_point=hinges_anchor_point,
+            hinges_point = rotate_point(anchor_point=self.anchor_point,
                                      offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
-            arc_anchor_point = rotate_point(anchor_point=hinges_anchor_point,
+            arc_anchor_point = rotate_point(anchor_point=self.anchor_point,
                                      offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
