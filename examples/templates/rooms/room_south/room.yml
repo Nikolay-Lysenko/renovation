@@ -1,0 +1,71 @@
+  - type: room
+    label: "south room"
+    constants:
+      door_placement_from_left: 0.5       #measured from external left (west) wall edge
+      window_placement_from_left: 1.5     #measured from external left (west) wall edge
+      doorway_width: 1
+      door_width: 0.9
+      window_width: 1.4
+      
+    vars:
+      anchor_x: x_placement
+      anchor_y: y_placement
+      room_length: room_horizontal_length
+      room_width: room_vertical_width
+      wall_n_thickness: wall_thickness*1.5
+      wall_e_thickness: wall_thickness
+      wall_s_thickness: wall_thickness*2
+      wall_w_thickness: wall_thickness
+ 
+    anchor_point: [anchor_x,anchor_y]
+
+    elements:
+    # Edge walls
+      - type: wall
+        anchor_point: [0, 0]
+        length: room_width
+        thickness: wall_s_thickness
+        color: black
+        orientation_angle: 0
+        room_edge: true
+      - type: wall
+        anchor_point: [room_width, 0]
+        length: room_length
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        color: black
+        room_edge: true
+      - type: wall
+        anchor_point: [room_width, room_length]
+        length: room_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        color: black
+        room_edge: true
+      - type: wall
+        anchor_point: [0, room_length]
+        length: room_length
+        thickness: wall_w_thickness
+        color: black
+        orientation_angle: 270
+        room_edge: true
+
+    # Doors and windows
+      - type: window
+        anchor_point: [window_placement_from_left,0]
+        length: window_width
+        overall_thickness: wall_s_thickness
+        orientation_angle: 0
+        label: "Window name"
+
+      - type: door
+        anchor_point: [door_placement_from_left + doorway_width,room_length]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door. 
+        opening_outside: false
+        label: "right door"
+        color: black

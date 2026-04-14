@@ -1,0 +1,66 @@
+project:
+  dpi: 200
+  pdf_file: null
+  png_dir: "output"         # Folder where to store the png file
+default_options:
+  Door:
+    label_color: green      # Color for door labels
+    dimensions: true        # Draw door dimensions
+  Wall:  # Options for both Wall and WallND
+    show_invisible: false   # If color is set to "invisible" it will be shown as red
+  Window: 
+    label_color: blue       # Color for window labels
+  Room:
+    label_color: orange     # Color for room labels
+    dimensions: true        # Draw inner dimensions
+    inner_area: true        # Display inner area in center of room
+default_layout:
+  bottom_left_corner: [-1, -1]
+  top_right_corner: [10,6]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: 1
+  grid_minor_step: 0.1
+constants:
+  x_placement: 0.5            # constants that can be used in reusable elements
+  y_placement: 0.5            # constants that can be used in reusable elements
+  room_horizontal_length: 3
+  room_vertical_width: 4
+  wall_thickness: 0.15
+ 
+reusable_elements:
+  some_room: "room.yml"       # include files
+  # can define elements here too.
+
+floor_plans:                
+  - title:
+      text: "some_floor"      # main title for the floor plan. It will be a png file name 
+      font_size: 18
+    inherited_elements:
+      - some_room             # include reusable elements. 
+                              # It can be a list of elements or a single element.
+
+    report:                   # report options for the floor plan 
+      anchor_point: [6, 4]
+      areas: true
+      total_area: true
+      notes:
+        - <Put some room notes here>
+
+    options:                   # Options for the floor plan. Overrides default options
+      Door:
+        #label_color: green    # Override color for door labels
+        #dimensions: true      # Draw door dimensions
+        #id_color: None        # Override color for door ids
+      Wall:  # Options for both Wall and WallND
+        #label_color: lightblue # Override color for wall labels. Labels have to be defined
+        #id_color: green	# Id are generated automatically	
+        #dimensions: true       # Add dimensions for walls. Not applicable for WallND
+        #show_invisible: true   # If color is set to "invisible" it will be shown as red
+      Window: 
+        #label_color: green
+        #id_color: yellow
+      Room:
+        #inner_corner_label_color: green   # Display inner corner coordinates
+        #outer_corner_label_color: purple  # Display outer corner coordinates
+
