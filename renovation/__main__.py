@@ -181,7 +181,7 @@ def main() -> None:
             element_type = element_params_copy.get('type')
             if element_type == 'room':
                 # Create room with nested elements
-                room = create_room_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id, global_constants)
+                room = Room.create_from_params(element_params_copy, elements_registry, floor_plan, all_elements, elements_by_id, global_constants)
                 floor_plan.add_element(room)
                 all_elements.append(room)
                 elements_by_id[room.id] = room

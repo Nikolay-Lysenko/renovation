@@ -10,7 +10,7 @@ from renovation.elements.options import get_label_color, get_id_color
 from functools import lru_cache
 
 @lru_cache
-def rotate_point(anchor_point: tuple[float, float],
+def _rotate_point(anchor_point: tuple[float, float],
                  offset_x: float, offset_y: float, angle_rad: float) -> tuple[float, float]:
     """
     Rotate a point around an anchor point.
@@ -19,7 +19,7 @@ def rotate_point(anchor_point: tuple[float, float],
         y' = b + offset_x * sin(theta) + offset_y * cos(theta)
 
     Parameters:
-        anchor_point : tuple (a, b)
+        anchor_point : tuple (a, b) 
             The anchor point coordinates.
         offset_x : float
             X offset of point relative to anchor.
@@ -32,6 +32,7 @@ def rotate_point(anchor_point: tuple[float, float],
         (x_rot, y_rot) : tuple
             Coordinates of rotated point.
     """
+  
     a = anchor_point[0]
     b = anchor_point[1]
 
@@ -43,6 +44,34 @@ def rotate_point(anchor_point: tuple[float, float],
 
     return x_rot, y_rot
 
+
+def rotate_point(anchor_point: tuple[float, float] | list[float],
+                 offset_x: float, offset_y: float, angle_rad: float) -> tuple[float, float]:
+    """
+    Rotate a point around an anchor point.
+    Classic 2D rotation formula:
+        x' = a + offset_x * cos(theta) - offset_y * sin(theta)
+        y' = b + offset_x * sin(theta) + offset_y * cos(theta)
+
+    Parameters:
+        anchor_point : tuple (a, b) or list [a, b]
+            The anchor point coordinates.
+        offset_x : float
+            X offset of point relative to anchor.
+        offset_y : float
+            Y offset of point relative to anchor.
+        angle_rad : float
+            Rotation angle in radians (counter-clockwise).
+
+    Returns:
+        (x_rot, y_rot) : tuple
+            Coordinates of rotated point.
+    """
+    # Convert to tuple if it's a list (for compatibility with caching)
+    if isinstance(anchor_point, list):
+        anchor_point = tuple(anchor_point)
+    return _rotate_point(anchor_point, offset_x, offset_y, angle_rad)
+    
 
 def text_readability_rotation(angle: float) -> float:
     """

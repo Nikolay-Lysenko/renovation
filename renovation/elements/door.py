@@ -32,6 +32,7 @@ class Door(Element):
             to_the_right: bool = False,
             color: str = 'black',
             hinges_point: float = 0.5,
+            opening_outside: bool = False,
             label: str | None = None
     ):
         """
@@ -73,6 +74,7 @@ class Door(Element):
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
         self.hinges_point = hinges_point
+        self.opening_outside = opening_outside
         self.color = color
 
     def get_corners(self) -> list[tuple[float, float]]:
