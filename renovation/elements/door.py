@@ -15,7 +15,7 @@ from renovation.elements.options import get_element_option
 from renovation.elements.info import DimensionArrow
 
 from .element import Element
-from renovation.utils import rotate_point, _render_label_and_id
+from renovation.utils import rotate_point, render_label_and_id
 
 
 class Door(Element):
@@ -215,7 +215,7 @@ class Door(Element):
         # Render label and ID at hinges point with rotation offset
         textrotation = 40 + ( RIGHT_ANGLE_IN_DEGREES if self.to_the_right else 0 )
         textrotation = (360 + textrotation + self.orientation_angle) % 360
-        _render_label_and_id(
+        render_label_and_id(
             ax,
             self,
             'Door',

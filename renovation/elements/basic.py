@@ -15,7 +15,7 @@ from renovation.elements.options import get_dimensions, get_element_option
 from renovation.elements.info import DimensionArrow
 
 from .element import Element
-from renovation.utils import rotate_point, _render_label_and_id
+from renovation.utils import rotate_point, render_label_and_id
 
 
 class WallND(Element):
@@ -122,7 +122,7 @@ class WallND(Element):
         ax.add_patch(patch)
 
         # Render label and ID
-        _render_label_and_id(
+        render_label_and_id(
             ax,
             self,
             'Wall',
@@ -260,7 +260,7 @@ class Window(Element):
             self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
             self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
         )
-        _render_label_and_id(
+        render_label_and_id(
             ax,
             self,
             'Window',

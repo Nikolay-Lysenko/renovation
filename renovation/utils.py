@@ -7,9 +7,9 @@ Author: Krzysztof Bartczak
 import math
 import matplotlib.axes
 from renovation.elements.options import get_label_color, get_id_color
+from functools import lru_cache
 
-
-
+@lru_cache
 def rotate_point(anchor_point: tuple[float, float],
                  offset_x: float, offset_y: float, angle_rad: float) -> tuple[float, float]:
     """
@@ -98,7 +98,7 @@ def _render_text(
     )
 
 
-def _render_label_and_id(
+def render_label_and_id(
         ax: matplotlib.axes.Axes,
         element,
         element_type: str,
