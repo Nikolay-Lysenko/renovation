@@ -73,7 +73,8 @@ class Door(Element):
         self.thickness = thickness
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
-        self.hinges_point = hinges_point
+		# If opening outside, take the opposite hinges point so "1.0" is always extended hinges
+        self.hinges_point = 1 - hinges_point  if opening_outside else hinges_point
         self.opening_outside = opening_outside
         self.color = color
 
@@ -155,29 +156,35 @@ class Door(Element):
         if get_element_option("Door","dimensions"):
             dims_point = rotate_point(anchor_point=self.anchor_point,
                                     offset_x=self.frame_width,
-                                    offset_y=self.thickness * 0.2,
+                                    offset_y=self.thickness * 0.8 if self.opening_outside else self.thickness * 0.2,
                                     angle_rad=orientation_angle_in_rad)
             dimension = DimensionArrow(
                 anchor_point=dims_point,
                 length=self.door_width,
                 orientation_angle=frame_orientation_angle,
-                annotate_above=True,
+                annotate_above=not self.opening_outside,
                 color=get_element_option("Door","label_color", "black")
             )
             dimension.draw(ax)
 
+        # If doors are opening outside, need to offset for thickness as the rectangle gets rotated additional 180
+        if self.opening_outside:
+            anchor_point_x_offset = self.door_schematic_line_thickness
+        else:
+            anchor_point_x_offset = 0
+
         if self.to_the_right:
             hinges_point = rotate_point(anchor_point=self.anchor_point,
-                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
+                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width + anchor_point_x_offset,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
             arc_anchor_point = rotate_point(anchor_point=self.anchor_point,
-                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width,
+                                     offset_x=-self.door_schematic_line_thickness +self.frame_width + self.door_width ,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
         else:
             hinges_point = rotate_point(anchor_point=self.anchor_point,
-                                     offset_x=self.frame_width,
+                                     offset_x=self.frame_width + anchor_point_x_offset,
                                      offset_y=self.thickness * self.hinges_point,
                                      angle_rad=orientation_angle_in_rad)
             arc_anchor_point = rotate_point(anchor_point=self.anchor_point,
@@ -188,18 +195,27 @@ class Door(Element):
         door = Rectangle(
                         hinges_point,
                         self.door_schematic_line_thickness, self.door_width,
-                        angle=self.orientation_angle,
+                        angle=self.orientation_angle + (180 if self.opening_outside else 0), # Additional rot if opening outside
                         facecolor=self.color
+                        #facecolor='orange'
             )
         ax.add_patch(door)
 
         extra_degrees_for_smooth_connection = 2
-        if self.to_the_right:
-            start_angle = RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
-            end_angle = RIGHT_ANGLE_IN_DEGREES + RIGHT_ANGLE_IN_DEGREES
+        if self.opening_outside:
+            if self.to_the_right:
+                start_angle = RIGHT_ANGLE_IN_DEGREES + RIGHT_ANGLE_IN_DEGREES
+                end_angle = RIGHT_ANGLE_IN_DEGREES *3 + extra_degrees_for_smooth_connection
+            else:
+                start_angle = -RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+                end_angle =  0
         else:
-            start_angle = 0
-            end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
+            if self.to_the_right:
+                start_angle = RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+                end_angle = RIGHT_ANGLE_IN_DEGREES + RIGHT_ANGLE_IN_DEGREES
+            else:
+                start_angle = 0
+                end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
         arc = Arc(
             arc_anchor_point,
             2 * (self.door_width - self.door_schematic_line_thickness),
@@ -213,7 +229,10 @@ class Door(Element):
         ax.add_patch(arc)
 
         # Render label and ID at hinges point with rotation offset
-        textrotation = 40 + ( RIGHT_ANGLE_IN_DEGREES if self.to_the_right else 0 )
+        if self.opening_outside:
+            textrotation = 40 + ( RIGHT_ANGLE_IN_DEGREES *2 if self.to_the_right else RIGHT_ANGLE_IN_DEGREES *3 )
+        else:
+            textrotation = 40 + ( RIGHT_ANGLE_IN_DEGREES if self.to_the_right else 0 )
         textrotation = (360 + textrotation + self.orientation_angle) % 360
         render_label_and_id(
             ax,
