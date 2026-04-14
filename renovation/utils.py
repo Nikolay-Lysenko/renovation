@@ -44,6 +44,19 @@ def rotate_point(anchor_point: tuple[float, float],
     return x_rot, y_rot
 
 
+def text_readability_rotation(angle: float) -> float:
+    """
+    Calculate text rotation angle to maintain readability based on element orientation.
+
+    :param angle:
+        element orientation angle in degrees (0-360)
+    :return:
+        text rotation angle in degrees
+    """
+    if 90 < angle <= 270:
+        return (angle + 180) % 360
+    else:
+        return angle
 
 
 def _get_text_alignment(rotation: float) -> tuple[str, str]:
@@ -67,7 +80,8 @@ def _render_text(
         text: str,
         rotation: float,
         color: str,
-        fontsize: int = 9
+        fontsize: int = 9,
+        centered: bool = False
 ) -> None:
     """
     Render text with automatic alignment based on rotation.
@@ -84,8 +98,14 @@ def _render_text(
         text color
     :param fontsize:
         font size for the text
+    :param centered:
+        if True, text will be centered horizontally and vertically at the position
     """
-    horizontalalignment, verticalalignment = _get_text_alignment(rotation)
+    if centered:
+        horizontalalignment = 'center'
+        verticalalignment = 'center'
+    else:
+        horizontalalignment, verticalalignment = _get_text_alignment(rotation)
     ax.text(
         position[0],
         position[1],
@@ -105,7 +125,8 @@ def render_label_and_id(
         position: tuple[float, float],
         rotation: float,
         label_prefix: str = "",
-        id_prefix: str = ""
+        id_prefix: str = "",
+        centered: bool = False
 ) -> None:
     """
     Render both label and ID for an element if colors are configured.
@@ -124,17 +145,19 @@ def render_label_and_id(
         prefix to add before label text
     :param id_prefix:
         prefix to add before id text
+    :param centered:
+        if True, text will be centered horizontally and vertically at the position
     """
 
     # Render label if present and color is configured
     if element.label is not None:
         label_color = get_label_color(element_type)
         if label_color is not None:
-            _render_text(ax, position, label_prefix + element.label, rotation, label_color)
+            _render_text(ax, position, label_prefix + element.label, rotation, label_color, centered=centered)
 
     # Render ID if color is configured
     id_color = get_id_color(element_type)
     if id_color is not None:
-        _render_text(ax, position, id_prefix + element.id, rotation, id_color)
+        _render_text(ax, position, id_prefix + element.id, rotation, id_color, centered=centered)
 
 

@@ -15,7 +15,7 @@ from renovation.elements.options import get_dimensions, get_element_option
 from renovation.elements.info import DimensionArrow
 
 from .element import Element
-from renovation.utils import rotate_point, render_label_and_id
+from renovation.utils import rotate_point, render_label_and_id, text_readability_rotation
 
 
 class WallND(Element):
@@ -225,13 +225,11 @@ class Window(Element):
             facecolor=self.color
         )
         ax.add_patch(first_line)
-        orthogonal_angle_in_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
 
-        shift = self.single_line_thickness
-        window_emptyness_anchor_point= (
-            self.anchor_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
-            self.anchor_point[1] + math.sin(orthogonal_angle_in_rad) * shift
-        )
+        window_emptyness_anchor_point = rotate_point(anchor_point=self.anchor_point,
+                                    offset_x=0,
+                                    offset_y=self.single_line_thickness ,
+                                    angle_rad=(math.radians(self.orientation_angle)))
         window_emptyness = Rectangle(
             window_emptyness_anchor_point,
             self.length,
@@ -241,11 +239,10 @@ class Window(Element):
         )
         ax.add_patch(window_emptyness)
 
-        shift = self.overall_thickness - self.single_line_thickness
-        second_anchor_point = (
-            self.anchor_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
-            self.anchor_point[1] + math.sin(orthogonal_angle_in_rad) * shift
-        )
+        second_anchor_point = rotate_point(anchor_point=self.anchor_point,
+                                    offset_x=0,
+                                    offset_y=self.overall_thickness -self.single_line_thickness ,
+                                    angle_rad=(math.radians(self.orientation_angle)))
         second_line = Rectangle(
             second_anchor_point,
             self.length,
@@ -255,17 +252,18 @@ class Window(Element):
         )
         ax.add_patch(second_line)
 
-        # Render label and ID at midpoint between the two lines
-        label_position = (
-            self.anchor_point[0] + 0.5 * math.cos(orthogonal_angle_in_rad) * shift,
-            self.anchor_point[1] + 0.5 * math.sin(orthogonal_angle_in_rad) * shift
-        )
+        # Render label and ID at midpoint between the two lines and centered horizontally
+        label_position = rotate_point(anchor_point=self.anchor_point,
+                                    offset_x=self.length /2,
+                                    offset_y=self.overall_thickness /2,
+                                    angle_rad=(math.radians(self.orientation_angle)))
         render_label_and_id(
             ax,
             self,
             'Window',
             label_position,
-            self.orientation_angle
+            text_readability_rotation(self.orientation_angle),
+            centered=True
         )
 
 
