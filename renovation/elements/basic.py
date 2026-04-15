@@ -112,12 +112,22 @@ class WallND(Element):
         else:
             draw_color = self.color
 
+        # It this wall have thickness < 0.01 than make it 0.01 so it is actually drawn.
+        # future feature: used dashed line here.
+        # Additionally draw it semi-transparently
+        alfa = 1.0
+        thickness = self.thickness
+        if self.thickness < 0.01:
+            thickness = 0.01
+            alfa = 0.3
+
         patch = Rectangle(
             self.anchor_point,
             self.length,
-            self.thickness,
+            thickness,
             angle=self.orientation_angle,
-            facecolor=draw_color
+            facecolor=draw_color,
+            alpha=alfa
         )
         ax.add_patch(patch)
 
