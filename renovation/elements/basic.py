@@ -132,6 +132,40 @@ class WallND(Element):
             id_prefix="__"
         )
 
+class Wall(WallND):
+    """
+    Wall with dimensions.
+
+    Same as WallND, but includes a dimension arrow from the anchor point to the end of the wall
+    when dimensions option is enabled.
+    """
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw straight wall with optional dimension."""
+        # Draw the wall using parent class
+        super().draw(ax)
+
+        # Skip dimension drawing if wall is invisible and show_invisible is not enabled
+        if self.color == 'invisible':
+            from renovation.elements.options import get_show_invisible
+            if not get_show_invisible():
+                return
+
+        # Check if dimensions should be drawn
+        if get_dimensions():
+            dimension_anchor = rotate_point(anchor_point=self.anchor_point,
+                                    offset_x=0,
+                                    offset_y=min(-0.3,-self.thickness * 2),
+                                    angle_rad=(math.radians(self.orientation_angle)))
+
+            dimension = DimensionArrow(
+                anchor_point=dimension_anchor,
+                length=self.length,
+                orientation_angle=self.orientation_angle,
+                annotate_above=True,
+                color='black'
+            )
+            dimension.draw(ax)
 
 class Window(Element):
     """Window in a wall."""
@@ -266,44 +300,3 @@ class Window(Element):
             centered=True
         )
 
-
-
-class Wall(WallND):
-    """
-    Wall with dimensions.
-
-    Same as WallND, but includes a dimension arrow from the anchor point to the end of the wall
-    when dimensions option is enabled.
-    """
-
-    def draw(self, ax: matplotlib.axes.Axes) -> None:
-        """Draw straight wall with optional dimension."""
-        # Draw the wall using parent class
-        super().draw(ax)
-
-        # Skip dimension drawing if wall is invisible and show_invisible is not enabled
-        if self.color == 'invisible':
-            from renovation.elements.options import get_show_invisible
-            if not get_show_invisible():
-                return
-
-        # Check if dimensions should be drawn
-        if get_dimensions():
-
-            # Calculate offset perpendicular to the wall
-            perpendicular_angle_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
-            offset_distance = self.thickness + 0.2
-            dimension_anchor = (
-                self.anchor_point[0] + offset_distance * math.cos(perpendicular_angle_rad),
-                self.anchor_point[1] + offset_distance * math.sin(perpendicular_angle_rad)
-            )
-
-            # Create dimension arrow from offset anchor point along the wall length
-            # offset perpendicular to the wall
-            dimension = DimensionArrow(
-                anchor_point=dimension_anchor,
-                length=self.length,
-                orientation_angle=self.orientation_angle,
-                color='black'
-            )
-            dimension.draw(ax)
