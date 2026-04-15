@@ -155,7 +155,7 @@ class Wall(WallND):
         if get_dimensions():
             dimension_anchor = rotate_point(anchor_point=self.anchor_point,
                                     offset_x=0,
-                                    offset_y=min(-0.3,-self.thickness * 2),
+                                    offset_y=-min(max(0.3,self.thickness * 2),0.6),
                                     angle_rad=(math.radians(self.orientation_angle)))
 
             dimension = DimensionArrow(
