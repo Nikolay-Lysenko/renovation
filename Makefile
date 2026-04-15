@@ -1,15 +1,12 @@
 PYTHON = .venv/bin/python3
+PYSRC = $(wildcard renovation/*.py)
+PYSRC += $(wildcard renovation/elements/*.py)
 
-.PHONY: all examples room_templates clean
+.PHONY: all clean room_templates playground elements simple
 
-all:
-	@echo "Run 'make examples' to generate example output"
-
-examples: room_templates #todo: add building of all yml files in the example folders
+all: room_templates elements playground simple
 
 # ==========================================
-
-
 
 # ROOM TEMPLATES
 # --------------
@@ -26,21 +23,42 @@ ROOM_TEMPLATE_OUTPUTS = $(foreach ex,$(ROOM_TEMPLATES),$(ROOM_TEMPLATES_ROOT)/$(
 room_templates: $(ROOM_TEMPLATE_OUTPUTS)
 
 # Pattern rule: build output for each example by processing its project_main.yml
-$(ROOM_TEMPLATES_ROOT)/%/output/some_floor.png: $(ROOM_TEMPLATES_ROOT)/%/project_main.yml $(ROOM_TEMPLATES_ROOT)/%/*.yml
-	@echo "Processing example: $*"
+$(ROOM_TEMPLATES_ROOT)/%/output/some_floor.png: $(ROOM_TEMPLATES_ROOT)/%/project_main.yml $(ROOM_TEMPLATES_ROOT)/%/*.yml $(PYSRC)
+	@echo "Processing $<"
 	$(PYTHON) -m renovation -c $<
 
-# xxx
-# --------------
+# INDIVIDUAL ELEMENTS
+# -------------------
+ELEMENTS_PNG = examples/elements/Individual\ elements.png
+elements: $(ELEMENTS_PNG)
 
+$(ELEMENTS_PNG): examples/elements/all_elements.yml $(PYSRC)
+	@echo "Processing $<"
+	$(PYTHON) -m renovation -c $<
 
-# yyy
-# --------------
+# PLAYGROUND
+# ----------
+DOORS_AND_WINDOWS_PNG = examples/playground/Doors\ and\ windows.png
+playground: $(DOORS_AND_WINDOWS_PNG)
 
+$(DOORS_AND_WINDOWS_PNG): examples/playground/doors_and_windows.yml $(PYSRC)
+	@echo "Processing $<"
+	$(PYTHON) -m renovation -c $<
 
+#OTHER
+#-----
+SIMPLE_PNG = examples/simple_no_rooms/Plain\ floor\ plan.png
+simple: $(SIMPLE_PNG)
+
+$(SIMPLE_PNG): examples/simple_no_rooms/simple_floor_plan.yml $(PYSRC)
+	@echo "Processing $<"
+	$(PYTHON) -m renovation -c $<
 
 
 # Clean generated outputs
 clean:
 	rm -f $(ROOM_TEMPLATE_OUTPUTS)
+	rm -f $(ELEMENTS_PNG)
+	rm -f $(DOORS_AND_WINDOWS_PNG)
+	rm -f $(SIMPLE_PNG)
 

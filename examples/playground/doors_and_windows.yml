@@ -1,7 +1,7 @@
 project:
   dpi: 200
   pdf_file: null
-  png_dir: "../images"
+  png_dir: "."
 default_options:
   Door:
     label_color: green
