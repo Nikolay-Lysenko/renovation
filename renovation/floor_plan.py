@@ -162,7 +162,8 @@ class FloorPlan:
             anchor_point: tuple[float, float],
             areas: bool = False,
             total_area: bool = False,
-            notes: list[str] = None
+            notes: list[str] = None,
+            fontsize: int = 11
     ) -> None:
         """
         Draw a report at the specified location on the floor plan.
@@ -175,15 +176,17 @@ class FloorPlan:
             if True, display sum of all room areas
         :param notes:
             optional list of note strings to display at the top of report
+        :param fontsize:
+            font size for the report text
         :return:
             None
         """
         from renovation.elements import Room
         
         x, y = anchor_point
-        line_height = 0.35  # Spacing between lines
+        line_height = 0.3 * fontsize /11 # Spacing between lines
         current_y = y
-        font_size = 11
+        font_size = fontsize
         
         # Draw notes first
         if notes:

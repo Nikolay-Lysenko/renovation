@@ -210,7 +210,8 @@ def main() -> None:
                 anchor_point=anchor_point,
                 areas=report_params.get('areas', False),
                 total_area=report_params.get('total_area', False),
-                notes=report_params.get('notes', None)
+                notes=report_params.get('notes', None),
+                fontsize=report_params.get('fontsize', 11)
             )
 
         floor_plans.append(floor_plan)
