@@ -11,7 +11,7 @@ from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
-from .multipurpose import Line, Polygon
+from .multipurpose import Line, Polygon, Circle
 from .room import Room
 
 
@@ -38,6 +38,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'wallnd': WallND,
         'wall_lamp': WallLamp,
         'window': Window,
+        'circle': Circle
     }
     return registry
 
