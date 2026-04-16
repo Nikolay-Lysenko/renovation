@@ -138,6 +138,21 @@ class Room(Element):
                     rel_x + room_anchor_point[0],
                     rel_y + room_anchor_point[1]
                 )
+            # start and and for lines
+            if 'first_point' in element_def:
+                rel_x, rel_y = element_def['first_point']
+                element_def['first_point'] = (
+                    rel_x + room_anchor_point[0],
+                    rel_y + room_anchor_point[1]
+                )
+            if 'second_point' in element_def:
+                rel_x, rel_y = element_def['second_point']
+                element_def['second_point'] = (
+                    rel_x + room_anchor_point[0],
+                    rel_y + room_anchor_point[1]
+                )
+
+
 
             # For walls without explicit color, use room's color
             is_wall = element_type in ['wall', 'wallnd']

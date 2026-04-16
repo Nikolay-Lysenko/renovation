@@ -108,7 +108,17 @@ def resolve_element_params(params: dict, global_constants: dict, room_constants:
         merged_values.update(room_vars)
 
     # Resolve specific fields that can use constants/vars
-    fields_to_resolve = ['anchor_point', 'thickness', 'length', 'doorway_width', 'door_width', 'overall_thickness']
+    fields_to_resolve = ['anchor_point',
+                            'thickness', 
+                            'length',
+                            'doorway_width', 
+                            'door_width',
+                            'overall_thickness',
+                            'first_point',
+                            'second_point',
+                            'radius',
+                            'width',
+                            ]
 
     for field in fields_to_resolve:
         if field in params:
