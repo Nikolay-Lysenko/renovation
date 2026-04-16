@@ -31,7 +31,7 @@ class Door(Element):
             orientation_angle: float = 0,
             to_the_right: bool = False,
             color: str = 'black',
-            hinges_point: float = 0.5,
+            hinges_point: float = 0.95,
             opening_outside: bool = False,
             label: str | None = None
     ):
