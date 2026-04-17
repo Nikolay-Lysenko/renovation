@@ -10,10 +10,9 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 
-from floor_planner.constants import METERS_PER_INCH
-from floor_planner.elements import Element
-from floor_planner.elements.registry import element_sorter_by_type
-from floor_planner.elements import Room
+from .constants import METERS_PER_INCH
+from .elements import Element, Room
+from .elements.registry import element_sorter_by_type
 
 
 

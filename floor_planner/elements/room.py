@@ -8,10 +8,10 @@ Author: Krzysztof Bartczak
 import math
 import matplotlib.axes
 
+from ..variables import validate_constants, resolve_constants, resolve_element_params
 from .element import Element
-from floor_planner.variables import validate_constants, resolve_constants, resolve_element_params
-from floor_planner.elements.options import get_id_color,get_label_color, get_element_option
-from floor_planner.elements.info import DimensionArrow, TextBox
+from .info import DimensionArrow, TextBox
+from .options import get_id_color, get_label_color, get_element_option
 
 
 class Room(Element):

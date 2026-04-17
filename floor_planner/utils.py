@@ -9,7 +9,7 @@ from functools import lru_cache
 
 import matplotlib.axes
 
-from floor_planner.elements.options import get_label_color, get_id_color
+from .elements.options import get_label_color, get_id_color
 
 @lru_cache
 def _rotate_point(anchor_point: tuple[float, float],

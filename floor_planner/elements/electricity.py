@@ -10,7 +10,7 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Circle
 
-from floor_planner.constants import RIGHT_ANGLE_IN_DEGREES
+from ..constants import RIGHT_ANGLE_IN_DEGREES
 from .element import Element
 
 
