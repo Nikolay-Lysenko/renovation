@@ -3,6 +3,8 @@
 Author: Krzysztof Bartczak
 """
 
+import re
+
 def validate_constants(constants_dict: dict, scope_name: str = "global") -> None:
     """
     Validate that all constants are floating point numbers.
@@ -48,7 +50,6 @@ def resolve_constants(value, constants_dict: dict):
 
         # Otherwise, treat as arithmetic expression
         # Replace constant names with their values
-        import re
         expression = value
 
         # Sort constants by length (descending) to avoid partial replacements

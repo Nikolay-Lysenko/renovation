@@ -13,6 +13,7 @@ import numpy as np
 from floor_planner.constants import METERS_PER_INCH
 from floor_planner.elements import Element
 from floor_planner.elements.registry import element_sorter_by_type
+from floor_planner.elements import Room
 
 
 
@@ -181,8 +182,6 @@ class FloorPlan:
         :return:
             None
         """
-        from floor_planner.elements import Room
-        
         x, y = anchor_point
         line_height = 0.3 * fontsize /11 # Spacing between lines
         current_y = y

@@ -11,12 +11,11 @@ import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
 from floor_planner.constants import RIGHT_ANGLE_IN_DEGREES
-from floor_planner.elements.options import get_dimensions, get_element_option
+from floor_planner.elements.options import get_dimensions, get_element_option, get_show_invisible
 from floor_planner.elements.info import DimensionArrow
+from floor_planner.utils import rotate_point, render_label_and_id, text_readability_rotation
 
 from .element import Element
-from floor_planner.utils import rotate_point, render_label_and_id, text_readability_rotation
-from floor_planner.elements.options import get_show_invisible
 
 
 class WallND(Element):
