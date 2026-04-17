@@ -1,7 +1,21 @@
+# NOTE:
+#      This project does not use rooms as it is possible to draw everything with primitive elements.
+#      For more complex projects, it is recommended to use rooms as they are easier to manage.
+#      Main advantage of rooms is that primitives inside room offset to room anchor point and not to
+#      origin of the plan.
+
+# NOTE:
+#      This is an original file from Nicolay, the first author of this module.
+#      There had to be some edits following a changes in the way doors are defined.
+#      Also, it have a manually adjusted anchor points and dimensions.
+#      In updated module it is possible to use constants and variables and use arithmetic
+#      expressions and no need to manually adjust anchor points and dimensions as they
+#      can be based on each other and will be calculated automatically.
+
 project:
   dpi: 200
   pdf_file: null
-  png_dir: "../images"
+  png_dir: "."
 default_options:
   # Elements can be labeled. It will show up on drawing when its color is specified
   # Each element can have a label, drawing of labels is supported for
@@ -11,7 +25,7 @@ default_options:
   # Id can be drawn on the plan (with id_color) and can be used for referencing elements
   # in report.
   #
-  # `default_options` specify default values for all elements of a given type. 
+  # `default_options` specify default values for all elements of a given type.
   # They can be overridden in options in floor_plan.
   Door:
     # label_color: green
@@ -112,6 +126,7 @@ reusable_elements:
       thickness: 0.05
       orientation_angle: 270
       to_the_right: true
+      opening_outside: true
       color: gray
     # Wall below the door
     - type: wall
@@ -164,11 +179,13 @@ reusable_elements:
       single_line_thickness: 0.02
     # French balcony: Left door
     - type: door
-      anchor_point: [3.8, 6.19]
+      anchor_point: [3.8 + 0.825, 6.19 + 0.075]
       doorway_width: 0.825
       door_width: 0.75
       thickness: 0.075
+      orientation_angle: 180
       to_the_right: true
+      opening_outside: false
       color: gray
     # French balcony: Right door
     - type: door
@@ -177,6 +194,8 @@ reusable_elements:
       door_width: 0.75
       thickness: 0.075
       orientation_angle: 180
+      to_the_right: false
+      opening_outside: false
       color: gray
     # French balcony: Left wall
     - type: wall
@@ -247,9 +266,9 @@ floor_plans:
     options:
       Door:
         id_color: red
-      Wall:  
+      Wall:
         id_color: lightblue
-      Window: 
+      Window:
         id_color: green
   - title:
       text: "Floor plan with auto dimensions"
@@ -257,7 +276,7 @@ floor_plans:
     inherited_elements:
       - walls_windows_doors
     options:
-      Wall:  
+      Wall:
         dimensions: true
   - title:
       text: "Plain floor plan with manual dimensions"

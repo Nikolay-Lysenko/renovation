@@ -98,3 +98,41 @@ class Polygon(Element):
             edgecolor=self.color
         )
         ax.add_patch(polygon)
+
+class Circle(Element):
+    """Circle element"""
+
+    def __init__(
+            self,
+            anchor_point: tuple[float, float],
+            radius: float,
+            color: str = 'black',
+            label: str | None = None
+    ):
+        """
+        Initialize an instance.
+
+        :param anchor_point:
+            coordinates of the center (in meters)
+        :param radius:
+            radius of the circle (in meters)
+        :param color:
+            color to use for drawing the circle
+        :param label:
+            optional label for the element
+        """
+        super().__init__(label=label)
+        self.center = anchor_point
+        self.radius = radius
+        self.color = color
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw circle"""
+        circle = patches.Circle(
+            self.center,
+            self.radius,
+            fill=True,
+            facecolor=self.color,
+            edgecolor=self.color
+        )
+        ax.add_patch(circle)

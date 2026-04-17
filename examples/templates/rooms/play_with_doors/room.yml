@@ -1,0 +1,265 @@
+  - type: room
+    label: "All doors options"
+    constants:
+      door_spacing: 0.6         # Each door and window going to be spaced out by this distance
+                                # When using in project, set the anchor point of a door
+                                # according to your need.
+      doorway_width: 1
+      door_width: 0.9
+      window_width: 1.4
+
+    vars:
+      anchor_x: x_placement
+      anchor_y: y_placement
+      room_length: room_horizontal_length
+      room_width: room_vertical_width
+      wall_n_thickness: wall_thickness*1
+      wall_e_thickness: wall_thickness*1.3
+      wall_s_thickness: wall_thickness*1.6
+      wall_w_thickness: wall_thickness*1.9
+
+    anchor_point: [anchor_x,anchor_y]
+
+    elements:
+    # Edge walls
+      - type: wall
+        anchor_point: [0, 0]
+        length: room_width
+        thickness: wall_s_thickness
+        color: black
+        orientation_angle: 0
+        room_edge: true
+        label: "South wall"
+      - type: wall
+        anchor_point: [room_width, 0]
+        length: room_length
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        color: black
+        room_edge: true
+        label: "East wall"
+      - type: wall
+        anchor_point: [room_width, room_length]
+        length: room_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        color: black
+        room_edge: true
+        label: "North wall"
+      - type: wall
+        anchor_point: [0, room_length]
+        length: room_length
+        thickness: wall_w_thickness
+        color: black
+        orientation_angle: 270
+        room_edge: true
+        label: "West wall"
+
+
+    # Doors and south wall
+      - type: door
+        anchor_point: [door_spacing, 0]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_s_thickness
+        orientation_angle: 0
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "south door l inside"
+        color: brown
+      - type: door
+        anchor_point: [door_spacing + (door_spacing+doorway_width)*1, 0]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_s_thickness
+        orientation_angle: 0
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "south door r inside"
+        color: brown
+      - type: door
+        anchor_point: [door_spacing + (door_spacing+doorway_width)*2, 0]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_s_thickness
+        orientation_angle: 0
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "south door l outside"
+        color: brown
+      - type: door
+        anchor_point: [door_spacing + (door_spacing+doorway_width)*3, 0]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_s_thickness
+        orientation_angle: 0
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "south door r outside"
+        color: brown
+      - type: window
+        anchor_point: [door_spacing + (door_spacing+doorway_width)*4,0]
+        length: window_width
+        overall_thickness: wall_s_thickness
+        orientation_angle: 0
+        label: "South window"
+    # Doors and windows north wall
+      - type: door
+        anchor_point: [doorway_width + door_spacing, room_length]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "north door r inside"
+        color: brown
+      - type: door
+        anchor_point: [doorway_width + door_spacing + (door_spacing+doorway_width)*1, room_length]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "north door l inside"
+        color: brown
+      - type: door
+        anchor_point: [doorway_width + door_spacing + (door_spacing+doorway_width)*2, room_length]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "north door r outside"
+        color: brown
+      - type: door
+        anchor_point: [doorway_width + door_spacing + (door_spacing+doorway_width)*3, room_length]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_n_thickness
+        orientation_angle: 180
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "north door l outside"
+        color: brown
+      - type: window
+        length: window_width
+        anchor_point: [window_width + door_spacing + (door_spacing+doorway_width)*4, room_length]
+        length: window_width
+        overall_thickness: wall_n_thickness
+        orientation_angle: 180
+        label: "north window"
+    # Doors and windows west wall
+      - type: door
+        anchor_point: [0, door_spacing + doorway_width]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_w_thickness
+        orientation_angle: 270
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "west r door outside"
+        color: black
+      - type: door
+        anchor_point: [0, door_spacing + doorway_width +  (door_spacing+doorway_width)*1]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_w_thickness
+        orientation_angle: 270
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "west l door outside"
+        color: black
+      - type: door
+        anchor_point: [0, door_spacing + doorway_width +  (door_spacing+doorway_width)*2]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_w_thickness
+        orientation_angle: 270
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "west r door inside"
+        color: black
+      - type: door
+        anchor_point: [0, door_spacing + doorway_width +  (door_spacing+doorway_width)*3]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_w_thickness
+        orientation_angle: 270
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "west l door inside"
+        color: black
+      - type: window
+        length: window_width
+        anchor_point: [0, door_spacing + window_width +  (door_spacing+doorway_width)*4]
+        length: window_width
+        overall_thickness: wall_w_thickness
+        orientation_angle: 270
+        label: "west window"
+    # Doors and windows east wall
+      - type: door
+        anchor_point: [room_width , door_spacing ]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "east l door inside"
+        color: black
+      - type: door
+        anchor_point: [room_width , door_spacing + (door_spacing+doorway_width)*1]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: false
+        label: "east r door inside"
+        color: black
+      - type: door
+        anchor_point: [room_width , door_spacing + (door_spacing+doorway_width)*2]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        to_the_right: false
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "east l door outside"
+        color: black
+      - type: door
+        anchor_point: [room_width , door_spacing + (door_spacing+doorway_width)*3]
+        doorway_width: doorway_width
+        door_width: door_width
+        thickness: wall_e_thickness
+        orientation_angle: 90
+        to_the_right: true
+        hinges_point: 0.95 #  How far hinges are related to swing of door.
+        opening_outside: true
+        label: "east r door outside"
+        color: black
+      - type: window
+        length: window_width
+        anchor_point: [room_width,door_spacing + (door_spacing+doorway_width)*4]
+        length: window_width
+        overall_thickness: wall_e_thickness
+        orientation_angle: 90
+        label: "east window"

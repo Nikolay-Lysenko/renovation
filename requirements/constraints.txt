@@ -15,7 +15,6 @@ pip-upgrader==1.4.15
 pyparsing==3.2.1
 python-dateutil==2.9.0
 PyYAML==6.0.2
--e git+ssh://git@github.com/Nikolay-Lysenko/renovation.git@8c2b9b8bfafeed263830ac259d59875183e2de33#egg=renovation
 requests==2.32.3
 six==1.17.0
 terminaltables==3.1.10

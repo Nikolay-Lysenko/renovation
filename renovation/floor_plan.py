@@ -12,6 +12,8 @@ import numpy as np
 
 from renovation.constants import METERS_PER_INCH
 from renovation.elements import Element
+from renovation.elements.registry import element_sorter_by_type
+
 
 
 class FloorPlan:
@@ -52,6 +54,8 @@ class FloorPlan:
 
         fig = plt.figure(figsize=(fig_width, fig_height))
         ax = fig.add_subplot(111)
+        # Adjust margins (values are fractions of figure width/height, 0-1)
+        fig.subplots_adjust(left=0.025, right=0.975, bottom=0.025, top=0.975)
         ax.set_aspect('equal')
         ax.tick_params(
             which='both',
@@ -98,6 +102,7 @@ class FloorPlan:
         self.fig = fig
         self.ax = ax
         self.title = None
+        self.elements: list[Element] = []
 
     def add_title(
             self, text: str, font_size: int, rel_x: float = 0.5, rel_y: float = 0.95, **kwargs
@@ -135,4 +140,110 @@ class FloorPlan:
         :return:
             None
         """
-        element.draw(self.ax)
+        self.elements.append(element)
+
+    def draw_elements(self) -> None:
+        """
+        Draw elements added by add_element method.
+
+        :param elements:
+            None
+        :return:
+            None
+        """
+        print (f"Drawing floor plan {self.title} elements...")
+
+        for element in sorted(self.elements, key=element_sorter_by_type):
+            #print(f"  Drawing element: {element.__class__.__name__} with id {element.id}")
+            element.draw(self.ax)
+
+    def draw_report(
+            self, 
+            anchor_point: tuple[float, float],
+            areas: bool = False,
+            total_area: bool = False,
+            notes: list[str] = None,
+            fontsize: int = 11
+    ) -> None:
+        """
+        Draw a report at the specified location on the floor plan.
+        
+        :param anchor_point:
+            (x, y) coordinates where report should be drawn
+        :param areas:
+            if True, list all rooms with their areas
+        :param total_area:
+            if True, display sum of all room areas
+        :param notes:
+            optional list of note strings to display at the top of report
+        :param fontsize:
+            font size for the report text
+        :return:
+            None
+        """
+        from renovation.elements import Room
+        
+        x, y = anchor_point
+        line_height = 0.3 * fontsize /11 # Spacing between lines
+        current_y = y
+        font_size = fontsize
+        
+        # Draw notes first
+        if notes:
+            for note in notes:
+                self.ax.text(
+                    x, current_y, note,
+                    fontsize=font_size,
+                    verticalalignment='top',
+                    horizontalalignment='left',
+                    style='italic'
+                )
+                current_y -= line_height
+            
+            # Add extra spacing after notes
+            current_y -= line_height * 0.5
+        
+        # Get all Room elements
+        rooms = [elem for elem in self.elements if isinstance(elem, Room)]
+        
+        # Filter rooms that have labels
+        labeled_rooms = [room for room in rooms if room.label]
+        
+        # Draw room areas
+        if areas and labeled_rooms:
+            # Header
+            self.ax.text(
+                x, current_y, "Room Areas:",
+                fontsize=font_size + 1,
+                verticalalignment='top',
+                horizontalalignment='left',
+                weight='bold'
+            )
+            current_y -= line_height
+            
+            # List each room
+            for room in labeled_rooms:
+                area_text = f"  • {room.label}: {room.inner_area:.2f} m²"
+                self.ax.text(
+                    x, current_y, area_text,
+                    fontsize=font_size,
+                    verticalalignment='top',
+                    horizontalalignment='left'
+                )
+                current_y -= line_height
+            
+            # Add spacing before total
+            current_y -= line_height * 0.3
+        
+        # Draw total area
+        if total_area and labeled_rooms:
+            total = sum(room.inner_area for room in labeled_rooms)
+            total_text = f"Total Area: {total:.2f} m²"
+            self.ax.text(
+                x, current_y, total_text,
+                fontsize=font_size + 1,
+                verticalalignment='top',
+                horizontalalignment='left',
+                weight='bold'
+            )
+   

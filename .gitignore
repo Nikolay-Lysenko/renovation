@@ -186,7 +186,7 @@ configs/
 *.png
 
 # Generated md files
-docs/demo_configs/*.md
+examples/**/*.md
 
 # VS code files
 .vscode/

@@ -1,7 +1,7 @@
 project:
   dpi: 200
   pdf_file: null
-  png_dir: "../images"
+  png_dir: "."
 default_options:
   # See 'simple_floor_plan.yml' for examples of how to set these options.
   Door:
@@ -13,8 +13,8 @@ default_options:
     dimensions: false
     show_invisible: false # Not used here. See 'room_tests.yml' for example.
 default_layout:
-  bottom_left_corner: [0, 0.4]
-  top_right_corner: [4, 10]
+  bottom_left_corner: [0, 0]
+  top_right_corner: [8, 11]
   scale_numerator: 1
   scale_denominator: 40
   grid_major_step: null
@@ -34,12 +34,12 @@ reusable_elements:
       transparency: 0.0
     # Wall
     - type: wall
-      anchor_point: [2.2, 8.9]
+      anchor_point: [4.2, 9.2]
       length: 1.6
       thickness: 0.2
       label: "wall label"
     - type: text_box
-      anchor_point: [1.0, 9.0]
+      anchor_point: [1.0, 9.3]
       lines:
         - "Wall:"
       transparency: 0.0
@@ -67,17 +67,17 @@ reusable_elements:
       transparency: 0.0
     # Door
     - type: wall
-      anchor_point: [2.2, 7.0]
+      anchor_point: [4.2, 7.0]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: wall
-      anchor_point: [3.5, 7.0]
+      anchor_point: [5.5, 7.0]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: door
-      anchor_point: [2.5, 7.2]
+      anchor_point: [4.5, 7.2]
       doorway_width: 1.0
       door_width: 0.9
       thickness: 0.05
@@ -112,7 +112,7 @@ reusable_elements:
       transparency: 0.0
     # Dimension arrow
     - type: dimension_arrow
-      anchor_point: [2.2, 5.55]
+      anchor_point: [4.2, 5.55]
       length: 1.6
     - type: text_box
       anchor_point: [1.0, 5.5]
