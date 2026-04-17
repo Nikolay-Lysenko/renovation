@@ -1,12 +1,12 @@
 """
-Utities for renovation project.
+Utities for floor_planner project.
 
 Author: Krzysztof Bartczak
 """
 
 import math
 import matplotlib.axes
-from renovation.elements.options import get_label_color, get_id_color
+from floor_planner.elements.options import get_label_color, get_id_color
 from functools import lru_cache
 
 @lru_cache

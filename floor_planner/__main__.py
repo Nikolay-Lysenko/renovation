@@ -11,12 +11,12 @@ from collections import defaultdict
 
 import yaml
 
-from renovation.elements import create_elements_registry
-from renovation.floor_plan import FloorPlan
-from renovation.project import Project
-from renovation.markdown_report import generate_elements_report
-from renovation.variables import validate_constants, resolve_constants, resolve_element_params
-from renovation.elements.room import Room
+from floor_planner.elements import create_elements_registry
+from floor_planner.floor_plan import FloorPlan
+from floor_planner.project import Project
+from floor_planner.markdown_report import generate_elements_report
+from floor_planner.variables import validate_constants, resolve_constants, resolve_element_params
+from floor_planner.elements.room import Room
 
 def load_reusable_elements(reusable_elements_config: dict, config_dir: Path) -> dict:
     """
@@ -92,7 +92,7 @@ def main() -> None:
     with open(config_path) as config_file:
         settings = yaml.load(config_file, Loader=yaml.FullLoader)
 
-    from renovation import elements
+    from floor_planner import elements
 
     # Reset ID counters for consistent IDs
     elements.reset_id_counters()

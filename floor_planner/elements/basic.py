@@ -10,12 +10,13 @@ import math
 import matplotlib.axes
 from matplotlib.patches import Arc, Rectangle
 
-from renovation.constants import RIGHT_ANGLE_IN_DEGREES
-from renovation.elements.options import get_dimensions, get_element_option
-from renovation.elements.info import DimensionArrow
+from floor_planner.constants import RIGHT_ANGLE_IN_DEGREES
+from floor_planner.elements.options import get_dimensions, get_element_option
+from floor_planner.elements.info import DimensionArrow
 
 from .element import Element
-from renovation.utils import rotate_point, render_label_and_id, text_readability_rotation
+from floor_planner.utils import rotate_point, render_label_and_id, text_readability_rotation
+from floor_planner.elements.options import get_show_invisible
 
 
 class WallND(Element):
@@ -103,7 +104,6 @@ class WallND(Element):
         """Draw straight wall."""
         # Check if wall is invisible
         if self.color == 'invisible':
-            from renovation.elements.options import get_show_invisible
             # Skip drawing if show_invisible is not enabled
             if not get_show_invisible():
                 return
@@ -157,7 +157,6 @@ class Wall(WallND):
 
         # Skip dimension drawing if wall is invisible and show_invisible is not enabled
         if self.color == 'invisible':
-            from renovation.elements.options import get_show_invisible
             if not get_show_invisible():
                 return
 

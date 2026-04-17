@@ -9,8 +9,9 @@ import math
 import matplotlib.axes
 
 from .element import Element
-from renovation.variables import validate_constants, resolve_constants, resolve_element_params
-
+from floor_planner.variables import validate_constants, resolve_constants, resolve_element_params
+from floor_planner.elements.options import get_id_color,get_label_color, get_element_option
+from floor_planner.elements.info import DimensionArrow, TextBox
 
 
 class Room(Element):
@@ -353,7 +354,6 @@ class Room(Element):
         Draw room label and dimensions if options are configured.
         Room walls are drawn separately.
         """
-        from renovation.elements.options import get_id_color,get_label_color, get_element_option
 
         # Draw room label if label color option is configured
         label_color = get_label_color('Room')
@@ -376,7 +376,6 @@ class Room(Element):
         # Draw dimensions if dimensions option is configured
         dimensions_enabled = get_element_option('Room', 'dimensions', False)
         if dimensions_enabled:
-            from renovation.elements.info import DimensionArrow
 
             # Horizontal dimension: offset from inner bottom edge by 1/5th of inner height
             horizontal_offset = self.inner_vertical_length / 5
@@ -412,7 +411,6 @@ class Room(Element):
         # Draw inner area if inner_area option is configured
         inner_area_enabled = get_element_option('Room', 'inner_area', False)
         if inner_area_enabled:
-            from renovation.elements.info import TextBox
 
             # Calculate center of the room from internal corners
             # internal_corners[0] = bottom-left, internal_corners[2] = top-right

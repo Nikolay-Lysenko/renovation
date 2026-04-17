@@ -10,7 +10,7 @@ from typing import Literal, Union
 
 from matplotlib.backends.backend_pdf import PdfPages
 
-from renovation.floor_plan import FloorPlan
+from floor_planner.floor_plan import FloorPlan
 
 
 class Project:

@@ -3,12 +3,12 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "renovation"
+name = "floor_planner"
 version = "0.2.0"
 description = "Drawing tool that produces floor plans or area plans. Extended fork with constants, variables, multiple YAML files, rooms, and more."
 readme = "README.md"
 keywords = ["apartments", "floor_plan", "floor_plans", "area_plan", "architectural_drawing", "interior_design"]
-urls = {Homepage = "https://github.com/krzysztof.bartczak/renovation"}
+urls = {Homepage = "https://github.com/krzysztofander/floor-planner"}
 authors = [
     {name = "Krzysztof Bartczak", email = "krzysztof.bartczak@gmail.com"},
     {name = "Nikolay Lysenko", email = "nikolay-lysenco@yandex.ru"}
@@ -29,6 +29,6 @@ dependencies = [
 
 [tool.setuptools]
 packages = [
-    "renovation",
-    "renovation.elements"
+    "floor_planner",
+    "floor_planner.elements"
 ]

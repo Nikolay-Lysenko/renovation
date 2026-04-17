@@ -10,9 +10,9 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 
-from renovation.constants import METERS_PER_INCH
-from renovation.elements import Element
-from renovation.elements.registry import element_sorter_by_type
+from floor_planner.constants import METERS_PER_INCH
+from floor_planner.elements import Element
+from floor_planner.elements.registry import element_sorter_by_type
 
 
 
@@ -181,7 +181,7 @@ class FloorPlan:
         :return:
             None
         """
-        from renovation.elements import Room
+        from floor_planner.elements import Room
         
         x, y = anchor_point
         line_height = 0.3 * fontsize /11 # Spacing between lines

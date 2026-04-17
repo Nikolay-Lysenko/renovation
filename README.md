@@ -1,4 +1,4 @@
-# Renovation
+# Floor Planner
 
 ## Overview
 
@@ -26,7 +26,7 @@ Create Python virtual environment, download this module and install all requirem
 
 To generate floor plans, run:
 ```bash
-python -m renovation -c /path/to/config.yml
+python -m floor_planner -c /path/to/config.yml
 ```
 
 To generate images of templates and other examples use make

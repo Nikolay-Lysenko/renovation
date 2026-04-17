@@ -1,6 +1,6 @@
 PYTHON = .venv/bin/python3
-PYSRC = $(wildcard renovation/*.py)
-PYSRC += $(wildcard renovation/elements/*.py)
+PYSRC = $(wildcard floor_planner/*.py)
+PYSRC += $(wildcard floor_planner/elements/*.py)
 
 .PHONY: all clean room_templates playground elements simple
 
@@ -25,7 +25,7 @@ room_templates: $(ROOM_TEMPLATE_OUTPUTS)
 # Pattern rule: build output for each example by processing its project_main.yml
 $(ROOM_TEMPLATES_ROOT)/%/output/some_floor.png: $(ROOM_TEMPLATES_ROOT)/%/project_main.yml $(ROOM_TEMPLATES_ROOT)/%/*.yml $(PYSRC)
 	@echo "Processing $<"
-	$(PYTHON) -m renovation -c $<
+	$(PYTHON) -m floor_planner -c $<
 
 # INDIVIDUAL ELEMENTS
 # -------------------
@@ -34,7 +34,7 @@ elements: $(ELEMENTS_PNG)
 
 $(ELEMENTS_PNG): examples/elements/all_elements.yml $(PYSRC)
 	@echo "Processing $<"
-	$(PYTHON) -m renovation -c $<
+	$(PYTHON) -m floor_planner -c $<
 
 # PLAYGROUND
 # ----------
@@ -43,7 +43,7 @@ playground: $(DOORS_AND_WINDOWS_PNG)
 
 $(DOORS_AND_WINDOWS_PNG): examples/playground/doors_and_windows.yml $(PYSRC)
 	@echo "Processing $<"
-	$(PYTHON) -m renovation -c $<
+	$(PYTHON) -m floor_planner -c $<
 
 #OTHER
 #-----
@@ -52,7 +52,7 @@ simple: $(SIMPLE_PNG)
 
 $(SIMPLE_PNG): examples/simple_no_rooms/simple_floor_plan.yml $(PYSRC)
 	@echo "Processing $<"
-	$(PYTHON) -m renovation -c $<
+	$(PYTHON) -m floor_planner -c $<
 
 
 # Clean generated outputs
