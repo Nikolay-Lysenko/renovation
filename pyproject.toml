@@ -4,12 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "renovation"
-version = "0.1.1"
-description = "Drawing tool that produces floor plans needed to renovate an apartment"
+version = "0.2.0"
+description = "Drawing tool that produces floor plans or area plans. Extended fork with constants, variables, multiple YAML files, rooms, and more."
 readme = "README.md"
-keywords = ["apartments", "drawing", "floor_plan", "floor_plans"]
-urls = {Homepage = "https://github.com/Nikolay-Lysenko/renovation"}
-authors = [{name = "Nikolay Lysenko", email = "nikolay-lysenco@yandex.ru"}]
+keywords = ["apartments", "floor_plan", "floor_plans", "area_plan", "architectural_drawing", "interior_design"]
+urls = {Homepage = "https://github.com/krzysztof.bartczak/renovation"}
+authors = [
+    {name = "Krzysztof Bartczak", email = "krzysztof.bartczak@gmail.com"},
+    {name = "Nikolay Lysenko", email = "nikolay-lysenco@yandex.ru"}
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: End Users/Desktop",
