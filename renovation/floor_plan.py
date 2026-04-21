@@ -5,13 +5,22 @@ Author: Nikolay Lysenko
 """
 
 
-from typing import Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from renovation.constants import METERS_PER_INCH
 from renovation.elements import Element
+
+
+@dataclass
+class AnchoredPivotPoint:
+    """Pivot point that depends on an outer element."""
+    anchor_id: str
+    x_shift: float
+    y_shift: float
 
 
 class FloorPlan:
@@ -97,7 +106,8 @@ class FloorPlan:
 
         self.fig = fig
         self.ax = ax
-        self.title = None
+        self.title: Optional[str] = None
+        self.anchors: dict[str, tuple[float, float]] = {}
 
     def add_title(
             self, text: str, font_size: int, rel_x: float = 0.5, rel_y: float = 0.95, **kwargs
@@ -126,13 +136,59 @@ class FloorPlan:
         )
         self.title = text
 
-    def add_element(self, element: Element) -> None:
+    def get_coordinates_of_anchored_pivot_point(
+            self, pivot_point_params: dict[str, Any]
+    ) -> tuple[float, float]:
+        """
+        Calculate coordinates of anchored pivot point.
+
+        :param pivot_point_params:
+            parameters of anchored pivot point
+        :return:
+            coordinates of the pivot point
+        """
+        try:
+            anchored_pivot_point = AnchoredPivotPoint(**pivot_point_params)
+        except TypeError:
+            raise RuntimeError(
+                f"Wrong anchored pivot point configuration: {pivot_point_params}"
+            )
+        try:
+            anchor = self.anchors[anchored_pivot_point.anchor_id]
+        except KeyError:
+            raise RuntimeError(
+                f"Anchor with id={anchored_pivot_point.anchor_id} is referenced before assignment."
+            )
+        return anchor[0] + anchored_pivot_point.x_shift, anchor[1] + anchored_pivot_point.y_shift
+
+
+    def add_element(self, element_class: type[Element], element_params: dict[str, Any]) -> None:
         """
         Add element.
 
-        :param element:
-            element to be added
+        :param element_class:
+            class of the element to be added
+        :param element_params:
+            parameters of the element to be added
         :return:
             None
         """
+        if isinstance(element_params["pivot_point"], dict):
+            element_params["pivot_point"] = self.get_coordinates_of_anchored_pivot_point(
+                element_params["pivot_point"]
+            )
+        if isinstance(element_params.get("another_pivot_point"), dict):
+            element_params["another_pivot_point"] = self.get_coordinates_of_anchored_pivot_point(
+                element_params["another_pivot_point"]
+            )
+        anchors_params = element_params.pop("anchors", [])
+
+        element = element_class(**element_params)
         element.draw(self.ax)
+
+        for anchor_params in anchors_params:
+            if anchor_params["id"] in self.anchors:
+                raise RuntimeError(f"Anchor id={anchor_params['id']} is used twice.")
+            self.anchors[anchor_params["id"]] = element.calculate_anchor_coordinates(
+                anchor_params["type"]
+            )
