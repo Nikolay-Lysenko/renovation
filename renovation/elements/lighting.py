@@ -6,20 +6,23 @@ Author: Nikolay Lysenko
 
 
 import math
+from typing import Optional
 
 import matplotlib.axes
 from matplotlib.patches import Arc, Circle, Rectangle
 
 from renovation.constants import RIGHT_ANGLE_IN_DEGREES
+from renovation.utils import shift_in_direction
+from .anchor_mixins import CornerAnchorsMixin, PivotAnchorMixin
 from .element import Element
 
 
-class CeilingLamp(Element):
+class CeilingLamp(PivotAnchorMixin, Element):
     """Ceiling lamp represented by a circle and a cross inside."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
+            pivot_point: tuple[float, float],
             symbol_diameter: float,
             line_width: float = 0.5,
             color: str = 'black'
@@ -27,8 +30,8 @@ class CeilingLamp(Element):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point; here, it is the center of the symbol
+        :param pivot_point:
+            coordinates (in meters) of pivot point; here, it is the center of the symbol
         :param symbol_diameter:
             diameter of the symbol (in meters)
         :param line_width:
@@ -38,7 +41,7 @@ class CeilingLamp(Element):
         :return:
             freshly created instance of `CeilingLamp` class
         """
-        self.anchor_point = anchor_point
+        self.pivot_point = pivot_point
         self.symbol_diameter = symbol_diameter
         self.line_width = line_width
         self.color = color
@@ -47,7 +50,7 @@ class CeilingLamp(Element):
         """Draw ceiling lamp."""
         radius = 0.5 * self.symbol_diameter
         circle = Circle(
-            self.anchor_point,
+            self.pivot_point,
             radius,
             fill=False,
             lw=self.line_width,
@@ -55,38 +58,32 @@ class CeilingLamp(Element):
         )
         ax.add_patch(circle)
 
+        cross_ends = [
+            shift_in_direction(self.pivot_point, radius, 1.5 * RIGHT_ANGLE_IN_DEGREES),
+            shift_in_direction(self.pivot_point, radius, -0.5 * RIGHT_ANGLE_IN_DEGREES),
+            shift_in_direction(self.pivot_point, radius, 2.5 * RIGHT_ANGLE_IN_DEGREES),
+            shift_in_direction(self.pivot_point, radius, 0.5 * RIGHT_ANGLE_IN_DEGREES),
+        ]
         ax.plot(
-            [
-                self.anchor_point[0] - 0.5 * math.sqrt(2) * radius,
-                self.anchor_point[0] + 0.5 * math.sqrt(2) * radius
-            ],
-            [
-                self.anchor_point[1] - 0.5 * math.sqrt(2) * radius,
-                self.anchor_point[1] + 0.5 * math.sqrt(2) * radius
-            ],
+            [cross_ends[0][0], cross_ends[1][0]],
+            [cross_ends[0][1], cross_ends[1][1]],
             lw=self.line_width,
             color=self.color
         )
         ax.plot(
-            [
-                self.anchor_point[0] - 0.5 * math.sqrt(2) * radius,
-                self.anchor_point[0] + 0.5 * math.sqrt(2) * radius
-            ],
-            [
-                self.anchor_point[1] + 0.5 * math.sqrt(2) * radius,
-                self.anchor_point[1] - 0.5 * math.sqrt(2) * radius
-            ],
+            [cross_ends[2][0], cross_ends[3][0]],
+            [cross_ends[2][1], cross_ends[3][1]],
             lw=self.line_width,
             color=self.color
         )
 
 
-class WallLamp(Element):
+class WallLamp(PivotAnchorMixin, Element):
     """Wall lamp (e.g., sconce)."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
+            pivot_point: tuple[float, float],
             symbol_diameter: float,
             orientation_angle: float = 0.0,
             stub_relative_depth: float = 0.3,
@@ -96,15 +93,15 @@ class WallLamp(Element):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point;
+        :param pivot_point:
+            coordinates (in meters) of pivot point;
             here, it is the center of wall connection segment
         :param symbol_diameter:
             diameter of the symbol (in meters)
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the lamp;
             it is measured between X-axis and the lamp in positive direction (counterclockwise);
-            initial lamp is rotated around anchor point to get the desired orientation
+            initial lamp is rotated around pivot point to get the desired orientation
         :param stub_relative_depth:
             ratio of stub depth to its width
         :param line_width:
@@ -114,7 +111,7 @@ class WallLamp(Element):
         :return:
             freshly created instance of `WallLamp` class
         """
-        self.anchor_point = anchor_point
+        self.pivot_point = pivot_point
         self.symbol_diameter = symbol_diameter
         self.orientation_angle = orientation_angle
         self.stub_relative_depth = stub_relative_depth
@@ -123,15 +120,13 @@ class WallLamp(Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw wall lamp."""
-        orientation_angle_in_radians = math.radians(self.orientation_angle)
         stub_width = 0.5 * math.sqrt(2) * self.symbol_diameter
         stub_depth = self.stub_relative_depth * stub_width
-        stub_anchor_point = (
-            self.anchor_point[0] - 0.5 * math.cos(orientation_angle_in_radians) * stub_width,
-            self.anchor_point[1] - 0.5 * math.sin(orientation_angle_in_radians) * stub_width
+        stub_pivot_point = shift_in_direction(
+            self.pivot_point, -0.5 * stub_width, self.orientation_angle
         )
         stub = Rectangle(
-            stub_anchor_point,
+            stub_pivot_point,
             stub_width,
             stub_depth,
             angle=self.orientation_angle,
@@ -141,12 +136,9 @@ class WallLamp(Element):
         )
         ax.add_patch(stub)
 
-        orthogonal_angle_in_radians = orientation_angle_in_radians + math.pi / 2
         shift = stub_depth + 0.5 * stub_width
-        arc_center = (
-            self.anchor_point[0] + math.cos(orthogonal_angle_in_radians) * shift,
-            self.anchor_point[1] + math.sin(orthogonal_angle_in_radians) * shift
-        )
+        orthogonal_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
+        arc_center = shift_in_direction(self.pivot_point, shift, orthogonal_angle)
         arc = Arc(
             arc_center,
             self.symbol_diameter,
@@ -158,63 +150,65 @@ class WallLamp(Element):
         )
         ax.add_patch(arc)
 
-        cross_angles = [
-            orientation_angle_in_radians - 0.75 * math.pi,
-            orientation_angle_in_radians + 0.25 * math.pi,
-            orientation_angle_in_radians + 0.75 * math.pi,
-            orientation_angle_in_radians - 0.25 * math.pi
+        radius = 0.5 * self.symbol_diameter
+        cross_ends = [
+            shift_in_direction(
+                arc_center, radius, self.orientation_angle + 1.5 * RIGHT_ANGLE_IN_DEGREES
+            ),
+            shift_in_direction(
+                arc_center, radius, self.orientation_angle - 0.5 * RIGHT_ANGLE_IN_DEGREES
+            ),
+            shift_in_direction(
+                arc_center, radius, self.orientation_angle + 2.5 * RIGHT_ANGLE_IN_DEGREES
+            ),
+            shift_in_direction(
+                arc_center, radius, self.orientation_angle + 0.5 * RIGHT_ANGLE_IN_DEGREES
+            )
         ]
         ax.plot(
-            [
-                arc_center[0] + 0.5 * math.cos(cross_angles[0]) * self.symbol_diameter,
-                arc_center[0] + 0.5 * math.cos(cross_angles[1]) * self.symbol_diameter
-            ],
-            [
-                arc_center[1] + 0.5 * math.sin(cross_angles[0]) * self.symbol_diameter,
-                arc_center[1] + 0.5 * math.sin(cross_angles[1]) * self.symbol_diameter
-            ],
+            [cross_ends[0][0], cross_ends[1][0]],
+            [cross_ends[0][1], cross_ends[1][1]],
             lw=self.line_width,
             color=self.color
         )
         ax.plot(
-            [
-                arc_center[0] + 0.5 * math.cos(cross_angles[2]) * self.symbol_diameter,
-                arc_center[0] + 0.5 * math.cos(cross_angles[3]) * self.symbol_diameter
-            ],
-            [
-                arc_center[1] + 0.5 * math.sin(cross_angles[2]) * self.symbol_diameter,
-                arc_center[1] + 0.5 * math.sin(cross_angles[3]) * self.symbol_diameter
-            ],
+            [cross_ends[2][0], cross_ends[3][0]],
+            [cross_ends[2][1], cross_ends[3][1]],
             lw=self.line_width,
             color=self.color
         )
 
 
-class LEDStrip(Element):
+class LEDStrip(CornerAnchorsMixin, Element):
     """LED strip."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
-            length: float,
+            pivot_point: tuple[float, float],
             width: float,
+            length: Optional[float] = None,
             orientation_angle: float = 0.0,
+            another_pivot_point: Optional[tuple[float, float]] = None,
             line_width: float = 0.5,
             color: str = 'black'
     ):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point; here, it is the bottom left corner
-        :param length:
-            length of the strip (in meters)
+        :param pivot_point:
+            coordinates (in meters) of the pivot point;
+            here, it is the corner that is the bottom left one prior to rotation specified by
+            `orientation_angle`
         :param width:
             width of the strip (in meters)
+        :param length:
+            length of the strip (in meters);
+            this argument is used only if `another_pivot_point` is not passed
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the strip;
             it is measured between X-axis and the strip in positive direction (counterclockwise);
-            initial strip is rotated around anchor point to get the desired orientation
+            initial strip is rotated around pivot point to get the desired orientation;
+            this argument is used only if `another_pivot_point` is not passed
         :param line_width:
             width of lines for `matplotlib`
         :param color:
@@ -222,9 +216,15 @@ class LEDStrip(Element):
         :return:
             freshly created instance of `LEDStrip` class
         """
-        self.anchor_point = anchor_point
-        self.length = length
+        if another_pivot_point is not None:
+            x_shift = another_pivot_point[0] - pivot_point[0]
+            y_shift = another_pivot_point[1] - pivot_point[1]
+            length = math.sqrt(x_shift ** 2 + y_shift ** 2)
+            orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
+        self.pivot_point = pivot_point
         self.width = width
+        self.thickness = width  # This attribute is needed by `CornerAnchorsMixin`.
+        self.length = length
         self.orientation_angle = orientation_angle
         self.line_width = line_width
         self.color = color
@@ -233,7 +233,7 @@ class LEDStrip(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw LED strip."""
         rectangle = Rectangle(
-            self.anchor_point,
+            self.pivot_point,
             self.length,
             self.width,
             angle=self.orientation_angle,
@@ -249,10 +249,10 @@ class LEDStrip(Element):
         y_offset = 0.5 * self.width
         for i in range(n_circles):
             circle_center = (
-                self.anchor_point[0]
+                self.pivot_point[0]
                 + math.cos(orientation_angle_in_radians) * (2 * i + 1) * x_offset
                 + math.cos(orientation_angle_in_radians + math.pi / 2) * y_offset,
-                self.anchor_point[1]
+                self.pivot_point[1]
                 + math.sin(orientation_angle_in_radians) * (2 * i + 1) * x_offset
                 + math.sin(orientation_angle_in_radians + math.pi / 2) * y_offset
             )
@@ -266,12 +266,12 @@ class LEDStrip(Element):
             ax.add_patch(circle)
 
 
-class Switch(Element):
+class Switch(PivotAnchorMixin, Element):
     """Lighting switch."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
+            pivot_point: tuple[float, float],
             symbol_length: float,
             orientation_angle: float = 0,
             two_key: bool = False,
@@ -282,15 +282,15 @@ class Switch(Element):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point;
-            the point shared with a wall is the anchor point
+        :param pivot_point:
+            coordinates (in meters) of pivot point;
+            the point shared with a wall is the pivot point
         :param symbol_length:
             length of the symbol, not of the real switch
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the switch;
             it is measured between X-axis and the symbol in positive direction (counterclockwise);
-            initial symbol is rotated around anchor point to get the desired orientation
+            initial symbol is rotated around pivot point to get the desired orientation
         :param two_key:
             binary indicator whether the switch has two keys
         :param pass_through:
@@ -302,7 +302,7 @@ class Switch(Element):
         :return:
             freshly created instance of `Switch` class
         """
-        self.anchor_point  = anchor_point
+        self.pivot_point  = pivot_point
         self.symbol_length = symbol_length
         self.orientation_angle = orientation_angle
         self.two_key = two_key
@@ -315,25 +315,18 @@ class Switch(Element):
             ax: matplotlib.axes.Axes,
             circle_center: tuple[float, float],
             radius: float,
-            key_angle_in_degrees: float
+            key_angle: float
     ) -> None:
         """Draw key symbol."""
-        key_angle_in_radians = math.radians(key_angle_in_degrees)
-        orthogonal_angle_in_radians = key_angle_in_radians - math.pi / 2
-
-        key_corner = (
-            circle_center[0] + 3 * radius * math.cos(key_angle_in_radians),
-            circle_center[1] + 3 * radius * math.sin(key_angle_in_radians)
-        )
+        key_corner = shift_in_direction(circle_center, 3 * radius, key_angle)
         ax.plot(
             [circle_center[0], key_corner[0]],
             [circle_center[1], key_corner[1]],
             lw=self.line_width,
             color=self.color
         )
-        key_tip = (
-            key_corner[0] + 4 / 3 * radius * math.cos(orthogonal_angle_in_radians),
-            key_corner[1] + 4 / 3 * radius * math.sin(orthogonal_angle_in_radians)
+        key_tip = shift_in_direction(
+            key_corner, 4 / 3 * radius, key_angle - RIGHT_ANGLE_IN_DEGREES
         )
         ax.plot(
             [key_corner[0], key_tip[0]],
@@ -342,13 +335,9 @@ class Switch(Element):
             color=self.color
         )
         if self.pass_through:
-            middle_point = (
-                circle_center[0] + 2 * radius * math.cos(key_angle_in_radians),
-                circle_center[1] + 2 * radius * math.sin(key_angle_in_radians)
-            )
-            second_tip_end = (
-                middle_point[0] + 2 / 3 * radius * math.cos(orthogonal_angle_in_radians),
-                middle_point[1] + 2 / 3 * radius * math.sin(orthogonal_angle_in_radians)
+            middle_point = shift_in_direction(circle_center, 2 * radius, key_angle)
+            second_tip_end = shift_in_direction(
+                middle_point, 2 / 3 * radius, key_angle - RIGHT_ANGLE_IN_DEGREES
             )
             ax.plot(
                 [middle_point[0], second_tip_end[0]],
@@ -360,12 +349,9 @@ class Switch(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw switch."""
         radius = self.symbol_length / 4
-        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
+        tip_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
 
-        circle_center = (
-            self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
-            self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
-        )
+        circle_center = shift_in_direction(self.pivot_point, radius, tip_angle)
         circle = Circle(
             circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color, lw=0.1
         )

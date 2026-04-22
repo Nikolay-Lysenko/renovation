@@ -48,10 +48,10 @@ def main() -> None:
             for element_params in settings['reusable_elements'].get(set_name, []):
                 element_class = elements_registry[element_params['type']]
                 element_params = {k: v for k, v in element_params.items() if k != 'type'}
-                floor_plan.add_element(element_class(**element_params))
+                floor_plan.add_element(element_class, element_params)
         for element_params in floor_plan_params.get('elements', []):
             element_class = elements_registry[element_params.pop('type')]
-            floor_plan.add_element(element_class(**element_params))
+            floor_plan.add_element(element_class, element_params)
         floor_plans.append(floor_plan)
 
     project = Project(floor_plans, settings['project']['dpi'])
