@@ -173,7 +173,7 @@ class FloorPlan:
         :return:
             None
         """
-        if isinstance(element_params["pivot_point"], dict):
+        if isinstance(element_params.get("pivot_point"), dict):
             element_params["pivot_point"] = self.get_coordinates_of_anchored_pivot_point(
                 element_params["pivot_point"]
             )

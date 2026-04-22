@@ -5,21 +5,21 @@ Author: Nikolay Lysenko
 """
 
 
-import math
-
 import matplotlib.axes
 from matplotlib.patches import Arc, Circle
 
 from renovation.constants import RIGHT_ANGLE_IN_DEGREES
+from renovation.utils import shift_in_direction
+from .anchor_mixins import PivotAnchorMixin
 from .element import Element
 
 
-class PowerOutlet(Element):
+class PowerOutlet(PivotAnchorMixin, Element):
     """Power outlet."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
+            pivot_point: tuple[float, float],
             length: float,
             orientation_angle: float = 0,
             waterproof: bool = False,
@@ -31,15 +31,15 @@ class PowerOutlet(Element):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point;
-            the center of the segment shared with a wall is anchor point
+        :param pivot_point:
+            coordinates (in meters) of pivot point;
+            the center of the segment shared with a wall is pivot point
         :param length:
             length of the power outlet (in meters)
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the power outlet;
             it is measured between X-axis and the outlet in positive direction (counterclockwise);
-            initial outlet is rotated around anchor point to get the desired orientation
+            initial outlet is rotated around pivot point to get the desired orientation
         :param waterproof:
             indicator whether the power outlet is waterproof
         :param high_voltage:
@@ -54,7 +54,7 @@ class PowerOutlet(Element):
         :return:
             freshly created instance of `PowerOutlet` class
         """
-        self.anchor_point = anchor_point
+        self.pivot_point = pivot_point
         self.length = length
         self.orientation_angle = orientation_angle
         self.waterproof = waterproof
@@ -66,7 +66,7 @@ class PowerOutlet(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw power outlet."""
         arc = Arc(
-            self.anchor_point,
+            self.pivot_point,
             self.length,
             self.length,
             theta1=self.orientation_angle,
@@ -77,27 +77,17 @@ class PowerOutlet(Element):
         ax.add_patch(arc)
 
         half_length = 0.5 * self.length
-        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
-        arc_middle = (
-            self.anchor_point[0] + half_length * math.cos(tip_angle_in_radians),
-            self.anchor_point[1] + half_length * math.sin(tip_angle_in_radians)
-        )
+        tip_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
+        arc_middle = shift_in_direction(self.pivot_point, half_length, tip_angle)
         ax.plot(
-            [self.anchor_point[0], arc_middle[0]],
-            [self.anchor_point[1], arc_middle[1]],
+            [self.pivot_point[0], arc_middle[0]],
+            [self.pivot_point[1], arc_middle[1]],
             lw=self.line_width,
             color=self.color
         )
 
-        orientation_angle_in_radians = math.radians(self.orientation_angle)
-        bar_left_end = (
-            arc_middle[0] - half_length * math.cos(orientation_angle_in_radians),
-            arc_middle[1] - half_length * math.sin(orientation_angle_in_radians)
-        )
-        bar_right_end = (
-            arc_middle[0] + half_length * math.cos(orientation_angle_in_radians),
-            arc_middle[1] + half_length * math.sin(orientation_angle_in_radians)
-        )
+        bar_left_end = shift_in_direction(arc_middle, -half_length, self.orientation_angle)
+        bar_right_end = shift_in_direction(arc_middle, half_length, self.orientation_angle)
         ax.plot(
             [bar_left_end[0], bar_right_end[0]],
             [bar_left_end[1], bar_right_end[1]],
@@ -105,10 +95,7 @@ class PowerOutlet(Element):
             color=self.color
         )
 
-        tip_end = (
-            self.anchor_point[0] + self.length * math.cos(tip_angle_in_radians),
-            self.anchor_point[1] + self.length * math.sin(tip_angle_in_radians)
-        )
+        tip_end = shift_in_direction(self.pivot_point, self.length, tip_angle)
         ax.plot(
             [arc_middle[0], tip_end[0]],
             [arc_middle[1], tip_end[1]],
@@ -118,27 +105,17 @@ class PowerOutlet(Element):
 
         if self.waterproof:
             angle_in_degrees = self.orientation_angle + 1.5 * RIGHT_ANGLE_IN_DEGREES
-            angle_in_radians = math.radians(angle_in_degrees)
-            radius_end = (
-                self.anchor_point[0] + half_length * math.cos(angle_in_radians),
-                self.anchor_point[1] + half_length * math.sin(angle_in_radians)
-            )
+            radius_end = shift_in_direction(self.pivot_point, half_length, angle_in_degrees)
             ax.plot(
-                [self.anchor_point[0], radius_end[0]],
-                [self.anchor_point[1], radius_end[1]],
+                [self.pivot_point[0], radius_end[0]],
+                [self.pivot_point[1], radius_end[1]],
                 lw=self.line_width,
                 color=self.color
             )
 
         if self.high_voltage:
-            left_tip_end = (
-                tip_end[0] - 0.5 * half_length * math.cos(orientation_angle_in_radians),
-                tip_end[1] - 0.5 * half_length * math.sin(orientation_angle_in_radians)
-            )
-            right_tip_end = (
-                tip_end[0] + 0.5 * half_length * math.cos(orientation_angle_in_radians),
-                tip_end[1] + 0.5 * half_length * math.sin(orientation_angle_in_radians)
-            )
+            left_tip_end = shift_in_direction(tip_end, -0.5 * half_length, self.orientation_angle)
+            right_tip_end = shift_in_direction(tip_end, 0.5 * half_length, self.orientation_angle)
             ax.plot(
                 [arc_middle[0], left_tip_end[0]],
                 [arc_middle[1], left_tip_end[1]],
@@ -163,12 +140,12 @@ class PowerOutlet(Element):
             ax.add_patch(circle)
 
 
-class ElectricalCable(Element):
+class ElectricalCable(PivotAnchorMixin, Element):
     """Electrical cable for direct power supply without any outlets."""
 
     def __init__(
             self,
-            anchor_point: tuple[float, float],
+            pivot_point: tuple[float, float],
             symbol_length: float,
             orientation_angle: float = 0,
             n_arcs: int = 4,
@@ -178,15 +155,15 @@ class ElectricalCable(Element):
         """
         Initialize an instance.
 
-        :param anchor_point:
-            coordinates (in meters) of anchor point;
-            the center of the segment shared with a wall is anchor point
+        :param pivot_point:
+            coordinates (in meters) of pivot point;
+            the center of the segment shared with a wall is pivot point
         :param symbol_length:
             length of the symbol, not of the real cable
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the electrical cable;
             it is measured between X-axis and the symbol in positive direction (counterclockwise);
-            initial symbol is rotated around anchor point to get the desired orientation
+            initial symbol is rotated around pivot point to get the desired orientation
         :param n_arcs:
             number of turns representing a curved cable
         :param line_width:
@@ -196,7 +173,7 @@ class ElectricalCable(Element):
         :return:
             freshly created instance of `ElectricalCable` class
         """
-        self.anchor_point = anchor_point
+        self.pivot_point = pivot_point
         self.symbol_length = symbol_length
         self.orientation_angle = orientation_angle
         self.n_arcs = n_arcs
@@ -206,21 +183,15 @@ class ElectricalCable(Element):
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw electrical cable."""
         radius = self.symbol_length / (2 * (self.n_arcs + 1))
-        tip_angle_in_radians = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
-        circle_center = (
-            self.anchor_point[0] + radius * math.cos(tip_angle_in_radians),
-            self.anchor_point[1] + radius * math.sin(tip_angle_in_radians)
-        )
+        tip_angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
+        circle_center = shift_in_direction(self.pivot_point, radius, tip_angle)
         circle = Circle(
             circle_center, radius, fill=True, facecolor=self.color, edgecolor=self.color, lw=0.1
         )
         ax.add_patch(circle)
 
         for i in range(self.n_arcs):
-            arc_center = (
-                self.anchor_point[0] + (3 + 2 * i) * radius * math.cos(tip_angle_in_radians),
-                self.anchor_point[1] + (3 + 2 * i) * radius * math.sin(tip_angle_in_radians)
-            )
+            arc_center = shift_in_direction(self.pivot_point, (3 + 2 * i) * radius, tip_angle)
             arc = Arc(
                 arc_center,
                 2 * radius,

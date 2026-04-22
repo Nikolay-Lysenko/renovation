@@ -129,9 +129,9 @@ class Window(CornerAnchorsMixin, Element):
             length = math.sqrt(x_shift ** 2 + y_shift ** 2)
             orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
         self.pivot_point = pivot_point
-        self.length = length
         self.thickness = overall_thickness
         self.single_line_thickness = single_line_thickness
+        self.length = length
         self.orientation_angle = orientation_angle
         self.color = color
 
@@ -221,8 +221,6 @@ class Door(CornerAnchorsMixin, Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw the door, its opening trajectory, and the door frame."""
-        orientation_angle_in_rad = math.radians(self.orientation_angle)
-
         frame_orientation_angle = self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
         frame_with_hinges = Rectangle(
             self.pivot_point,
@@ -250,7 +248,7 @@ class Door(CornerAnchorsMixin, Element):
         )
         if self.to_the_right:
             hinges_point = shift_in_direction(
-                hinges_point, self.thickness, self.orientation_angle
+                hinges_point, self.thickness, self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
             )
             door = Rectangle(
                 hinges_point,
@@ -269,9 +267,7 @@ class Door(CornerAnchorsMixin, Element):
             )
         ax.add_patch(door)
 
-        arc_pivot_point = shift_in_direction(
-            hinges_point, self.thickness, orientation_angle_in_rad
-        )
+        arc_pivot_point = shift_in_direction(hinges_point, self.thickness, self.orientation_angle)
         extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
             start_angle = -RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection

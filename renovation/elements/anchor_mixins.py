@@ -30,10 +30,6 @@ class PivotAnchorMixin:
         return self.pivot_point
 
 
-class TwoEndsAnchorsMixin:
-    """Mixin that provides anchors at the two ends of an element."""
-
-
 class CornerAnchorsMixin:
     """Mixin that provides anchors at the four corners of a rectangular object."""
 
@@ -44,8 +40,8 @@ class CornerAnchorsMixin:
         :param anchor_type:
             one of:
             * 'corner_one' (the pivot point),
-            * 'corner_two' (the next corner in the counter-clockwise direction),
-            * 'corner_three' (the corner after the next one in the counter-clockwise direction),
+            * 'corner_two' (the next corner in the counterclockwise direction),
+            * 'corner_three' (the corner after the next one in the counterclockwise direction),
             * 'corner_four' (the next corner in the clockwise direction)
         :return:
             coordinates of the anchor point
