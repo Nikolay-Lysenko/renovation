@@ -190,5 +190,5 @@ class FloorPlan:
             if anchor_params["id"] in self.anchors:
                 raise RuntimeError(f"Anchor id={anchor_params['id']} is used twice.")
             self.anchors[anchor_params["id"]] = element.calculate_anchor_coordinates(
-                anchor_params["type"]
+                anchor_params.get("type")
             )

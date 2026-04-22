@@ -5,12 +5,12 @@ Author: Nikolay Lysenko
 """
 
 
-from .basic import Door, Wall, Window
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
 from .multipurpose import Line, Polygon
+from .wall_window_door import Door, Wall, Window
 
 
 def create_elements_registry() -> dict[str, type(Element)]:

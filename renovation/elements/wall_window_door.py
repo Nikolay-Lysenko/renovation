@@ -1,5 +1,5 @@
 """
-Draw basic elements that represent walls, windows, and doors.
+Draw elements that represent walls, windows, and doors.
 
 Author: Nikolay Lysenko
 """
@@ -13,10 +13,11 @@ from matplotlib.patches import Arc, Rectangle
 
 from renovation.constants import RIGHT_ANGLE_IN_DEGREES
 from renovation.utils import shift_in_direction
+from .anchor_mixins import CornerAnchorsMixin
 from .element import Element
 
 
-class Wall(Element):
+class Wall(CornerAnchorsMixin, Element):
     """
     Straight wall.
 
@@ -78,45 +79,17 @@ class Wall(Element):
         )
         ax.add_patch(patch)
 
-    def calculate_anchor_coordinates(self, anchor_type: str) -> tuple[float, float]:
-        """
-        Calculate coordinates of a point that can be used as anchor for other elements.
 
-        :param anchor_type:
-            one of 'corner_one' (the pivot point),
-            'corner_two' (the next corner in the counter-clockwise direction),
-            'corner_three' (again, the next corner in the counter-clockwise direction),
-            and 'corner_four'
-        :return:
-            coordinates of the anchor point
-        """
-        if anchor_type == "corner_one":
-            return self.pivot_point
-        elif anchor_type == "corner_two":
-            return shift_in_direction(self.pivot_point, self.length, self.orientation_angle)
-        elif anchor_type == "corner_three":
-            return shift_in_direction(
-                shift_in_direction(self.pivot_point, self.length, self.orientation_angle),
-                self.thickness,
-                self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
-            )
-        elif anchor_type == "corner_four":
-            return shift_in_direction(
-                self.pivot_point, self.thickness, self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
-            )
-        else:
-            raise ValueError(f"Anchor type '{anchor_type}' is not supported by `Wall` class.")
-
-
-class Window(Element):
+class Window(CornerAnchorsMixin, Element):
     """Window in a wall."""
 
     def __init__(
             self,
             pivot_point: tuple[float, float],
-            length: float,
             overall_thickness: float,
             single_line_thickness: float,
+            length: Optional[float] = None,
+            another_pivot_point: Optional[tuple[float, float]] = None,
             orientation_angle: float = 0,
             color: str = 'black',
     ):
@@ -126,16 +99,21 @@ class Window(Element):
         :param pivot_point:
             coordinates (in meters) of pivot point;
             bottom left point is pivot point if `orientation_angle == 0`
-        :param length:
-            length of the window (in meters)
         :param overall_thickness:
             total thickness of the window (in meters)
         :param single_line_thickness:
-            thickness of a single outer line forming window (in meters)
+            thickness of a single outer line forming the window (in meters)
+        :param length:
+            length of the window (in meters);
+            this argument is used only if `another_pivot_point` is not passed
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the window;
             it is measured between X-axis and the window in positive direction (counterclockwise);
-            initial window is rotated around pivot point to get the desired orientation
+            initial window is rotated around pivot point to get the desired orientation;
+            this argument is used only if `another_pivot_point` is not passed
+        :param another_pivot_point:
+            coordinates of additional pivot point (in meters);
+            bottom right point is this pivot point if `orientation_angle == 0`
         :param color:
             color to use for drawing the window
         :return:
@@ -145,9 +123,14 @@ class Window(Element):
         if internal_thickness <= 0:
             raise ValueError("Window can not be drawn due to invalid thicknesses.")
 
+        if another_pivot_point is not None:
+            x_shift = another_pivot_point[0] - pivot_point[0]
+            y_shift = another_pivot_point[1] - pivot_point[1]
+            length = math.sqrt(x_shift ** 2 + y_shift ** 2)
+            orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
         self.pivot_point = pivot_point
         self.length = length
-        self.overall_thickness = overall_thickness
+        self.thickness = overall_thickness
         self.single_line_thickness = single_line_thickness
         self.orientation_angle = orientation_angle
         self.color = color
@@ -163,14 +146,11 @@ class Window(Element):
         )
         ax.add_patch(first_line)
 
-        orthogonal_angle_in_rad = math.radians(self.orientation_angle + RIGHT_ANGLE_IN_DEGREES)
-        shift = self.overall_thickness - self.single_line_thickness
-        second_pivot_point = (
-            self.pivot_point[0] + math.cos(orthogonal_angle_in_rad) * shift,
-            self.pivot_point[1] + math.sin(orthogonal_angle_in_rad) * shift
-        )
+        shift = self.thickness - self.single_line_thickness
+        angle = self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
+        second_line_pivot_point = shift_in_direction(self.pivot_point, shift, angle)
         second_line = Rectangle(
-            second_pivot_point,
+            second_line_pivot_point,
             self.length,
             self.single_line_thickness,
             angle=self.orientation_angle,
@@ -179,16 +159,17 @@ class Window(Element):
         ax.add_patch(second_line)
 
 
-class Door(Element):
+class Door(CornerAnchorsMixin, Element):
     """Single door."""
 
     def __init__(
             self,
             pivot_point: tuple[float, float],
-            doorway_width: float,
-            door_width: float,
             thickness: float,
+            door_width: float,
+            doorway_width: Optional[float] = None,
             orientation_angle: float = 0,
+            another_pivot_point: Optional[tuple[float, float]] = None,
             to_the_right: bool = False,
             color: str = 'black'
     ):
@@ -199,17 +180,22 @@ class Door(Element):
             coordinates (in meters) of pivot point; here, it is the door frame corner
             that is on the same side with hinges and is on the side where the door opens
             (given `to_the_right` is set to `False`, else it is on the opposite side)
-        :param doorway_width:
-            width of the doorway (in meters), i.e. width of the door itself
-            plus the width of both sides of the door frame
-        :param door_width:
-            width of the door itself (in meters)
         :param thickness:
             thickness of the door (in meters)
+        :param door_width:
+            width of the door itself (in meters)
+        :param doorway_width:
+            width of the doorway (in meters), i.e. width of the door itself
+            plus the width of both sides of the door frame;
+            this argument is used only if `another_pivot_point` is not passed
         :param orientation_angle:
             angle (in degrees) that specifies orientation of the doorway;
             it is measured between X-axis and the doorway in positive direction (counterclockwise);
-            initial doorway is rotated around pivot point to get the desired orientation
+            initial doorway is rotated around pivot point to get the desired orientation;
+            this argument is used only if `another_pivot_point` is not passed
+        :param another_pivot_point:
+            coordinates (in meters) of another pivot point; here, it is the second door frame corner
+            from the same side that contains the first pivot point
         :param to_the_right:
             binary indicator whether the door opens to the right if someone looks at it
             from the hinges point along the doorway
@@ -218,11 +204,17 @@ class Door(Element):
         :return:
             freshly created instance of `Door` class
         """
+        if another_pivot_point is not None:
+            x_shift = another_pivot_point[0] - pivot_point[0]
+            y_shift = another_pivot_point[1] - pivot_point[1]
+            doorway_width = math.sqrt(x_shift ** 2 + y_shift ** 2)
+            orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
         self.pivot_point = pivot_point
-        self.doorway_width = doorway_width
-        self.door_width = door_width
-        self.frame_width = (doorway_width - door_width) / 2
         self.thickness = thickness
+        self.door_width = door_width
+        self.doorway_width = doorway_width
+        self.length = doorway_width  # This attribute is needed by `CornerAnchorsMixin`.
+        self.frame_width = (doorway_width - door_width) / 2
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
         self.color = color
@@ -241,10 +233,8 @@ class Door(Element):
         )
         ax.add_patch(frame_with_hinges)
 
-        shift = self.frame_width + self.door_width
-        frame_without_hinges_pivot_point = (
-            self.pivot_point[0] + math.cos(orientation_angle_in_rad) * shift,
-            self.pivot_point[1] + math.sin(orientation_angle_in_rad) * shift
+        frame_without_hinges_pivot_point = shift_in_direction(
+            self.pivot_point, self.frame_width + self.door_width, self.orientation_angle
         )
         frame_without_hinges = Rectangle(
             frame_without_hinges_pivot_point,
@@ -255,14 +245,12 @@ class Door(Element):
         )
         ax.add_patch(frame_without_hinges)
 
-        hinges_point = (
-            self.pivot_point[0] + math.cos(orientation_angle_in_rad) * self.frame_width,
-            self.pivot_point[1] + math.sin(orientation_angle_in_rad) * self.frame_width
+        hinges_point = shift_in_direction(
+            self.pivot_point, self.frame_width, self.orientation_angle
         )
         if self.to_the_right:
-            hinges_point = (
-                hinges_point[0] + math.sin(orientation_angle_in_rad) * self.thickness,
-                hinges_point[1] - math.cos(orientation_angle_in_rad) * self.thickness
+            hinges_point = shift_in_direction(
+                hinges_point, self.thickness, self.orientation_angle
             )
             door = Rectangle(
                 hinges_point,
@@ -281,9 +269,8 @@ class Door(Element):
             )
         ax.add_patch(door)
 
-        arc_pivot_point = (
-            hinges_point[0] + math.cos(orientation_angle_in_rad) * self.thickness,
-            hinges_point[1] + math.sin(orientation_angle_in_rad) * self.thickness
+        arc_pivot_point = shift_in_direction(
+            hinges_point, self.thickness, orientation_angle_in_rad
         )
         extra_degrees_for_smooth_connection = 2
         if self.to_the_right:
