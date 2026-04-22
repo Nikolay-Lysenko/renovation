@@ -5,7 +5,7 @@ Author: Nikolay Lysenko
 """
 
 
-from .anchor_mixins import CornerAnchorsMixin
+from .anchor_mixins import CornerAnchorsMixin, PivotAnchorMixin
 from .electricity import ElectricalCable, PowerOutlet
 from .element import  Element
 from .info import DimensionArrow, TextBox
@@ -24,6 +24,7 @@ ___all__ = [
     'Element',
     'LEDStrip',
     'Line',
+    'PivotAnchorMixin',
     'Polygon',
     'PowerOutlet',
     'Switch',
