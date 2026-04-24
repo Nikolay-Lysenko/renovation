@@ -5,7 +5,10 @@
 
 ## Overview
 
-This is a drawing tool that produces floor plans. It is controlled through YAML config files and has no built-in GUI (only CLI is provided). Although it may look like a drawback, people with technical background may find it more convenient. Compared with drag-and-drop tools, config-based interface simplifies fine-grained control and allows versioning projects with VCSs like Git.
+This is a drawing tool that produces floor plans. It is controlled through YAML config files and has no built-in GUI (only CLI is provided). Although it may look like a drawback, people with technical background may find it more convenient. Compared with drag-and-drop tools, config-based interface:
+* simplifies fine-grained control
+* allows versioning projects with VCSs like Git
+* does not require any special MCPs for drawing with AI agents
 
 The below figure demonstrates available elements.
 
@@ -49,3 +52,5 @@ Finally, settings of individual floor plans are listed. These settings might inc
 * Layout
 * Names of element collections to reuse
 * Extra elements
+
+You may notice that the first demo config is quite low-level. Everything is set independently. However, the package provides a way to anchor an object to other objects. To get more insights, look at this [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_configs/anchors.yml) and an [image](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_with_dimensions.png) rendered with it. 
