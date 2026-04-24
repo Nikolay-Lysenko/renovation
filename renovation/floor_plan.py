@@ -19,8 +19,8 @@ from renovation.elements import Element
 class AnchoredPivotPoint:
     """Pivot point that depends on an outer element."""
     anchor_id: str
-    x_shift: float
-    y_shift: float
+    x_shift: float = 0
+    y_shift: float = 0
 
 
 class FloorPlan:
