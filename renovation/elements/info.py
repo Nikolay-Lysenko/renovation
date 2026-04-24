@@ -65,7 +65,7 @@ class DimensionArrow(Element):
         if another_pivot_point is not None:
             x_shift = another_pivot_point[0] - pivot_point[0]
             y_shift = another_pivot_point[1] - pivot_point[1]
-            length = math.sqrt(x_shift ** 2 + y_shift ** 2)
+            length = round(math.sqrt(x_shift ** 2 + y_shift ** 2), 8)
             orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
         self.pivot_point = pivot_point
         self.length = length
