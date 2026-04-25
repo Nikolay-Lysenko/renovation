@@ -54,7 +54,7 @@ reusable_elements:
       thickness: 0.2
       color: gray
     - type: door
-      pivot_point: [2.5, 7.2]
+      pivot_point: [2.5, 7.15]
       doorway_width: 1.0
       door_width: 0.9
       thickness: 0.05

@@ -12,7 +12,7 @@ from .element import Element
 
 
 class Line(Element):
-    """Line (solid, dashed, or dotted)"""
+    """Line (solid, dashed, or dotted)."""
 
     style_to_matplotlib_code = {'solid': '-', 'dashed': '--', 'dotted': ':', 'dash_dot': '-.'}
 
@@ -99,7 +99,7 @@ class Polygon(Element):
         self.color = color
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
-        """Draw polygon"""
+        """Draw polygon."""
         polygon = patches.Polygon(
             self.vertices,
             lw=self.line_width,

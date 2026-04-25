@@ -1,0 +1,190 @@
+project:
+  dpi: 200
+  pdf_file: null
+  png_dir: "docs/images"
+default_layout:
+  bottom_left_corner: [-1, -1]
+  top_right_corner: [6, 5]
+  scale_numerator: 1
+  scale_denominator: 40
+  grid_major_step: 1
+  grid_minor_step: 0.1
+floor_plans:
+  - title:
+      text: "Floor plan with anchored elements"
+      font_size: 18
+    elements:
+      # Walls, windows, doors
+      - type: wall
+        pivot_point: [0, 0]
+        length: 2
+        thickness: 0.2
+        orientation_angle: 90
+        anchors:
+          - id: wall_one_corner_one
+            type: corner_one
+          - id: wall_one_corner_two
+            type: corner_two
+      - type: door
+        pivot_point:
+          anchor_id: wall_one_corner_two
+          x_shift: -0.05
+          y_shift: 1
+        doorway_width: 1
+        door_width: 0.9
+        thickness: 0.05
+        orientation_angle: 270
+        color: gray
+        anchors:
+          - id: door_one_corner_four
+            type: corner_four
+      - type: wall
+        pivot_point:
+          anchor_id: door_one_corner_four
+        length: 1
+        thickness: 0.2
+        orientation_angle: 90
+        anchors:
+          - id: wall_two_corner_two
+            type: corner_two
+          - id: wall_two_corner_three
+            type: corner_three
+      - type: wall
+        pivot_point:
+          anchor_id: wall_two_corner_three
+        length: 5.4
+        thickness: 0.2
+        anchors:
+          - id: wall_three_corner_two
+            type: corner_two
+      - type: wall
+        pivot_point:
+          anchor_id: wall_three_corner_two
+          x_shift: -0.2
+        length: 0.75
+        thickness: 0.2
+        orientation_angle: 270
+        anchors:
+          - id: wall_four_corner_two
+            type: corner_two
+      - type: window
+        pivot_point:
+          anchor_id: wall_four_corner_two
+        length: 2.5
+        overall_thickness: 0.2
+        single_line_thickness: 0.03
+        orientation_angle: 270
+        anchors:
+          - id: window_one_corner_two
+            type: corner_two
+      - type: wall
+        pivot_point:
+          anchor_id: window_one_corner_two
+        length: 0.75
+        thickness: 0.2
+        orientation_angle: 270
+        anchors:
+          - id: wall_five_corner_three
+            type: corner_three
+      - type: wall
+        pivot_point:
+          anchor_id: wall_five_corner_three
+        length: 5.4
+        thickness: 0.2
+        orientation_angle: 180
+      # Wall lamp and switch
+      - type: wall_lamp
+        pivot_point:
+          anchor_id: wall_five_corner_three
+          x_shift: -2.7
+        symbol_diameter: 0.3
+        anchors:
+          - id: wall_lamp_one
+      - type: switch
+        pivot_point:
+          anchor_id: wall_one_corner_two
+          y_shift: -0.2
+        symbol_length: 0.1
+        orientation_angle: 270
+        anchors:
+          - id: switch_one
+      # Dimension arrows
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: switch_one
+          x_shift: 0.175
+        another_pivot_point:
+          anchor_id: wall_one_corner_one
+          x_shift: 0.175
+        annotate_above: true
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_one_corner_two
+          x_shift: 0.175
+        another_pivot_point:
+          anchor_id: switch_one
+          x_shift: 0.175
+        tip_length: 0.075
+        annotate_above: true
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: door_one_corner_four
+          x_shift: 0.175
+        another_pivot_point:
+          anchor_id: wall_one_corner_two
+          x_shift: 0.175
+        annotate_above: true
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_two_corner_two
+          x_shift: 0.175
+        another_pivot_point:
+          anchor_id: door_one_corner_four
+          x_shift: 0.175
+        annotate_above: true
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_two_corner_two
+          y_shift: -0.1
+        another_pivot_point:
+          anchor_id: wall_three_corner_two
+          x_shift: -0.2
+          y_shift: -0.1
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_three_corner_two
+          x_shift: -0.35
+        another_pivot_point:
+          anchor_id: wall_four_corner_two
+          x_shift: -0.15
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_four_corner_two
+          x_shift: -0.15
+        another_pivot_point:
+          anchor_id: window_one_corner_two
+          x_shift: -0.15
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: window_one_corner_two
+          x_shift: -0.15
+        another_pivot_point:
+          anchor_id: wall_five_corner_three
+          x_shift: -0.35
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_lamp_one
+          y_shift: 0.4
+        another_pivot_point:
+          anchor_id: wall_five_corner_three
+          x_shift: -0.2
+          y_shift: 0.4
+        annotate_above: true
+      - type: dimension_arrow
+        pivot_point:
+          anchor_id: wall_one_corner_one
+          y_shift: 0.4
+        another_pivot_point:
+          anchor_id: wall_lamp_one
+          y_shift: 0.4
+        annotate_above: true

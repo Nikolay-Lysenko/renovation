@@ -59,7 +59,7 @@ class CornerAnchorsMixin:
         elif anchor_type == "corner_four":
             return shift_in_direction(
                 self.pivot_point,
-                self.overall_thickness,
+                self.thickness,
                 self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
             )
         else:

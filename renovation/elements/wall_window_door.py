@@ -177,9 +177,10 @@ class Door(CornerAnchorsMixin, Element):
         Initialize an instance.
 
         :param pivot_point:
-            coordinates (in meters) of pivot point; here, it is the door frame corner
-            that is on the same side with hinges and is on the side where the door opens
-            (given `to_the_right` is set to `False`, else it is on the opposite side)
+            coordinates (in meters) of pivot point;
+            here, it is the door frame corner that is on the same side with hinges and:
+            * if `to_the_right` is set to `False`,  it is on the side where the door don't open,
+            * if `to_the_right` is set to `True`,  it is on the side where the door opens
         :param thickness:
             thickness of the door (in meters)
         :param door_width:
@@ -194,8 +195,9 @@ class Door(CornerAnchorsMixin, Element):
             initial doorway is rotated around pivot point to get the desired orientation;
             this argument is used only if `another_pivot_point` is not passed
         :param another_pivot_point:
-            coordinates (in meters) of another pivot point; here, it is the second door frame corner
-            from the same side that contains the first pivot point
+            coordinates (in meters) of another pivot point;
+            here, it is the second door frame corner from the same side that contains
+            the first pivot point
         :param to_the_right:
             binary indicator whether the door opens to the right if someone looks at it
             from the hinges point along the doorway
@@ -221,12 +223,11 @@ class Door(CornerAnchorsMixin, Element):
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
         """Draw the door, its opening trajectory, and the door frame."""
-        frame_orientation_angle = self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
         frame_with_hinges = Rectangle(
             self.pivot_point,
-            self.thickness,
             self.frame_width,
-            angle=frame_orientation_angle,
+            self.thickness,
+            angle=self.orientation_angle,
             facecolor=self.color
         )
         ax.add_patch(frame_with_hinges)
@@ -236,9 +237,9 @@ class Door(CornerAnchorsMixin, Element):
         )
         frame_without_hinges = Rectangle(
             frame_without_hinges_pivot_point,
-            self.thickness,
             self.frame_width,
-            angle=frame_orientation_angle,
+            self.thickness,
+            angle=self.orientation_angle,
             facecolor=self.color
         )
         ax.add_patch(frame_without_hinges)
@@ -246,23 +247,23 @@ class Door(CornerAnchorsMixin, Element):
         hinges_point = shift_in_direction(
             self.pivot_point, self.frame_width, self.orientation_angle
         )
-        if self.to_the_right:
+        if not self.to_the_right:
             hinges_point = shift_in_direction(
-                hinges_point, self.thickness, self.orientation_angle - RIGHT_ANGLE_IN_DEGREES
+                hinges_point, self.thickness, self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
             )
-            door = Rectangle(
-                hinges_point,
-                self.door_width,
-                self.thickness,
-                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
-                facecolor=self.color
-            )
-        else:
             door = Rectangle(
                 hinges_point,
                 self.thickness,
                 self.door_width,
                 angle=self.orientation_angle,
+                facecolor=self.color
+            )
+        else:
+            door = Rectangle(
+                hinges_point,
+                self.door_width,
+                self.thickness,
+                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
                 facecolor=self.color
             )
         ax.add_patch(door)

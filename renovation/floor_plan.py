@@ -18,9 +18,10 @@ from renovation.elements import Element
 @dataclass
 class AnchoredPivotPoint:
     """Pivot point that depends on an outer element."""
+
     anchor_id: str
-    x_shift: float
-    y_shift: float
+    x_shift: float = 0
+    y_shift: float = 0
 
 
 class FloorPlan:
@@ -136,7 +137,7 @@ class FloorPlan:
         )
         self.title = text
 
-    def get_coordinates_of_anchored_pivot_point(
+    def _get_coordinates_of_anchored_pivot_point(
             self, pivot_point_params: dict[str, Any]
     ) -> tuple[float, float]:
         """
@@ -161,6 +162,30 @@ class FloorPlan:
             )
         return anchor[0] + anchored_pivot_point.x_shift, anchor[1] + anchored_pivot_point.y_shift
 
+    def _dereference_anchors(self, element_params: dict[str, Any]) -> dict[str, Any]:
+        """
+        Replace all anchor-dependent positions with exact coordinates.
+
+        :param element_params:
+            original parameters of an element to be drawn
+        :return:
+            parameters without anchor-dependent positions
+        """
+        if isinstance(element_params.get("pivot_point"), dict):
+            element_params["pivot_point"] = self._get_coordinates_of_anchored_pivot_point(
+                element_params["pivot_point"]
+            )
+        if isinstance(element_params.get("another_pivot_point"), dict):
+            element_params["another_pivot_point"] = self._get_coordinates_of_anchored_pivot_point(
+                element_params["another_pivot_point"]
+            )
+        vertices_params = element_params.get("vertices")
+        if isinstance(vertices_params, list) and isinstance(vertices_params[0], dict):
+            element_params["vertices"] = [
+                self._get_coordinates_of_anchored_pivot_point(vertice_params)
+                for vertice_params in vertices_params
+            ]
+        return element_params
 
     def add_element(self, element_class: type[Element], element_params: dict[str, Any]) -> None:
         """
@@ -173,16 +198,8 @@ class FloorPlan:
         :return:
             None
         """
-        if isinstance(element_params.get("pivot_point"), dict):
-            element_params["pivot_point"] = self.get_coordinates_of_anchored_pivot_point(
-                element_params["pivot_point"]
-            )
-        if isinstance(element_params.get("another_pivot_point"), dict):
-            element_params["another_pivot_point"] = self.get_coordinates_of_anchored_pivot_point(
-                element_params["another_pivot_point"]
-            )
+        element_params = self._dereference_anchors(element_params)
         anchors_params = element_params.pop("anchors", [])
-
         element = element_class(**element_params)
         element.draw(self.ax)
 

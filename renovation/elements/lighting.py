@@ -302,7 +302,7 @@ class Switch(PivotAnchorMixin, Element):
         :return:
             freshly created instance of `Switch` class
         """
-        self.pivot_point  = pivot_point
+        self.pivot_point = pivot_point
         self.symbol_length = symbol_length
         self.orientation_angle = orientation_angle
         self.two_key = two_key

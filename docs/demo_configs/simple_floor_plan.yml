@@ -47,7 +47,7 @@ reusable_elements:
       thickness: 0.08
     # Door
     - type: door
-      pivot_point: [2.045, 1.985]
+      pivot_point: [2.045, 1.935]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
@@ -83,7 +83,7 @@ reusable_elements:
       orientation_angle: 270
     # Door
     - type: door
-      pivot_point: [1.905, 0.87]
+      pivot_point: [1.955, 0.87]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
@@ -104,7 +104,7 @@ reusable_elements:
     # 3. KITCHEN
     # Door
     - type: door
-      pivot_point: [3.035, 1.0]
+      pivot_point: [3.085, 1.0]
       doorway_width: 0.9
       door_width: 0.8
       thickness: 0.05
@@ -141,7 +141,7 @@ reusable_elements:
       single_line_thickness: 0.02
     # French balcony: Left door
     - type: door
-      pivot_point: [3.8, 6.265]
+      pivot_point: [3.8, 6.19]
       doorway_width: 0.825
       door_width: 0.75
       thickness: 0.075
@@ -149,7 +149,7 @@ reusable_elements:
       color: gray
     # French balcony: Right door
     - type: door
-      pivot_point: [5.45, 6.19]
+      pivot_point: [5.45, 6.265]
       doorway_width: 0.825
       door_width: 0.75
       thickness: 0.075
@@ -200,7 +200,7 @@ reusable_elements:
       thickness: 0.2
     # Entrance door
     - type: door
-      pivot_point: [2.57, -0.48]
+      pivot_point: [2.57, -0.58]
       doorway_width: 1.0
       door_width: 0.9
       thickness: 0.1
