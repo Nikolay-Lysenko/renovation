@@ -195,8 +195,9 @@ class Door(CornerAnchorsMixin, Element):
             initial doorway is rotated around pivot point to get the desired orientation;
             this argument is used only if `another_pivot_point` is not passed
         :param another_pivot_point:
-            coordinates (in meters) of another pivot point; here, it is the second door frame corner
-            from the same side that contains the first pivot point
+            coordinates (in meters) of another pivot point;
+            here, it is the second door frame corner from the same side that contains
+            the first pivot point
         :param to_the_right:
             binary indicator whether the door opens to the right if someone looks at it
             from the hinges point along the doorway

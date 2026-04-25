@@ -223,7 +223,7 @@ class TextBox(PivotAnchorMixin, Element):
             '\n'.join(self.lines),
             verticalalignment='center',
             horizontalalignment='center',
-            color = self.color,
-            fontsize = self.font_size,
+            color=self.color,
+            fontsize=self.font_size,
             bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': self.transparency}
         )

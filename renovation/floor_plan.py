@@ -18,6 +18,7 @@ from renovation.elements import Element
 @dataclass
 class AnchoredPivotPoint:
     """Pivot point that depends on an outer element."""
+
     anchor_id: str
     x_shift: float = 0
     y_shift: float = 0
