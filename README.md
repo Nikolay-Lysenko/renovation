@@ -1,4 +1,4 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/b48a5bd1bcaac990923a/maintainability)](https://codeclimate.com/github/Nikolay-Lysenko/renovation/maintainability)
+[![Maintainability](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation/maintainability.svg)](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation)
 [![PyPI version](https://badge.fury.io/py/renovation.svg)](https://pypi.org/project/renovation/)
 
 # Renovation
