@@ -89,9 +89,10 @@ floor_plans:
       - type: wall
         pivot_point:
           anchor_id: wall_five_corner_three
-        length: 5.4
+        another_pivot_point:
+          anchor_id: wall_one_corner_one
+          x_shift: -0.2
         thickness: 0.2
-        orientation_angle: 180
       # Wall lamp and switch
       - type: wall_lamp
         pivot_point:
