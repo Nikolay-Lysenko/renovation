@@ -1,4 +1,5 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/b48a5bd1bcaac990923a/maintainability)](https://codeclimate.com/github/Nikolay-Lysenko/renovation/maintainability)
+[![Build Status](https://github.com/Nikolay-Lysenko/renovation/actions/workflows/main.yml/badge.svg)](https://github.com/Nikolay-Lysenko/renovation/actions/workflows/main.yml)
+[![Maintainability](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation/maintainability.svg)](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation)
 [![PyPI version](https://badge.fury.io/py/renovation.svg)](https://pypi.org/project/renovation/)
 
 # Renovation
@@ -53,4 +54,4 @@ Finally, settings of individual floor plans are listed. These settings might inc
 * Names of element collections to reuse
 * Extra elements
 
-You may notice that the first demo config is quite low-level. Everything is set independently. However, the package provides a way to anchor an object to other objects. To get more insights, look at this [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_configs/anchors.yml) and an [image](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_with_dimensions.png) rendered with it. 
+You may notice that the first demo config is quite low-level. Everything is set independently. However, the package provides a way to anchor an object to other objects. To get more insights, look at this [demo example](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/demo_configs/anchors.yml) and an [image](https://github.com/Nikolay-Lysenko/renovation/blob/master/docs/images/floor_plan_with_anchored_elements.png) rendered with it. 

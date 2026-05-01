@@ -1,0 +1,8 @@
+[checks.argument-count]
+threshold = 10
+
+[checks.file-lines]
+threshold = 500
+
+[checks.method-complexity]
+threshold = 8
