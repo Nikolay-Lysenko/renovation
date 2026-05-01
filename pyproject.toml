@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "renovation"
-version = "0.1.1"
+version = "0.2.0"
 description = "Drawing tool that produces floor plans needed to renovate an apartment"
 readme = "README.md"
 keywords = ["apartments", "drawing", "floor_plan", "floor_plans"]
@@ -17,7 +17,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3"
 ]
-requires-python = ">= 3.8"
+requires-python = ">= 3.10"
 dependencies = [
     "matplotlib",
     "numpy",
