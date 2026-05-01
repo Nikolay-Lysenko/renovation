@@ -1,3 +1,4 @@
+[![Build Status](https://github.com/Nikolay-Lysenko/renovation/actions/workflows/main.yml/badge.svg)](https://github.com/Nikolay-Lysenko/renovation/actions/workflows/main.yml)
 [![Maintainability](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation/maintainability.svg)](https://qlty.sh/gh/Nikolay-Lysenko/projects/renovation)
 [![PyPI version](https://badge.fury.io/py/renovation.svg)](https://pypi.org/project/renovation/)
 
