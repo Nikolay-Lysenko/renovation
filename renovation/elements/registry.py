@@ -5,6 +5,7 @@ Author: Nikolay Lysenko
 """
 
 
+from .appliances import Fridge
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
@@ -25,6 +26,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'dimension_arrow': DimensionArrow,
         'door': Door,
         'electrical_cable': ElectricalCable,
+        'fridge': Fridge,
         'led_strip': LEDStrip,
         'line': Line,
         'polygon': Polygon,
