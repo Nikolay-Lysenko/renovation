@@ -3,8 +3,8 @@ project:
   pdf_file: null
   png_dir: "docs/images"
 default_layout:
-  bottom_left_corner: [0, 0.4]
-  top_right_corner: [4, 9]
+  bottom_left_corner: [0, 0.5]
+  top_right_corner: [4, 10]
   scale_numerator: 1
   scale_denominator: 40
   grid_major_step: null
@@ -13,142 +13,160 @@ reusable_elements:
   walls_windows_doors:
     # Wall
     - type: wall
-      pivot_point: [2.2, 8.8]
+      pivot_point: [2.2, 9.8]
       length: 1.6
       thickness: 0.2
     - type: text_box
-      pivot_point: [1.0, 8.9]
+      pivot_point: [1.0, 9.9]
       lines:
         - "Wall:"
       transparency: 0.0
     # Window
     - type: wall
-      pivot_point: [2.2, 8.3]
+      pivot_point: [2.2, 9.3]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: wall
-      pivot_point: [3.5, 8.3]
+      pivot_point: [3.5, 9.3]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: window
-      pivot_point: [2.5, 8.3]
+      pivot_point: [2.5, 9.3]
       length: 1.0
       overall_thickness: 0.2
       single_line_thickness: 0.025
     - type: text_box
-      pivot_point: [1.0, 8.4]
+      pivot_point: [1.0, 9.4]
       lines:
         - "Window:"
       transparency: 0.0
     # Door
     - type: wall
-      pivot_point: [2.2, 7.0]
+      pivot_point: [2.2, 8.0]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: wall
-      pivot_point: [3.5, 7.0]
+      pivot_point: [3.5, 8.0]
       length: 0.3
       thickness: 0.2
       color: gray
     - type: door
-      pivot_point: [2.5, 7.15]
+      pivot_point: [2.5, 8.15]
       doorway_width: 1.0
       door_width: 0.9
       thickness: 0.05
     - type: text_box
-      pivot_point: [1.0, 7.5]
+      pivot_point: [1.0, 8.5]
       lines:
         - "Door:"
       transparency: 0.0
     # Polygon
     - type: wall
-      pivot_point: [2.94641, 6.0]
+      pivot_point: [2.94641, 7.0]
       length: 0.65339
       thickness: 0.2
       color: gray
     - type: wall
-      pivot_point: [2.94641, 6.2]
+      pivot_point: [2.94641, 7.2]
       length: 0.65339
       thickness: 0.2
       orientation_angle: 30
       color: gray
     - type: polygon
       vertices:
-        - [2.2, 6.0]
-        - [2.84641, 6.3732051]
-        - [2.94641, 6.2]
-        - [2.94641, 6.0]
+        - [2.2, 7.0]
+        - [2.84641, 7.3732051]
+        - [2.94641, 7.2]
+        - [2.94641, 7.0]
     - type: text_box
-      pivot_point: [1.0, 6.3]
+      pivot_point: [1.0, 7.3]
       lines:
         - "Polygon:"
       transparency: 0.0
     # Dimension arrow
     - type: dimension_arrow
-      pivot_point: [2.2, 5.55]
+      pivot_point: [2.2, 6.55]
       length: 1.6
     - type: text_box
-      pivot_point: [1.0, 5.5]
+      pivot_point: [1.0, 6.5]
       lines:
         - "Dimension arrow:"
       transparency: 0.0
     # Lines
     - type: line
-      pivot_point: [2.2, 5.05]
-      another_pivot_point: [3.8, 5.05]
+      pivot_point: [2.2, 6.05]
+      another_pivot_point: [3.8, 6.05]
       width: 1.0
     - type: line
-      pivot_point: [2.2, 4.85]
-      another_pivot_point: [3.8, 4.85]
+      pivot_point: [2.2, 5.85]
+      another_pivot_point: [3.8, 5.85]
       width: 1.0
       style: dashed
     - type: line
-      pivot_point: [2.2, 4.65]
-      another_pivot_point: [3.8, 4.65]
+      pivot_point: [2.2, 5.65]
+      another_pivot_point: [3.8, 5.65]
       width: 1.0
       style: dash_dot
     - type: line
-      pivot_point: [2.2, 4.45]
-      another_pivot_point: [3.8, 4.45]
+      pivot_point: [2.2, 5.45]
+      another_pivot_point: [3.8, 5.45]
       width: 1.0
       style: dotted
     - type: text_box
-      pivot_point: [1.0, 4.75]
+      pivot_point: [1.0, 5.75]
       lines:
         - "Lines:"
       transparency: 0.0
     # Text box
     - type: text_box
-      pivot_point: [3.0, 3.9]
+      pivot_point: [3.0, 4.9]
       lines:
         - "Text box."
         - "It can be multiline."
     - type: text_box
-      pivot_point: [1.0, 3.9]
+      pivot_point: [1.0, 4.9]
       lines:
         - "Text box:"
       transparency: 0.0
+    # Home appliances
+    - type: labeled_rectangle
+      pivot_point: [2.4, 3.8]
+      label: "REF"
+      width: 0.7
+      depth: 0.6
+    - type: labeled_rectangle
+      pivot_point: [3.3, 3.8]
+      label: "DW"
+      width: 0.45
+      depth: 0.6
+    - type: text_box
+      pivot_point: [1.0, 4.1]
+      lines:
+        - "Home appliances"
+        - "(e.g., refrigerator"
+        - "and dishwasher)"
+      transparency: 0.0
     # Power outlets
     - type: power_outlet
-      pivot_point: [2.5, 3.05]
+      pivot_point: [2.5, 3.15]
       length: 0.2
     - type: power_outlet
-      pivot_point: [2.9, 3.05]
+      pivot_point: [2.9, 3.15]
       length: 0.2
       waterproof: true
     - type: power_outlet
-      pivot_point: [3.3, 3.05]
+      pivot_point: [3.3, 3.15]
       length: 0.2
       high_voltage: true
     - type: power_outlet
-      pivot_point: [3.7, 3.05]
+      pivot_point: [3.7, 3.15]
       length: 0.2
       low_current: true
     - type: text_box
-      pivot_point: [1.0, 3.1]
+      pivot_point: [1.0, 3.2]
       lines:
         - "Power outlets"
         - "(regular, waterproof,"
@@ -156,61 +174,61 @@ reusable_elements:
       transparency: 0.0
     # Electrical cable
     - type: electrical_cable
-      pivot_point: [3.0, 2.4]
+      pivot_point: [3.0, 2.5]
       symbol_length: 0.2
     - type: text_box
-      pivot_point: [1.0, 2.5]
+      pivot_point: [1.0, 2.6]
       lines:
         - "Electrical cable:"
       transparency: 0.0
     # Ceiling lamp
     - type: ceiling_lamp
-      pivot_point: [3.0, 2.05]
+      pivot_point: [3.0, 2.15]
       symbol_diameter: 0.3
       line_width: 0.75
     - type: text_box
-      pivot_point: [1.0, 2.05]
+      pivot_point: [1.0, 2.15]
       lines:
         - "Ceiling lamp:"
       transparency: 0.0
     # Wall lamp
     - type: wall_lamp
-      pivot_point: [3.0, 1.5]
+      pivot_point: [3.0, 1.6]
       symbol_diameter: 0.2
     - type: text_box
-      pivot_point: [1.0, 1.6]
+      pivot_point: [1.0, 1.7]
       lines:
         - "Wall lamp:"
       transparency: 0.0
     # LED strip
     - type: led_strip
-      pivot_point: [2.3, 1.1]
+      pivot_point: [2.3, 1.2]
       length: 1.4
       width: 0.1
     - type: text_box
-      pivot_point: [1.0, 1.15]
+      pivot_point: [1.0, 1.25]
       lines:
         - "LED strip:"
       transparency: 0.0
     # Switches
     - type: switch
-      pivot_point: [2.5, 0.4]
+      pivot_point: [2.5, 0.5]
       symbol_length: 0.2
     - type: switch
-      pivot_point: [2.9, 0.4]
+      pivot_point: [2.9, 0.5]
       symbol_length: 0.2
       two_key: true
     - type: switch
-      pivot_point: [3.3, 0.4]
+      pivot_point: [3.3, 0.5]
       symbol_length: 0.2
       pass_through: true
     - type: switch
-      pivot_point: [3.7, 0.4]
+      pivot_point: [3.7, 0.5]
       symbol_length: 0.2
       two_key: true
       pass_through: true
     - type: text_box
-      pivot_point: [1.0, 0.4]
+      pivot_point: [1.0, 0.5]
       lines:
         - "Switches"
         - "(one-key, two-key,"

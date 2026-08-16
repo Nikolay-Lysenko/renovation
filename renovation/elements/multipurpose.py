@@ -5,10 +5,107 @@ Author: Nikolay Lysenko
 """
 
 
+import math
+from typing import Optional
+
 import matplotlib.axes
 from matplotlib import patches
 
+from renovation.constants import RIGHT_ANGLE_IN_DEGREES
+from renovation.utils import shift_in_direction
+from .anchor_mixins import CornerAnchorsMixin
 from .element import Element
+
+
+class LabeledRectangle(CornerAnchorsMixin, Element):
+    """Rectangle with a text inside. In particular, home appliances can be represented with it."""
+
+    def __init__(
+            self,
+            pivot_point: tuple[float, float],
+            label: str,
+            depth: float,
+            width: Optional[float] = None,
+            orientation_angle: float = 0,
+            another_pivot_point: Optional[tuple[float, float]] = None,
+            line_width: float = 0.5,
+            font_size: float = 10,
+            color: str = 'black'
+    ):
+        """
+        Initialize an instance.
+
+        :param pivot_point:
+            coordinates (in meters) of the pivot point;
+            here, it is the corner that is the bottom left one prior to rotation specified by
+            `orientation_angle`
+        :param depth:
+            depth of the element (in meters)
+        :param width:
+            width of the element (in meters)
+        :param orientation_angle:
+            angle (in degrees) that specifies orientation of the rectangle;
+            it is measured between X-axis and the element in positive direction (counterclockwise);
+            initial element is rotated around pivot point to get the desired orientation;
+            this argument is used only if `another_pivot_point` is not passed
+        :param another_pivot_point:
+            coordinates of additional pivot point (in meters);
+            here, it is the corner that is the bottom right one in the non-rotated configuration
+        :param line_width:
+            width of lines for `matplotlib`
+        :param font_size:
+            font size of the label text
+        :param color:
+            color to use for drawing the element
+        :return:
+            freshly created instance of `LabeledRectangle` class
+        """
+        if another_pivot_point is not None:
+            x_shift = another_pivot_point[0] - pivot_point[0]
+            y_shift = another_pivot_point[1] - pivot_point[1]
+            width = math.sqrt(x_shift ** 2 + y_shift ** 2)
+            orientation_angle = math.degrees(math.atan2(y_shift, x_shift))
+
+        self.pivot_point = pivot_point
+        self.width = width
+        self.depth = depth
+        self.length = width  # This attribute is needed by `CornerAnchorsMixin`.
+        self.thickness = depth  # This attribute is needed by `CornerAnchorsMixin`.
+        self.orientation_angle = orientation_angle
+        self.line_width = line_width
+        self.label = label
+        self.font_size = font_size
+        self.color = color
+
+    def draw(self, ax: matplotlib.axes.Axes) -> None:
+        """Draw the labeled rectangle."""
+        rectangle = patches.Rectangle(
+            self.pivot_point,
+            self.width,
+            self.depth,
+            angle=self.orientation_angle,
+            fill=False,
+            edgecolor=self.color,
+            lw=self.line_width
+        )
+        ax.add_patch(rectangle)
+
+        label_center = shift_in_direction(
+            shift_in_direction(self.pivot_point, 0.5 * self.width, self.orientation_angle),
+            0.5 * self.depth,
+            self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
+        )
+        ax.text(
+            label_center[0],
+            label_center[1],
+            self.label,
+            color=self.color,
+            fontsize=self.font_size,
+            horizontalalignment='center',
+            verticalalignment='center',
+            rotation=self.orientation_angle,
+            rotation_mode='anchor'
+        )
 
 
 class Line(Element):
