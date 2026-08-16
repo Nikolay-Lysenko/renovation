@@ -6,6 +6,7 @@ Author: Nikolay Lysenko
 
 
 from .anchor_mixins import CornerAnchorsMixin, PivotAnchorMixin
+from .appliances import Fridge
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
@@ -22,6 +23,7 @@ __all__ = [
     'Door',
     'ElectricalCable',
     'Element',
+    'Fridge',
     'LEDStrip',
     'Line',
     'PivotAnchorMixin',
