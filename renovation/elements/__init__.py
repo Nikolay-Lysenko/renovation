@@ -6,12 +6,11 @@ Author: Nikolay Lysenko
 
 
 from .anchor_mixins import CornerAnchorsMixin, PivotAnchorMixin
-from .appliances import Fridge
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, WallLamp, Switch
-from .multipurpose import Line, Polygon
+from .multipurpose import LabeledRectangle, Line, Polygon
 from .registry import create_elements_registry
 from .wall_window_door import Door, Wall, Window
 
@@ -23,8 +22,8 @@ __all__ = [
     'Door',
     'ElectricalCable',
     'Element',
-    'Fridge',
     'LEDStrip',
+    'LabeledRectangle',
     'Line',
     'PivotAnchorMixin',
     'Polygon',

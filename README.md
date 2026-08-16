@@ -17,15 +17,6 @@ The below figure demonstrates available elements.
 
 Some other elements can be composed of them. For example, in the next section it is shown how to draw ventilation duct and French balcony.
 
-Home appliances can be added in the same way. For example, a fridge footprint is configured as:
-```yaml
-- type: fridge
-  pivot_point: [1.2, 2.4]
-  width: 0.7
-  depth: 0.65
-  orientation_angle: 90
-```
-
 ## Usage
 
 To install a stable version, run:

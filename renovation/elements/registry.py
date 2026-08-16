@@ -5,12 +5,11 @@ Author: Nikolay Lysenko
 """
 
 
-from .appliances import Fridge
 from .electricity import ElectricalCable, PowerOutlet
 from .element import Element
 from .info import DimensionArrow, TextBox
 from .lighting import CeilingLamp, LEDStrip, Switch, WallLamp
-from .multipurpose import Line, Polygon
+from .multipurpose import LabeledRectangle, Line, Polygon
 from .wall_window_door import Door, Wall, Window
 
 
@@ -26,7 +25,7 @@ def create_elements_registry() -> dict[str, type(Element)]:
         'dimension_arrow': DimensionArrow,
         'door': Door,
         'electrical_cable': ElectricalCable,
-        'fridge': Fridge,
+        'labeled_rectangle': LabeledRectangle,
         'led_strip': LEDStrip,
         'line': Line,
         'polygon': Polygon,
