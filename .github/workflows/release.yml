@@ -1,0 +1,53 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+    - name: Set up Python and UV
+      uses: astral-sh/setup-uv@v10.3.3
+      with:
+        enable-cache: true
+    - name: Verify Git tag against package version
+      run: |
+        VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])"
+        if [ "$GITHUB_REF_NAME" != "v$VERSION ]; then
+          echo "Tag $GITHUB_REF_NAME does not match package version v$VERSION"
+          exit 1
+        fi
+    - name: Build
+      run: uv build
+    - name: Check metadata
+      run: uvx twine check dist/*
+    - name: Upload artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: dist
+        path: dist
+        if-no-files-found: error
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/renovation
+    permissions:
+      id-token: write
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v8
+      with:
+        name: dist
+        path: dist/
+    - name: Publish
+      uses: pypa/gh-action-pypi-publish@release/v1
