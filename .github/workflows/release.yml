@@ -18,7 +18,7 @@ jobs:
         enable-cache: true
     - name: Verify Git tag against package version
       run: |
-        VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])"
+        VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
         if [ "$GITHUB_REF_NAME" != "v$VERSION ]; then
           echo "Tag $GITHUB_REF_NAME does not match package version v$VERSION"
           exit 1
