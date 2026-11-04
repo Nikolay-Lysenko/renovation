@@ -19,13 +19,49 @@ classifiers = [
 ]
 requires-python = ">= 3.10"
 dependencies = [
-    "matplotlib",
-    "numpy",
-    "PyYAML",
+    "matplotlib>=3.10,<4",
+    "numpy>=2.2,<3",
+    "PyYAML>=6,<7",
+]
+
+[dependency-groups]
+dev = [
+    {include-group = "lint"},
+    {include-group = "test"},
+]
+lint = [
+    "flake8>=7.3,<8",
+    "flake8-docstrings>=1.7,<2",
+]
+test = [
+    "coverage>=7.13,<8",
+    "matplotlib<3.11",  # Newer versions break canonical tests.
+    "Pillow>=12.2,<14",
+    "pytest>=9,<10",
+    "pytest-cov>=7.1,<8",
 ]
 
 [tool.setuptools]
 packages = [
     "renovation",
     "renovation.elements"
+]
+
+[tool.coverage.run]
+branch = true
+source = ["renovation"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if .debug:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "raise RuntimeError",
+    "raise AttributeError",
+    "raise ValueError",
+    "raise TypeError",
+    "if __name__ == .__main__.:",
+    "pass",
 ]
