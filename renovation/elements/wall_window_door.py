@@ -171,6 +171,7 @@ class Door(CornerAnchorsMixin, Element):
             orientation_angle: float = 0,
             another_pivot_point: Optional[tuple[float, float]] = None,
             to_the_right: bool = False,
+            sweep_angle: float = RIGHT_ANGLE_IN_DEGREES,
             color: str = 'black'
     ):
         """
@@ -201,6 +202,9 @@ class Door(CornerAnchorsMixin, Element):
         :param to_the_right:
             binary indicator whether the door opens to the right if someone looks at it
             from the hinges point along the doorway
+        :param sweep_angle:
+            angle (in degrees) between the doorway and the door;
+            this angle must be positive and it measures how wide the door is opened
         :param color:
             color to use for drawing the window
         :return:
@@ -219,6 +223,7 @@ class Door(CornerAnchorsMixin, Element):
         self.frame_width = (doorway_width - door_width) / 2
         self.orientation_angle = orientation_angle
         self.to_the_right = to_the_right
+        self.sweep_angle = sweep_angle
         self.color = color
 
     def draw(self, ax: matplotlib.axes.Axes) -> None:
@@ -255,7 +260,7 @@ class Door(CornerAnchorsMixin, Element):
                 hinges_point,
                 self.thickness,
                 self.door_width,
-                angle=self.orientation_angle,
+                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES + self.sweep_angle,
                 facecolor=self.color
             )
         else:
@@ -263,23 +268,26 @@ class Door(CornerAnchorsMixin, Element):
                 hinges_point,
                 self.door_width,
                 self.thickness,
-                angle=self.orientation_angle - RIGHT_ANGLE_IN_DEGREES,
+                angle=self.orientation_angle - self.sweep_angle,
                 facecolor=self.color
             )
         ax.add_patch(door)
 
-        arc_pivot_point = shift_in_direction(hinges_point, self.thickness, self.orientation_angle)
-        extra_degrees_for_smooth_connection = 2
+        if not 0 <= self.sweep_angle <= 180:
+            return
+        line_width_factor = 0.9925
+        radius = line_width_factor * math.sqrt(self.door_width ** 2 + self.thickness ** 2)
+        angle_shift = math.degrees(math.atan2(self.thickness, self.door_width))
         if self.to_the_right:
-            start_angle = -RIGHT_ANGLE_IN_DEGREES - extra_degrees_for_smooth_connection
+            start_angle = -self.sweep_angle + angle_shift
             end_angle = 0
         else:
             start_angle = 0
-            end_angle = RIGHT_ANGLE_IN_DEGREES + extra_degrees_for_smooth_connection
+            end_angle = self.sweep_angle - angle_shift
         arc = Arc(
-            arc_pivot_point,
-            2 * (self.door_width - self.thickness),
-            2 * self.door_width,
+            hinges_point,
+            2 * radius,
+            2 * radius,
             angle=self.orientation_angle,
             theta1=start_angle,
             theta2=end_angle,
