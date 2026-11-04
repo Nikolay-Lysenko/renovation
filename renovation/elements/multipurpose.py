@@ -27,6 +27,8 @@ class LabeledRectangle(CornerAnchorsMixin, Element):
             depth: float,
             width: Optional[float] = None,
             orientation_angle: float = 0,
+            x_label_correction: float = 0,
+            y_label_correction: float = 0,
             another_pivot_point: Optional[tuple[float, float]] = None,
             line_width: float = 0.5,
             font_size: float = 10,
@@ -48,6 +50,14 @@ class LabeledRectangle(CornerAnchorsMixin, Element):
             it is measured between X-axis and the element in positive direction (counterclockwise);
             initial element is rotated around pivot point to get the desired orientation;
             this argument is used only if `another_pivot_point` is not passed
+        :param x_label_correction:
+            shift of the label along X-axis;
+            this argument is a workaround to compensate opaque shifts introduced by `ax.text`
+            rotation
+        :param y_label_correction:
+            shift of the label along Y-axis;
+            this argument is a workaround to compensate opaque shifts introduced by `ax.text`
+            rotation
         :param another_pivot_point:
             coordinates of additional pivot point (in meters);
             here, it is the corner that is the bottom right one in the non-rotated configuration
@@ -72,6 +82,8 @@ class LabeledRectangle(CornerAnchorsMixin, Element):
         self.length = width  # This attribute is needed by `CornerAnchorsMixin`.
         self.thickness = depth  # This attribute is needed by `CornerAnchorsMixin`.
         self.orientation_angle = orientation_angle
+        self.x_label_correction = x_label_correction
+        self.y_label_correction = y_label_correction
         self.line_width = line_width
         self.label = label
         self.font_size = font_size
@@ -96,15 +108,14 @@ class LabeledRectangle(CornerAnchorsMixin, Element):
             self.orientation_angle + RIGHT_ANGLE_IN_DEGREES
         )
         ax.text(
-            label_center[0],
-            label_center[1],
+            label_center[0] + self.x_label_correction,
+            label_center[1] + self.y_label_correction,
             self.label,
-            color=self.color,
-            fontsize=self.font_size,
+            rotation=self.orientation_angle,
             horizontalalignment='center',
             verticalalignment='center',
-            rotation=self.orientation_angle,
-            rotation_mode='anchor'
+            color=self.color,
+            fontsize=self.font_size
         )
 
 
