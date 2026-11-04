@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "renovation"
-version = "0.2.0"
+version = "0.2.1"
 description = "Drawing tool that produces floor plans needed to renovate an apartment"
 readme = "README.md"
 keywords = ["apartments", "drawing", "floor_plan", "floor_plans"]
