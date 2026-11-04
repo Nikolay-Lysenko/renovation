@@ -204,11 +204,7 @@ class Door(CornerAnchorsMixin, Element):
             from the hinges point along the doorway
         :param sweep_angle:
             angle (in degrees) between the doorway and the door;
-            this angle must be positive and it measures how wide the door is opened;
-            extreme values (i.e., below 30 degrees or above 120 degrees) prevent sweep arc drawing,
-            because it becomes unrealistic or even impossible to draw with current implementation;
-            this limitation is caused by the trade-off between extreme angles support
-            and beautiful picture for the default 90 degrees
+            this angle must be positive and it measures how wide the door is opened
         :param color:
             color to use for drawing the window
         :return:
@@ -277,27 +273,21 @@ class Door(CornerAnchorsMixin, Element):
             )
         ax.add_patch(door)
 
-        if not 30 < self.sweep_angle < 120:
+        if not 0 <= self.sweep_angle <= 180:
             return
-        arc_pivot_point = shift_in_direction(hinges_point, self.thickness, self.orientation_angle)
-        x_radius = self.door_width - self.thickness
-        arc_end = door.get_corners()[2]
-        arc_end_x_shift = arc_end[0] - arc_pivot_point[0]
-        arc_end_y_shift = arc_end[1] - arc_pivot_point[1]
-        y_radius = abs(arc_end_y_shift) / math.sqrt(1 - (arc_end_x_shift / x_radius) ** 2)
-
-        smooth_connection_factor = 1.02
+        line_width_factor = 0.9925
+        radius = line_width_factor * math.sqrt(self.door_width ** 2 + self.thickness ** 2)
+        angle_shift = math.degrees(math.atan2(self.thickness, self.door_width))
         if self.to_the_right:
-            start_angle = -smooth_connection_factor * self.sweep_angle
+            start_angle = -self.sweep_angle + angle_shift
             end_angle = 0
         else:
             start_angle = 0
-            end_angle = smooth_connection_factor * self.sweep_angle
-
+            end_angle = self.sweep_angle - angle_shift
         arc = Arc(
-            arc_pivot_point,
-            2 * x_radius,
-            2 * y_radius,
+            hinges_point,
+            2 * radius,
+            2 * radius,
             angle=self.orientation_angle,
             theta1=start_angle,
             theta2=end_angle,
